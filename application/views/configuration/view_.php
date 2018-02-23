@@ -32,15 +32,6 @@
 
   <div class="row">
     <div class="col-xs-4">
-        <label style="margin-top: 7px;">Utiliza Orden de Compra: </label>
-      </div>
-    <div class="col-xs-5">
-        <input type="checkbox" id="utilizaordendecompra" style="margin-top:10px;" <?php echo($data['conf']['utilizaordendecompra'] == true ? 'checked': ''); ?> >
-      </div>
-  </div><br>
-
-  <div class="row">
-    <div class="col-xs-4">
         <label style="margin-top: 7px;">Válidez Presupuesto: </label>
       </div>
     <div class="col-xs-5">
@@ -77,13 +68,12 @@ $('#btnAceptar').click(function(){
     WaitingOpen('Guardando cambios');
       $.ajax({
             type: 'POST',
-            data: { 
+            data: {
                     title1:   $('#title1').val(),
                     title2:   $('#title2').val(),
-                    orcomp:   $('#utilizaordendecompra').prop('checked'),
                     dias:     $('#validezpresupuesto').val()
                   },
-        url: 'index.php/configuration/seConfiguration', 
+        url: 'index.php/configuration/seConfiguration',
         success: function(result){
                       WaitingClose();
               },

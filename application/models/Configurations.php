@@ -17,7 +17,7 @@ class Configurations extends CI_Model
 		{
 			$c = $query->result_array();
 			$data['conf'] = $c[0];
-		} 
+		}
 		return $data;
 	}
 
@@ -29,9 +29,8 @@ class Configurations extends CI_Model
 		else
 		{
 			$insert = array(
-					'title1'				=> $data['title1'],
-					'title2'				=> $data['title2'],
-					'utilizaordendecompra'	=> $data['orcomp'],
+					'title1'							=> $data['title1'],
+					'title2'							=> $data['title2'],
 					'validezpresupuesto'	=> $data['dias']
 				);
 
@@ -42,4 +41,34 @@ class Configurations extends CI_Model
 		}
 	}
 
+	function getCotizacion(){
+
+		$data = array();
+
+		$query= $this->db->get('configuracion');
+		if ($query->num_rows() != 0)
+		{
+			$c = $query->result_array();
+			$data['cotizacion'] = $c[0]['cotizacionDolar'];
+		}
+		return $data;
+	}
+
+	function setCotizacion($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$update = array(
+					'cotizacionDolar'			=> $data['cotizacion']
+				);
+
+			if($this->db->update('configuracion', $update) == false) {
+				return false;
+			} else return true;
+
+		}
+	}
 }
