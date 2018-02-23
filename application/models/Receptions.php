@@ -70,6 +70,13 @@ class Receptions extends CI_Model
 			$query = $this->db->get();
 			$data['providers'] = $query->result_array();
 
+			$this->db->select('tcId, tcDescripcion');
+			$this->db->from('tipo_comprobante');
+			$this->db->where(array('tcEstado' => 'AC'));
+			$this->db->order_by('tcDescripcion');
+			$query = $this->db->get();
+			$data['tipe'] = $query->result_array();
+
 			$query= $this->db->get_where('receptions',array('recId'=>$id));
 			if ($query->num_rows() != 0)
 			{
@@ -85,7 +92,9 @@ class Receptions extends CI_Model
 			} else {
 				$rec = array();
 				$rec['recFecha'] = '';
-				//$rec['recEstado'] = '';
+				$rec['tcNumero'] = '';
+				$rec['tcId'] = '';
+				$rec['tcImporte'] = '';
 				$rec['prvId'] = '';
 				$rec['recObservacion'] = '';
 				$data['reception'] = $rec;
@@ -115,17 +124,25 @@ class Receptions extends CI_Model
 	        $prvId  = $data['prvId'];
 	        $date 	= $data['date'];
 	        $obsv 	= $data['obsv'];
+
+	        $tipoC 	= $data['tc'];
+	        $numC 	= $data['tcNum'];
+	        $imp 	= $data['imp'];
 			
 			$date = explode('-', $date);
 			$data = array(
 					   'prvId'		 	=> $prvId,
 					   'recObservacion'	=> $obsv,
 					   'recFecha'		=> $date[2].'-'.$date[1].'-'.$date[0],
-					   'recEstado'		=> 'AC'
+					   'recEstado'		=> 'AC',
+					   'tcId'			=> $tipoC,
+					   'tcNumero'		=> $numC,
+					   'tcImporte'		=> $imp
 					);
 			
 			switch($act){
 				case 'Add':
+					$this->db->trans_start();
 					if($this->db->insert('receptions', $data) == false) {
 						return false;
 					} else {
@@ -143,9 +160,11 @@ class Receptions extends CI_Model
 							}
 						}	
 					}
+					$this->db->trans_complete();
 					break;
 
 				case 'Conf':
+					$this->db->trans_start();
 					$data = array(
 					   'recEstado'		=> 'CF'
 					);
@@ -165,16 +184,43 @@ class Receptions extends CI_Model
 								return false;
 							}
 						}
+						//Registrar cuenta corriente si tiene asociados número, tipo e importe del comprobante de compra.
+						$comprobante = 'No identificado';
+						$query= $this->db->get_where('tipo_comprobante',array('tcId'=>$tipoC));
+						if ($query->num_rows() != 0)
+						{
+							$r = $query->result_array();
+							$comprobante = $r[0]['tcDescripcion'];
+						}
+
+						$userdata = $this->session->userdata('user_data');
+
+						$ctacte = array(
+								'cctepConcepto'		=>	'Recepción '.$comprobante.' número: '.$numC ,
+								'cctepRef'			=>	$id,
+								'cctepTipo'			=>	'RC',
+								'cctepDebe'			=>	$imp,
+								'cctepFecha'		=> 	$date[2].'-'.$date[1].'-'.$date[0],
+								'prvId'				=> 	$prvId,
+								'usrId'				=>	$userdata[0]['usrId']
+							);
+
+						if($this->db->insert('cuentacorrienteproveedor', $ctacte) == false) {
+							return false;
+						}
 					}
+					$this->db->trans_complete();
 					break;
 
 				case 'Disc':
+					$this->db->trans_start();
 					$data = array(
 					   'recEstado'		=> 'DS'
 					);
 					if($this->db->update('receptions', $data, array('recId'=>$id)) == false) {
 						return false;
 					}
+					$this->db->trans_complete();
 					break;
 			}
 			

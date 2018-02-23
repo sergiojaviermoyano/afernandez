@@ -177,6 +177,49 @@ class Articles extends CI_Model
 		}
 	}
 
+	function buscadorArticlesNoPrice($data = null){
+		$str = '';
+		if($data != null){
+			$str = $data['str'];
+		}
+
+		$articles = array();
+
+		$this->db->select('artId, artDescription, artBarcode');
+		$this->db->from('articles');
+		$this->db->like('artDescription', $str, 'both');
+		$this->db->or_like('artBarCode', $str, 'both');
+		$this->db->where(array('artEstado'=>'AC'));
+		$query = $this->db->get();
+		if ($query->num_rows()!=0)
+		{
+			$articles = $query->result_array();
+			return $articles;
+		}
+
+		return array();
+	}
+
+	function getArticleJson($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$idArt = $data['id'];
+
+			$data = array();
+			$query= $this->db->get_where('articles',array('artId'=>$idArt));
+			if ($query->num_rows() != 0)
+			{
+				$c = $query->result_array();
+				$data['article'] = $c[0];
+			}
+			return $data;
+		}
+	}
+
 /*
 	function searchByCode($data = null){
 		$str = '';

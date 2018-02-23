@@ -48,8 +48,6 @@ class article extends CI_Controller {
 	}
 
 	public function setArticle(){
-
-
 		$data = $this->Articles->setArticle($this->input->post());
 		if($data  == false)
 		{
@@ -61,6 +59,23 @@ class article extends CI_Controller {
 		}
 	}
 
+	public function buscadorArticlesNoPrice() {
+		$data = $this->Articles->buscadorArticlesNoPrice($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
+
+	public function getArticleJson(){
+		echo json_encode($this->Articles->getArticleJson($this->input->post()));
+	}
+
+	/*
 	public function searchByCode() {
 		$data = $this->Articles->searchByCode($this->input->post());
 		if($data  == false)
@@ -98,6 +113,7 @@ class article extends CI_Controller {
 			echo json_encode(true);
 		}
 	}
+	*/
 
 	public function information($permission)
 	{

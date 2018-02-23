@@ -11,7 +11,7 @@
           }
           ?>
         </div><!-- /.box-header -->
-       
+
         <div class="box-header">
           <div class="box-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
@@ -36,7 +36,7 @@
             </thead>
             <tbody>
               <?php
-                if(count($list['data']) > 0) {                  
+                if(count($list['data']) > 0) {
                   foreach($list['data'] as $r)
                   {
                     echo '<tr>';
@@ -46,7 +46,7 @@
                       if (strpos($permission,'Conf') !== false) {
                           echo '<i class="fa fa-fw fa-check" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$r['recId'].',\'Conf\')"></i>';
                       }
-                    
+
                     if($r['recEstado'] == 'AC')
                       if (strpos($permission,'Disc') !== false) {
                         echo '<i class="fa fa-fw fa-ban" style="color: #dd4b39 ; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$r['recId'].',\'Disc\')"></i>';
@@ -57,21 +57,21 @@
                     }
 
                     echo '</td>';
-                    echo '<td>'.str_pad($r['recId'], 10, "0", STR_PAD_LEFT).'</td>';
-                    $date = date_create($r['recFecha']);                    
+                    echo '<td>'.str_pad($r['recId'], 4, "0", STR_PAD_LEFT).'</td>';
+                    $date = date_create($r['recFecha']);
                     echo '<td style="text-align: center">'.date_format($date, 'd-m-Y').'</td>';
                     echo '<td style="text-align: left">'.$r['prvRazonSocial'].' - '.$r['prvApellido'].' '.$r['prvNombre'].'</td>';
                     echo '<td style="text-align: center">'.($r['recEstado'] == 'AC' ? '<small class="label bg-green">Activo</small>' : ($r['recEstado'] == 'DS' ? '<small class="label bg-red">Descartado</small>' : '<small class="label bg-blue">Confirmado</small>')).'</td>';
                     echo '</tr>';
                   }
-                  
+
                 }
               ?>
             </tbody>
             <tfoot>
               <tr>
                 <td colspan="8" style="text-align: center" id="footerRow">
-                <?php 
+                <?php
                 if($list['page'] == 1){
                   echo '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-backward"></i></button>';
                 } else {
@@ -118,7 +118,7 @@ $('#table_search').keyup(function(e) {
               page: p,
               txt: $('#table_search').val()
             },
-            url: 'index.php/reception/pagination', 
+            url: 'index.php/reception/pagination',
             success: function(result){
                       WaitingClose();
                       $('#credit > tbody').html('');
@@ -132,15 +132,15 @@ $('#table_search').keyup(function(e) {
                         }
                         row += '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadRec('+value.recId+',\'View\')"></i>';
                         row += '</td>';
-                        row += '<td>'+("000000000"+value.recId).slice(-10)+'</td>';
+                        row += '<td>'+("000"+value.recId).slice(-4)+'</td>';
                         var date = new Date(value.recFecha);
-                        row += '<td style="text-align: center">'+("0"+date.getDate()).slice(-2)+'-'+("0"+date.getMonth()).slice(-2)+'-'+("0"+date.getFullYear()).slice(-2)+'</td>';
+                        row += '<td style="text-align: center">'+("0"+date.getDate()).slice(-2)+'-'+("0"+(date.getMonth() + 1)).slice(-2)+'-'+("0"+date.getFullYear()).slice(-2)+'</td>';
                         row += '<td style="text-align: left">'+value.prvRazonSocial+' - '+value.prvNombre+' '+value.prvApellido+'</td>';
                         row += '<td style="text-align: center">'+(value.recEstado == 'AC' ? '<small class="label bg-green">Activo</small>' : (value.recEstado == 'DS' ? '<small class="label bg-red">Descartado</small>' : '<small class="label bg-blue">Confirmado</small>'))+'</td>';
                         row += '</tr>';
                         $('#credit > tbody').append(row);
                       });
-                      
+
                       var foot = '';
                       if(result.page == 1){
                         foot += '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-backward"></i></button>';
@@ -166,10 +166,10 @@ $('#table_search').keyup(function(e) {
 
   }
 
-  
+
   var id = 0;
   var action = '';
-  
+
   function LoadRec(id_, action_){
     id = id_;
     action = action_;
@@ -178,24 +178,25 @@ $('#table_search').keyup(function(e) {
       $.ajax({
             type: 'POST',
             data: { id : id_, act: action },
-        url: 'index.php/reception/getReception', 
+        url: 'index.php/reception/getReception',
         success: function(result){
                       WaitingClose();
                       $("#modalBodyReception").html(result.html);
                       $(".select2").select2();
                       $('#recFecha').datepicker({maxDate: '0'});
+                      $("#tcImporte").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
                       setTimeout("$('#modalReception').modal('show')",800);
               },
         error: function(result){
               WaitingClose();
-              alert("error");
+              ProcesarError(result.responseText, 'modalReception');
             },
             dataType: 'json'
         });
   }
 
   $('#btnSave').click(function(){
-    
+
     if(action == 'View')
     {
       $('#modalReception').modal('hide');
@@ -238,15 +239,18 @@ $('#table_search').keyup(function(e) {
     WaitingOpen('Guardando cambios');
       $.ajax({
             type: 'POST',
-            data: { 
-                    id_ : id, 
-                    act: action, 
-                    prvId: $('#prvId').val(),
-                    date: $('#recFecha').val(),
-                    obsv: $('#recObservacion').val(),
-                    rec: rece
+            data: {
+                    id_ :   id,
+                    act:    action,
+                    prvId:  $('#prvId').val(),
+                    date:   $('#recFecha').val(),
+                    obsv:   $('#recObservacion').val(),
+                    tc:     $('#tcId').val(),
+                    tcNum:  $('#tcNumero').val(),
+                    imp:    $('#tcImporte').val(),
+                    rec:    rece
                   },
-        url: 'index.php/reception/setReception', 
+        url: 'index.php/reception/setReception',
         success: function(result){
                       WaitingClose();
                       $('#modalReception').modal('hide');
@@ -264,15 +268,15 @@ $('#table_search').keyup(function(e) {
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalReception" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document" style="width: 50%">
+<div class="modal fade" id="modalReception" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 80%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Recepción</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Recepción</h4>
       </div>
       <div class="modal-body" id="modalBodyReception">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -283,6 +287,7 @@ $('#table_search').keyup(function(e) {
 </div>
 
 <!-- Modal -->
+<!--
 <div class="modal fade" id="modalSearch" tabindex="3000" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="width: 50%">
     <div class="modal-content">
@@ -295,17 +300,23 @@ $('#table_search').keyup(function(e) {
           <div class="col-xs-10 col-xs-offset-1"><center>Producto</center></div>
         </div>
         <div class="row">
-          <div class="col-xs-10 col-xs-offset-1"><input type="text" class="form-control" id="artIdSearch" value=""></div>
-          <div class="col-xs-1"><img style="display: none" id="loadingIcon" src="<?php  echo base_url();?>assets/images/loading.gif" width="35px"></div>
-            <!--
-            <input type="text" id="type" />
-            <span id="status"></span>
-            -->
+          <div class="col-xs-10 col-xs-offset-1">
+            <input type="text" class="form-control" id="artIdSearch" value="" min="0">
+          </div>
         </div><br>
 
-        <div class="row" style="max-height:350px; overflow-x: auto;" id="tableRow">
+        <div class="row">
           <div class="col-xs-10 col-xs-offset-1">
-            <table id="saleDetailSearch" style="max-height:340px; display: table;" class="table table-bordered" width="100%">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th width="1%"></th>
+                  <th width="10%">Código</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+            </table>
+            <table id="saleDetailSearch" style="height:20em; display:block; overflow: auto;" class="table table-bordered">
               <tbody>
 
               </tbody>
@@ -320,3 +331,4 @@ $('#table_search').keyup(function(e) {
     </div>
   </div>
 </div>
+-->

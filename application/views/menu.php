@@ -38,7 +38,7 @@
                       if($a['grpactId'] != null)
                         $actions .= $a['actDescription'] .'-';
                     }
-                    echo '<li class="treeview">
+                    echo '<li class="treeview" onClick="activa(this)">
                             <a href="#" onClick="cargarView(\''.$m['menuController'].'\',\''.$m['menuView'].'\', \''.$actions.'\')">
                               <i class="'.$m['menuIcon'].'"></i> <span>'.str_replace("_", " ", $m['menuName']).'</span>
                             </a>
@@ -49,7 +49,7 @@
                 //Datos del usuario
                 $userdata = $this->session->userdata('user_data');
                 if($userdata[0]['usrEsAdmin'] == 1){
-                  echo '<li class="treeview">
+                  echo '<li class="treeview" onClick="activa(this)">
                           <a href="#" onClick="cargarView(\'configuration\',\'getConfiguration\', \'Edit\')">
                             <i class="fa fa-fw  fa-database"></i> <span>Sistema</span>
                           </a>
@@ -88,7 +88,7 @@
         $.ajax({
             type: 'POST',
             //data: null,
-            url: '<?php echo base_url(); ?>index.php/user/editProfile', 
+            url: '<?php echo base_url(); ?>index.php/user/editProfile',
             success: function(result){
                           WaitingClose();
                           $("#modalProfileBody_").html(result.html);
@@ -129,12 +129,12 @@
         WaitingOpen('Guardando cambios');
         $.ajax({
               type: 'POST',
-              data: { 
+              data: {
                       name: $('#usrName').val(),
                       lnam: $('#usrLastName').val(),
                       pas: $('#usrPassword').val()
                     },
-          url: 'index.php/user/updateUserProfile', 
+          url: 'index.php/user/updateUserProfile',
           success: function(result){
                         WaitingClose();
                         $('#modalProfile').modal('hide');
@@ -147,6 +147,11 @@
           });
 
       };
+
+      function activa(this_){
+        $('li').removeClass('active');
+        $(this_).addClass('active');
+      }
       </script>
 
 <!-- Modal -->
@@ -155,10 +160,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-pencil" style="color: #f39c12"></i> Editar Perfil</h4> 
+        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-pencil" style="color: #f39c12"></i> Editar Perfil</h4>
       </div>
       <div class="modal-body" id="modalProfileBody_">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
