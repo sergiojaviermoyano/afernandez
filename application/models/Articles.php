@@ -61,6 +61,15 @@ class Articles extends CI_Model
 			$idArt = $data['id'];
 
 			$data = array();
+			//Cotizacion dolar
+			$query= $this->db->get('configuracion');
+			if ($query->num_rows() != 0)
+			{
+				$c = $query->result_array();
+				$data['cotizacionDolar'] = $c[0]['cotizacionDolar'];
+			}else{
+				$data['cotizacionDolar'] = 1;
+			}
 
 			//Datos del articulo
 			$query= $this->db->get_where('articles',array('artId'=>$idArt));
@@ -76,18 +85,15 @@ class Articles extends CI_Model
 				$art['artBarCode'] = '';
 				$art['artDescription'] = '';
 				$art['artCoste'] = '';
-				$art['artMargin'] = '';
-				$art['artMarginIsPorcent'] = '';
-				$art['artIsByBox'] = '';
-				$art['artCantBox'] = '';
+				$art['artCosteIsDolar'] = '';
+				$art['artMarginMayorista'] = '';
+				$art['artMarginMinorista'] = '';
+				$art['artMarginMayoristaIsPorcent'] = '';
+				$art['artMarginMinoristaIsPorcent'] = '';
 				$art['artEstado'] = 'AC';
-			  $art['subrId']= '';
-        $art['ivaId']= '';
-        $art['artMinimo']= '';
-        $art['artMedio']= '';
-        $art['artMaximo']= '';
-        $art['artSeFracciona']= '';
-
+			  $art['subrId']	= '';
+        $art['artMinimo']	= '';
+        $art['marcaId'] = '';
 				$data['article'] = $art;
 			}
 			$data['article']['action'] = $action;
@@ -112,54 +118,39 @@ class Articles extends CI_Model
 		else
 		{
 			$id 	= $data['id'];
-            $act 	= $data['act'];
-            $name 	= $data['name'];
-            $price 	= $data['price'];
-            $margin = $data['marg'];
-            $marginP = $data['margP'];
-            $status = $data['status'];
-            $box 	= $data['box'];
-            $boxCant = $data['boxCant'];
-            $code = $data['code'];
-            $subrId 	=	$data['subrId'];
-            $ivaId 	=	$data['ivaId'];
-            $artMinimo 	=	$data['artMinimo'];
-            $artMedio 	=	$data['artMedio'];
-            $artMaximo 	=	$data['artMaximo'];
-            $fraction 	= 	$data['fraction'];
-
+            $act 					= $data['act'];
+            $name 				= $data['name'];
+            $price 				= $data['price'];
+						$priceIsDolar = $data['priceIsD'];
+            $marginMa			= $data['margma'];
+            $marginMaP 		= $data['margPma'];
+						$marginMi			= $data['margmi'];
+            $marginMiP 		= $data['margPmi'];
+            $status 			= $data['status'];
+            $code 				= $data['code'];
+            $subrId 			=	$data['subrId'];
+            $marcaId 			=	$data['marcaId'];
+            $artMinimo 		=	$data['artMinimo'];
 
 			$data = array(
 				   'artBarCode'						=> $code,
-				   'artDescription' 				=> $name,
-				   'artCoste'						=> $price,
-				   'artMargin' 						=> $margin,
-				   'artMarginIsPorcent' 			=> ($marginP === 'true'),
+				   'artDescription' 			=> $name,
+				   'artCoste'							=> $price,
+					 'artMarginMinorista'		=> $marginMi,
+					 'artMarginMinoristaIsPorcent' 	=> ($marginMiP === 'true'),
 				   'artEstado' 						=> $status,
-				   'artIsByBox'			 			=> ($box === 'true'),
-				   'artCantBox'						=> (int)$boxCant,
-				   'subrId'						=> $subrId,
-				   'ivaId'						=> $ivaId,
-				   'artMinimo'						=> $artMinimo,
-				   'artMedio'						=> $artMedio,
-				   'artMaximo'						=> $artMaximo,
-				   'artSeFracciona'					=> ($fraction === 'true')
+					 'artMinimo'						=> $artMinimo,
+					 'subrId'								=> $subrId,
+					 'artMarginMayorista'		=> $marginMa,
+					 'artMarginMayoristaIsPorcent' 	=> ($marginMaP === 'true'),
+					 'artCosteIsDolar'			=> ($priceIsDolar === 'true'),
+					 'marcaId'							=> $marcaId
 
 				);
 
 			switch($act){
 				case 'Add':
 					//Agregar Artículo
-				/*
-					$this->db->where('artBarCode',$code);
-					$this->db->or_where('artDescription',$name);
-					$check_article=$this->db->get('articles');
-
-					if($check_article->num_rows()>0){
-						return json_encode(array('result'=>'error','message'=>'El Código o la Descripcíon esta duplicado, ingrese otro valor'));
-					}
-					*/
-
 					if($this->db->insert('articles', $data) == false) {
 						//return json_encode(array('result'=>'error','message'=>''));
 						return false;
@@ -186,6 +177,7 @@ class Articles extends CI_Model
 		}
 	}
 
+/*
 	function searchByCode($data = null){
 		$str = '';
 		if($data != null){
@@ -301,5 +293,6 @@ class Articles extends CI_Model
         $query = $this->db->query('CALL stockArt('.$artId.')');
         return $query->result();
     }
+		*/
 }
 ?>

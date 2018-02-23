@@ -34,29 +34,4 @@ class brand extends CI_Controller {
 			echo json_encode(true);
 		}
 	}
-
-	public function indexVh($permission)
-	{
-		$data['list'] = $this->Brands->BrandVh_list();
-		$data['permission'] = $permission;
-		echo json_encode($this->load->view('brands/listVh', $data, true));
-	}
-
-	public function getBrandVh(){
-		$data['data'] = $this->Brands->getBrandVh($this->input->post());
-		$response['html'] = $this->load->view('brands/viewVh_', $data, true);
-		echo json_encode($response);
-	}
-
-	public function setBrandVh(){
-		$data = $this->Brands->setBrandVh($this->input->post());
-		if($data  == false)
-		{
-			echo json_encode(false);
-		}
-		else
-		{
-			echo json_encode(true);
-		}
-	}
 }

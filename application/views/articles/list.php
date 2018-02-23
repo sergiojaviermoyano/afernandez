@@ -128,9 +128,10 @@
     		success: function(result){
 			                WaitingClose();
 			                $("#modalBodyArticle").html(result.html);
-                      $("#artCantBox").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
-                      $("#artCoste").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
-                      $("#artMargin").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+                      $("#artCoste").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                      $("#artMarginMayorista").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                      $("#artMarginMinorista").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                      $("#cotizacionDolar").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
                       CalcularPrecio();
 			                setTimeout("$('#modalArticle').modal('show')",800);
                       $("[data-mask]").inputmask();
@@ -173,6 +174,23 @@
       error_message += " * Por Favor, debe Ingresar Costo. <br> ";
     }
 
+    if($('#artMarginMayorista').val() == '')
+    {
+      hayError = true;
+      error_message += " * Por Favor, debe Ingresar Margen Mayorista. <br> ";
+    }
+
+    if($('#artMarginMinorista').val() == '')
+    {
+      hayError = true;
+      error_message += " * Por Favor, debe Ingresar Margen Minorista. <br> ";
+    }
+
+    if($('#marcaId').val() == ''){
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar una Marca. <br> ";
+    }
+
     if($('#subrId').val() == '')
     {
       hayError = true;
@@ -180,25 +198,10 @@
 
     }
 
-    if($('#ivaId').val() == ''){
-      hayError = true;
-      error_message += " * Por Favor, debe Seleccionar una Condición de IVA. <br> ";
-    }
-
     /*
     if($('#artMinimo').val() == ''){
       hayError = true;
       error_message += " * Por Favor, debe Seleccionar un Mínimo. <br> ";
-    }
-
-    if($('#artMedio').val() == ''){
-      hayError = true;
-      error_message += " * Por Favor, debe Seleccionar un Medio. <br> ";
-    }
-
-    if($('#artMaximo').val() == ''){
-      hayError = true;
-      error_message += " * Por Favor, debe Seleccionar un Maximo. <br> ";
     }
     */
 
@@ -206,10 +209,10 @@
     if(hayError == true){
       $("#errorArt").find("p").html(error_message);
     	$('#errorArt').fadeIn('slow');
+      setTimeout("$('#errorArt').fadeOut('slow');",2000);
     	return false;
     }
 
-    $('#errorArt').fadeOut('slow');
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
@@ -218,18 +221,16 @@
                     act:      acArt,
                     code:     $('#artBarCode').val(),
                     name:     $('#artDescription').val(),
-                    marg:     $('#artMargin').val(),
-                    margP:    $('#artMarginIsPorcent').prop('checked'),
+                    margma:   $('#artMarginMayorista').val(),
+                    margmi:   $('#artMarginMinorista').val(),
+                    margPma:  $('#artMarginMayoristaIsPorcent').prop('checked'),
+                    margPmi:  $('#artMarginMinoristaIsPorcent').prop('checked'),
                     price:    $('#artCoste').val(),
+                    priceIsD: $('#artCosteIsDolar').prop('checked'),
                     status:   $('#artEstado').val(),
-                    box:      $('#artIsByBox').prop('checked'),
-                    boxCant:  $('#artCantBox').val(),
-                    fraction: $('#artSeFracciona').prop('checked'),
                     subrId:   $("#subrId").val(),
-                    ivaId:    $("#ivaId").val(),
-                    artMinimo:   $("#artMinimo").val(),
-                    artMedio:   $("#artMedio").val(),
-                    artMaximo:   $("#artMaximo").val(),
+                    marcaId:  $("#marcaId").val(),
+                    artMinimo:   $("#artMinimo").val()
                   },
     		url: 'index.php/article/setArticle',
     		success: function(result){
@@ -255,7 +256,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Artículo</h4>
       </div>
-      <div class="modal-body" id="modalBodyArticle" style="    min-height: 650px;">
+      <div class="modal-body" id="modalBodyArticle">
 
       </div>
       <div class="modal-footer">
