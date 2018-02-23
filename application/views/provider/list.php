@@ -22,36 +22,7 @@
               </tr>
             </thead>
             <tbody>
-              <?php
-              /*
-                if($list) {
-                	foreach($list as $p)
-      		        {
-  	                echo '<tr>';
-  	                echo '<td>';
 
-                    if (strpos($permission,'Edit') !== false) {
-  	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'Edit\')"></i>';
-                    }
-
-                    if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'Del\')"></i>';
-                    }
-
-                    if (strpos($permission,'View') !== false) {
-  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'View\')"></i>';
-                    }
-
-  	                echo '</td>';
-                    echo '<td style="text-align: left">'.$p['prvRazonSocial'].'</td>';
-  	                echo '<td style="text-align: right">'.$p['prvTelefono'].'</td>';
-                    echo '<td style="text-align: left">'.$p['prvMail'].'</td>';
-  	                echo '</tr>';
-
-      		        }
-
-                } */
-              ?>
             </tbody>
           </table>
         </div><!-- /.box-body -->
@@ -162,7 +133,7 @@
     					},
     		    error: function(result){
     					WaitingClose();
-    					alert("error");
+    					ProcesarError(result.responseText, 'modalProvider');
     				},
           	dataType: 'json'
     		});
@@ -218,7 +189,7 @@
     					},
     		error: function(result){
     					WaitingClose();
-    					alert("error");
+    					ProcesarError(result.responseText, 'modalProvider');
     				},
           	dataType: 'json'
     		});
