@@ -7,14 +7,14 @@ class Groups extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function Group_List(){
 
 		$query= $this->db->get('sisgroups');
-		
+
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
 		{
@@ -36,7 +36,7 @@ class Groups extends CI_Model
 				$name = "";
 			} else {
 				$query= $this->db->get_where('sisgroups',array('grpId'=>$idGrp));
-				if ($query->num_rows() != 0) {				
+				if ($query->num_rows() != 0) {
 					$name = $query->row('grpName');
 				} else {
 					$name = "";
@@ -71,7 +71,7 @@ class Groups extends CI_Model
 							$this->db->where(array('menuId'=>$son->menuId));
 
 							$queryActions= $this->db->get();
-							$son->actions = $queryActions->result_array();	
+							$son->actions = $queryActions->result_array();
 							$son->childrens = array();
 						}
 						$items->actions = array();
@@ -94,7 +94,7 @@ class Groups extends CI_Model
 
 				}
 
-				return $menu;	
+				return $menu;
 			}
 			return $data;
 		}
@@ -118,7 +118,7 @@ class Groups extends CI_Model
 
 			switch($act){
 				case 'Add':
-					//Agregar grupo 
+					//Agregar grupo
 					if($this->db->insert('sisgroups', $data) == false) {
 						return false;
 					}else{
@@ -157,7 +157,7 @@ class Groups extends CI_Model
 						if($this->db->insert('sisgroupsactions', $data) == false) {
 							return false;
 						}
-					}	
+					}
 					break;
 
 				case 'Del':
@@ -170,7 +170,7 @@ class Groups extends CI_Model
 					if($this->db->delete('sisgroups', $data, array('grpId'=>$id)) == false) {
 						return false;
 					}
-					
+
 					break;
 			}
 
@@ -191,17 +191,17 @@ class Groups extends CI_Model
 		$this->db->join('sismenu', 'sismenu.menuId = sismenuactions.menuId');
 		$this->db->where('sisgroups.grpId', $grpId);
 		$this->db->group_by('sismenu.menuName');
-		$this->db->order_by("sismenu.menuId", "asc");
+		//$this->db->order_by("sismenu.menuId", "asc");
 		$this->db->order_by("sismenu.menuFather", "asc");
 		$query = $this->db->get();
-		
+
 		$menu = $query->result_array();
 
 		$main_menu = array();
 		$father = 0;
 		foreach ($menu as $m) {
 			if($m['menuFather'] != null){
-				if($father != $m['menuFather']) { 
+				if($father != $m['menuFather']) {
 					$father = $m['menuFather'];
 					$son = $m;
 					$item = $this->db->get_where('sismenu',array('menuId'=>$m['menuFather']));
@@ -222,7 +222,7 @@ class Groups extends CI_Model
 						}
 					}
 
-					$main_menu[] = $m;					
+					$main_menu[] = $m;
 				}
 			} else {
 				$this->db->select('sismenuactions.*, sisactions.actDescription, sisgroupsactions.grpactId ');
@@ -232,13 +232,13 @@ class Groups extends CI_Model
 				$this->db->where(array('menuId'=>$m['menuId']));
 
 				$queryActions= $this->db->get();
-				$m['actions'] = $queryActions->result_array();	
+				$m['actions'] = $queryActions->result_array();
 				$m['childrens'] = array();
 
 				$main_menu[] = $m;
-			}		
+			}
 		}
-		
+
 		return $main_menu;
 	}
 }

@@ -19,6 +19,7 @@ class article extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
+
   public function listing(){
 
 		$total=$this->Articles->getTotalArticles($_REQUEST);
@@ -75,6 +76,29 @@ class article extends CI_Controller {
 		echo json_encode($this->Articles->getArticleJson($this->input->post()));
 	}
 
+	public function validateArticle(){
+		$data = $this->Articles->validateArticle($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode(true);
+		}
+	}
+
+	public function buscadorArticlesPrice() {
+		$data = $this->Articles->buscadorArticlesPrice($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
 	/*
 	public function searchByCode() {
 		$data = $this->Articles->searchByCode($this->input->post());

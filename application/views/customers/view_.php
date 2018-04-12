@@ -3,18 +3,10 @@
 	<div class="col-xs-12">
 		<div class="alert alert-danger alert-dismissable" id="errorCust" style="display: none">
 	        <h4><i class="icon fa fa-ban"></i> Error!</h4>
-	        Revise que todos los campos esten completos
+	        <p>Revise que todos los campos esten completos</p>
       </div>
 	</div>
 </div>
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Nro. Cliente <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-5">
-            <input type="text" class="form-control" placeholder="" id="cliId" value="<?php echo $data['customer']['cliId'];?>" disabled="disabled" >
-          </div>
-      </div><br>
       <div class="row">
         <div class="col-xs-4">
             <label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
@@ -37,7 +29,7 @@
           </div>
         <div class="col-xs-5">
             <select class="form-control" id="docId"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-              <?php 
+              <?php
                 foreach($data['docs'] as $d){
                   echo '<option value="'.$d['docId'].'" '.($data['customer']['docId'] == $d['docId'] ? 'selected' : '').'>'.$d['docDescripcion'].'</option>';
                 }
@@ -83,7 +75,7 @@
         </div>
         <div class="col-xs-5">
           <select class="form-control" id="cliEstado"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-              <?php 
+              <?php
                   echo '<option value="AC" '.($data['customer']['cliEstado'] == 'AC' ? 'selected' : '').'>Activo</option>';
                   echo '<option value="IN" '.($data['customer']['cliEstado'] == 'IN' ? 'selected' : '').'>Inactivo</option>';
               ?>

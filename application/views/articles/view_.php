@@ -188,4 +188,33 @@ function CalcularPrecio(){
   $('#pventaMayorista').html(pventaMayorista);
 }
 
+
+$('#artBarCode').focusout(function() {
+		if($('#artBarCode').val() != ""){
+			WaitingOpen('Validando Código');
+	    	$.ajax({
+	          	type: 'POST',
+	          	data: {
+	                    id :      idArt,
+	                    act:      acArt,
+	                    code:     $('#artBarCode').val()
+	                  },
+	    		url: 'index.php/article/validateArticle',
+	    		success: function(result){
+	                			WaitingClose();
+	                			if(result == false){
+													//Esta registrado
+													$("#errorArt").find("p").html('El código ingresado ya fue cargado');
+										    	$('#errorArt').fadeIn('slow');
+										      setTimeout("$('#errorArt').fadeOut('slow');",2000);
+												}
+	    					},
+	    		error: function(result){
+	    					WaitingClose();
+	              ProcesarError(result.responseText, 'modalArticle');
+	    				},
+	          	dataType: 'json'
+	    		});
+		}
+});
 </script>

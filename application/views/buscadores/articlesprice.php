@@ -35,15 +35,16 @@
 </div>
 
 <script>
-var id___, detail___, nextFocus___;
+var id___, detail___, nextFocus___, price___;
 var timer__, timeout__ = 1000;
 var row__ = 0, rows__ = 0;
 var move__ = 0;
 var minLenght__ = 2;
-function buscadorArticlesPrice(string, id, detail, nextFocus){
+function buscadorArticlesPrice(string, id, detail, nextFocus, price){
   id___ = id;
   detail___ = detail;
   nextFocus___ = nextFocus;
+  price___ = price;
   $('#txtArtPrice').val(string);
   $('#tableArtPriceDetail > tbody').html('');
   //$('#buscadorArticlesPrice').modal('show');
@@ -52,7 +53,7 @@ function buscadorArticlesPrice(string, id, detail, nextFocus){
 
 function BuscarArticlePrice(){
   if($('#txtArtPrice').val().length > minLenght__){
-    //Buscar 
+    //Buscar
     $("#loadingArtPrice").show();
     $('#tableArtPriceDetail > tbody').html('');
     row__ = 0;
@@ -64,15 +65,15 @@ function BuscarArticlePrice(){
           success: function(resultList){
                         if(resultList != false){
                           if(resultList.length == 1){
-                              seleccionarArticlePrice(resultList[0].artId, resultList[0].artDescription);
+                              seleccionarArticlePrice(resultList[0].artId, resultList[0].artDescription, calcularPrecioInterno(resultList[0]));
                           } else {
                             $.each(resultList, function(index, result){
                                 var row___ = '<tr>';
                                 row___ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                                row___ += 'onClick="seleccionarArticlePrice('+result.artId+', \''+result.artDescription+'\')"></i></td>';
+                                row___ += 'onClick="seleccionarArticlePrice(' + result.artId + ', \'' + result.artDescription + '\', ' + calcularPrecioInterno(result) + ')"></i></td>';
                                 row___ += '<td>'+result.artBarcode+'</td>';
                                 row___ += '<td>'+result.artDescription+'</td>';
-                                row___ += '<td style="text-align: right"> $ '+(result.artMarginIsPorcent == 1 ? parseFloat((1 + (result.artMargin /100)) * parseFloat(result.artCoste)).toFixed(2) : parseFloat((parseFloat(result.artCoste) + parseFloat(result.artMargin))).toFixed(2))+'</td>';
+                                row___ += '<td style="text-align: right"> $ ' + calcularPrecioInterno(result).toFixed(2) + '</td>';
                                 row___ += '<td style="display: none">'+result.artId+'</td>';
                                 row___ += '</tr>';
                                 $('#tableArtPriceDetail > tbody').prepend(row___);
@@ -80,16 +81,16 @@ function BuscarArticlePrice(){
                             });
 
                             if ($('#buscadorArticlesPrice').data('bs.modal') && $('#buscadorArticlesPrice').data('bs.modal').isShown){
-                              $("#loadingArtPrice").hide(); 
-                              $('#txtArtPrice').focus(); 
+                              $("#loadingArtPrice").hide();
+                              $('#txtArtPrice').focus();
                             }else {
                               //Cerrado
                               $("#loadingArtPrice").hide();
-                              $('#buscadorArticlesPrice').modal('show');  
+                              $('#buscadorArticlesPrice').modal('show');
                               setTimeout(function () { $('#txtArtPrice').focus();}, 1000);
                             }
-                            
-                            
+
+
                           }
                         }
                 },
@@ -102,6 +103,11 @@ function BuscarArticlePrice(){
   }
 }
 
+$('#buscadorArticlesPrice').on('hidden.bs.modal', function() {
+  $('#lblProducto').prop('disabled', false);
+  $('#lblProducto').focus().select();
+})
+
   $('#txtArtPrice').keyup(function(e){
     var code = e.which;
     if(code != 40 && code != 38 && code != 13){
@@ -112,7 +118,7 @@ function BuscarArticlePrice(){
 
         // Set status to show we're typing.
         //$("#status").html("Typing ...").css("color", "#009900");
-        
+
         timer__ = setTimeout(function()
         {
           //$("#status").html("Stopped").css("color", "#990000");
@@ -127,7 +133,8 @@ function BuscarArticlePrice(){
         removeStyle.css('background-color', 'white');
         seleccionarArticlePrice(
                           $('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(5)')[0].innerHTML,
-                          $('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(3)')[0].innerHTML
+                          $('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(3)')[0].innerHTML,
+                          ($('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(4)')[0].innerHTML).replace('$', '').trim()
                         );
       }
 
@@ -140,8 +147,8 @@ function BuscarArticlePrice(){
         }
         var rowE = $("#tableArtPriceDetail > tbody tr:nth-child("+row__+")");
         rowE.css('background-color', '#D8D8D8');
-        animate();
-      } 
+        //animate();
+      }
       if(code == 38) {//arriba
         if(row__ >= 2){
           row__--;
@@ -149,16 +156,40 @@ function BuscarArticlePrice(){
         }
         var rowE = $("#tableArtPriceDetail > tbody tr:nth-child("+row__+")");
         rowE.css('background-color', '#D8D8D8');
-        animate();
+        //animate();
       }
     }
   });
 
-function seleccionarArticlePrice(id, desc){
+function seleccionarArticlePrice(id, desc, price){
     id___.val(id);
     detail___.val(desc);
+    price___.html('$'+parseFloat(price).toFixed(2));
     $('#buscadorArticlesPrice').modal('hide');
+    $('#lblProducto').prop('disabled', false);
     setTimeout(function () { nextFocus___.focus(); nextFocus___.select()}, 800);
+}
+
+function calcularPrecioInterno(article){
+  var precioCosto 				= article['artCoste'];
+	var cotizacionDolar 		= article['dolar'];
+  var margenMi      			= article['artMarginMinorista'];
+  var margenMiEsPor 			= article['artMarginMinoristaIsPorcent'];
+
+  var pventaMinorista = 0;
+
+	//Precio en Dolar
+	var precioCosto = precioCosto * cotizacionDolar;
+
+  //Minorista
+  if(margenMiEsPor){
+    var importe = (parseFloat(margenMi) / 100) * parseFloat(precioCosto);
+    pventaMinorista = parseFloat(parseFloat(importe) + parseFloat(precioCosto));
+  } else {
+    pventaMinorista = parseFloat(parseFloat(precioCosto) + parseFloat(margenMi));
+  }
+
+	return pventaMinorista;
 }
 
 </script>

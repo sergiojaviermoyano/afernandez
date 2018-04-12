@@ -7,7 +7,127 @@ class Sales extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
+	function setSaleMinorista($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$venta = array(
+				'lpId'					=>	$data['lpr']['id'],
+				'lpPorcentaje'	=> 	$data['lpr']['por'],
+				'venId'					=>	$data['vend']['id'],
+				'cliId'					=>	$data['clie']['id'],
+				'oDescuento'		=> 	$data['des'],
+				'oEsPresupuesto'=>	0,
+				'oEsVenta'			=> 	1,
+				'oEsPlanReserva'=>	0,
+				'oEsMayorista'	=> 	0,
+				'cajaId'				=> 	1
+			);
+
+			//verificar si hay cajas abiertas
+			if($data['esPre'] == 0){
+				$userdata = $this->session->userdata('user_data');
+				$this->db->select('*');
+				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+				$this->db->from('cajas');
+				$query = $this->db->get();
+				$result = $query->result_array();
+				if(count($result) > 0){
+					$result = $query->result_array();
+					$venta['cajaId'] = $result[0]['cajaId'];
+				} else {
+					return false;
+				}
+			}
+			//-----------------------------------------------
+
+			$this->db->trans_start();
+			if($this->db->insert('orden', $venta) == false) {
+				$this->db->trans_complete();
+				return false;
+			}else {
+				$idOrden = $this->db->insert_id();
+
+				//Registrar Detalle
+				foreach ($data['det'] as $o) {
+					$insert = array(
+							'oId' 					=> $idOrden,
+							'artId' 				=> $o['artId'],
+							'artCode' 			=> $o['artCode'],
+							'artDescripcion'=> $o['artDescripcion'],
+							'artCosto'			=> $o['artCosto'],
+							'artVenta'			=> $o['artventa'],
+							'artVentaSD'		=> $o['artventaSD'],
+							'artCant'				=> $o['cant']
+						);
+
+					if($this->db->insert('ordendetalle', $insert) == false) {
+						return false;
+					}
+					//--------------------------------
+
+					//Si no es presupuesto, modificar stock y registrar pagos
+					if($data['esPre'] == 0){
+							if($o['actualizaStock'] == 1){
+								//Actualizar stock, insertar en tabla stock
+								$stock = array(
+										'artId' 		=> $o['artId'],
+										'stkCant'		=> $o['cant'] * -1,
+										'stkOrigen'	=> 'VN',
+										'refId'			=> $idOrden
+									);
+
+								if($this->db->insert('stock', $stock) == false) {
+									return false;
+								}
+							}
+					}
+					//----------------------------------
+
+					//medios de pagos
+					if($data['esPre'] == 0){
+						foreach ($data['medi'] as $m) {
+							$medio = array(
+								'oId'					=> $idOrden,
+								'medId'				=> $m['id'],
+								'rcbImporte'	=> $m['imp']
+							);
+
+							if($this->db->insert('recibos', $medio) == false) {
+								return false;
+							}
+
+							//Si es cuenta corriente registrar movieminto
+							if($m['id'] == 7){
+								$ctacte = array(
+									'cctepConcepto'	=>'Venta: '.$idOrden ,
+									'cctepRef'			=>	$idOrden,
+									'cctepTipo'			=>	'VN',
+									'cctepDebe'			=>	$m['imp'],
+									'cliId'					=> 	$data['clie']['id'],
+									'usrId'					=>	$userdata[0]['usrId']
+								);
+
+								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
+									return false;
+								}
+							}
+						}
+					}
+					//----------------------------------
+				}
+
+				$this->db->trans_complete();
+				return $idOrden;
+			}
+		}
+	}
+}
+	/*
 	function getView($data = null){
 		if($data == null)
 		{
@@ -19,7 +139,7 @@ class Sales extends CI_Model
 			//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
 			//para el usuario logueado
 			$userdata = $this->session->userdata('user_data');
-			
+
 			//verificar si hay cajas abiertas
 			$this->db->select('*');
 			$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
@@ -46,9 +166,9 @@ class Sales extends CI_Model
 					$response['ordenes'] = array();
 
 					break;
-				
+
 				case '2':
-					$response['ventas'] = array(); 
+					$response['ventas'] = array();
 					break;
 
 				case '3':
@@ -62,7 +182,7 @@ class Sales extends CI_Model
 						$query = $this->db->get();
 						$response['caja']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
 
-						$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r 
+						$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r
 												  join ventas as v on v.venId = r.venId
 												  join mediosdepago as m on m.medId = r.medId
 												  where v.cajaId = '.$response['cajaId'].'
@@ -84,7 +204,7 @@ class Sales extends CI_Model
 		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
 		//para el usuario logueado
 		$userdata = $this->session->userdata('user_data');
-		
+
 		//verificar si hay cajas abiertas
 		$this->db->select('*');
 		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
@@ -116,7 +236,7 @@ class Sales extends CI_Model
 		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
 		//para el usuario logueado
 		$userdata = $this->session->userdata('user_data');
-		
+
 		//verificar si hay cajas abiertas
 		$this->db->select('*');
 		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
@@ -179,9 +299,9 @@ class Sales extends CI_Model
 							$item['artBarCode'] = $art[0]['artBarCode'];
 						}
 
-						$data['orderdetalle'][] = $item;		
+						$data['orderdetalle'][] = $item;
 					}
-					
+
 				}
 
 				//Get Lista de Precios
@@ -198,10 +318,10 @@ class Sales extends CI_Model
 				{
 					$user = $query->result_array();
 					$data['user'] = $user[0];
-				}	
+				}
 			}
 
-			
+
 			return $data;
 		}
 	}
@@ -228,18 +348,18 @@ class Sales extends CI_Model
 					//$data['tmp'] = $tmp;
 					$data['tmp'] = array();
 					foreach ($tmp as $item) {
-						$query = $this->db->get_where('mediosdepago',array('medEstado'=>'AC', 'tmpId' => $item['tmpId']));	
+						$query = $this->db->get_where('mediosdepago',array('medEstado'=>'AC', 'tmpId' => $item['tmpId']));
 						if ($query->num_rows() != 0)
 						{
 							$tmpD = $query->result_array();
 							$item['tmpD'] = $tmpD;
-						} else { 
-							$item['tmpD'] = array(); 
+						} else {
+							$item['tmpD'] = array();
 						}
 
-						$data['tmp'][] = $item;	
+						$data['tmp'][] = $item;
 					}
-				}	
+				}
 			return $data;
 		}
 	}
@@ -258,7 +378,7 @@ class Sales extends CI_Model
 			$userdata = $this->session->userdata('user_data');
 			$usrId = $userdata[0]['usrId'];
 
-			//Datos de la caja 
+			//Datos de la caja
 			$this->db->select('*');
 			$this->db->where(array('cajaCierre'=>null, 'usrId' => $usrId));
 			$this->db->from('cajas');
@@ -285,7 +405,7 @@ class Sales extends CI_Model
 				return false;
 			} else {
 				$idVenta = $this->db->insert_id();
-				
+
 				//Actualizar detalle
 				foreach ($orden['orderdetalle'] as $a) {
 					$insert = array(
@@ -353,8 +473,8 @@ class Sales extends CI_Model
 			$date = $date[2].'-'.$date[1].'-'.$date[0];
 
 			$query = $this->db->query(" select d.artCode, d.artDescription, sum(d.venCant) as ventas from ventas as v
-										join ventasdetalle as d on d.venId = v.venId 
-										where DATE(venFecha) = '".$date."'  
+										join ventasdetalle as d on d.venId = v.venId
+										where DATE(venFecha) = '".$date."'
 										GROUP BY d.artCode");
 
 			//echo $this->db->last_query();
@@ -382,6 +502,6 @@ class Sales extends CI_Model
 			return $query->result_array();
 		}
 	}
-	
-}
+	*/
+//}
 ?>

@@ -16,14 +16,14 @@ class customer extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('customers/list', $data, true));
 	}
-	
+
 	public function getCustomer(){
 		$data['data'] = $this->Customers->getCustomer($this->input->post());
 		$response['html'] = $this->load->view('customers/view_', $data, true);
 
 		echo json_encode($response);
 	}
-	
+
 	public function setCustomer(){
 		$data = $this->Customers->setCustomer($this->input->post());
 		if($data  == false)
@@ -32,7 +32,24 @@ class customer extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
+	}
+
+	public function DefaultCustomer(){
+		$data = $this->Customers->DefaultCustomer();
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
+
+	public function findCustomer(){
+		$data = $this->Customers->findCustomer($this->input->post());
+		echo json_encode($data);
 	}
 }

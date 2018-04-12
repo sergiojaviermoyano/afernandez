@@ -15,7 +15,7 @@ class Customers extends CI_Model
 		$this->db->select('clientes.*, tipos_documentos.docDescripcion');
 		$this->db->from('clientes');
 		$this->db->join('tipos_documentos', 'tipos_documentos.docId = clientes.docId', 'left');
-		//$this->db->where(array('cliDefault' => 0));
+		$this->db->where(array('cliDefault' => 0));
 		$query= $this->db->get();
 
 		if ($query->num_rows()!=0)
@@ -27,7 +27,6 @@ class Customers extends CI_Model
 			return false;
 		}
 	}
-
 
 	function getCustomer($data = null){
 		if($data == null)
@@ -64,7 +63,7 @@ class Customers extends CI_Model
 				$cust['cliMail'] = '';
 				$cust['cliEstado'] = '';
 				$cust['cliDefault'] = false;
-				$cust['docId'] = '';
+				$cust['docId'] = 1; //id tipo de documento DNI (DP)
 
 				$data['customer'] = $cust;
 			}
@@ -96,7 +95,6 @@ class Customers extends CI_Model
 		{
 			$id = $data['id'];
 			$act = $data['act'];
-			$nro = $data['nro'];
 			$name = $data['name'];
 			$lnam = $data['lnam'];
 			$doc = $data['doc'];
@@ -141,6 +139,42 @@ class Customers extends CI_Model
 			}
 			return true;
 
+		}
+	}
+
+	function DefaultCustomer(){
+		$query= $this->db->get_where('clientes',array('cliDefault'=>1));
+		if ($query->num_rows() != 0)
+		{
+			$c = $query->result_array();
+			return $c[0];
+		} else {
+			return false;
+		}
+	}
+
+	function findCustomer($data = null){
+	if($data == null)
+	{
+		return false;
+	}
+	else
+	{
+			$dni = str_replace(' ', '', $data['dni']);
+
+			$this->db->select('clientes.cliNombre, clientes.cliApellido, clientes.cliDocumento, clientes.cliId');
+			$this->db->from('clientes');
+			$this->db->where(array('clientes.cliDocumento'=>$dni));
+			$query= $this->db->get();
+			if ($query->num_rows() != 0)
+			{
+				$c = $query->result_array();
+
+				$data['cliente'] = $c[0];
+				return $data;
+			} else {
+				return false;
+			}
 		}
 	}
 }

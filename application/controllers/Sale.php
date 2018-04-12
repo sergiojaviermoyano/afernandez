@@ -7,16 +7,31 @@ class sale extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Sales');
+		$this->load->model('Lists');
+		$this->load->model('Customers');
+		$this->load->model('Vendedores');
 		$this->Users->updateSession(true);
 	}
 
+	public function minorista(){
+		$data['lists'] = $this->Lists->List_List();
+		$data['final'] = $this->Customers->DefaultCustomer();
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
+		echo json_encode($this->load->view('sales/minorista', $data, true));
+	}
+
+	public function setSaleMinorista(){
+		echo json_encode($this->Sales->setSaleMinorista($this->input->post()));
+	}
+
+	/*
 	public function index($permission)
 	{
-		//$data['list'] = $this->Sales->Sale_List(); 
+		//$data['list'] = $this->Sales->Sale_List();
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('sales/list', $data, true));
 	}
-	
+
 	public function getTabContent(){
 		$data['data'] = $this->Sales->getView($this->input->post());
 		switch ($this->input->post()['id']) {
@@ -24,7 +39,7 @@ class sale extends CI_Controller {
 				//Ordenes Activas
 				echo json_encode($this->load->view('sales/orders', $data, true));
 				break;
-			
+
 			case '2':
 				//Facturas
 				echo json_encode($this->load->view('sales/tickets', $data, true));
@@ -64,7 +79,7 @@ class sale extends CI_Controller {
 
 		echo json_encode($response);
 	}
-	
+
 	public function setSale(){
 		$data = $this->Sales->setSale($this->input->post());
 		if($data  == false)
@@ -73,7 +88,7 @@ class sale extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
 
@@ -95,7 +110,7 @@ class sale extends CI_Controller {
 		$response['html'] = $this->load->view('sales/ingresosdetail', $data, true);
 		echo json_encode($response);
 	}
-
+	*/
 	/*
 	public function delSale(){
 		$data = $this->Sales->delSale($this->input->post());
@@ -105,7 +120,7 @@ class sale extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
 

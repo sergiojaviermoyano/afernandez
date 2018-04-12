@@ -24,7 +24,7 @@
             </thead>
             <tbody>
               <?php
-              if($list) {  
+              if($list) {
               	foreach($list as $c)
     		        {
                   if(!$c['cliDefault']){
@@ -84,7 +84,7 @@
 
   var idCli = 0;
   var acCli = '';
-  
+
   function LoadCust(id_, action){
   	idCli = id_;
   	acCli = action;
@@ -93,7 +93,7 @@
       $.ajax({
           	type: 'POST',
           	data: { id : id_, act: action },
-    		url: 'index.php/customer/getCustomer', 
+    		url: 'index.php/customer/getCustomer',
     		success: function(result){
 			                WaitingClose();
 			                $("#modalBodyCustomer").html(result.html);
@@ -107,7 +107,7 @@
     		});
   }
 
-  
+
   $('#btnSave').click(function(){
 
   	if(acCli == 'View')
@@ -137,7 +137,7 @@
       hayError = true;
     }
 
-  
+
     if(hayError == true){
     	$('#errorCust').fadeIn('slow');
     	return;
@@ -147,10 +147,9 @@
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
-          	data: { 
-                    id : idCli, 
-                    act: acCli, 
-                    nro: $('#cliId').val(),
+          	data: {
+                    id : idCli,
+                    act: acCli,
                     name: $('#cliNombre').val(),
                     lnam: $('#cliApellido').val(),
                     doc: $('#docId').val(),
@@ -160,7 +159,7 @@
                     tel: $('#cliTelefono').val(),
                     est: $('#cliEstado').val()
                   },
-    		url: 'index.php/customer/setCustomer', 
+    		url: 'index.php/customer/setCustomer',
     		success: function(result){
                 			WaitingClose();
                 			$('#modalCustomer').modal('hide');
@@ -191,10 +190,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Cliente</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Cliente</h4>
       </div>
       <div class="modal-body" id="modalBodyCustomer">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
