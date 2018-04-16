@@ -76,6 +76,7 @@
                     <strong class="text-green"><h1 id="totalSale">0,00</h1></strong>
                   </div>
                   <div style="text-align: right; padding: 5px;">
+                    <button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>
                     <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
@@ -812,7 +813,15 @@ $('#btnSaveCustomer').click(function(){
       });
 });
 
+$('#btnServicePresupuesto').click(function(){
+  Cobrar_(true);
+});
+
 $('#btnPago').click(function(){
+  Cobrar_(false);
+});
+
+function Cobrar_(esPresupuesto){
   //Barrer Informacion
   //Lista de Precio y su porcentaje-----------------------
   var selected = $('#lpId').find('option:selected');
@@ -846,65 +855,69 @@ $('#btnPago').click(function(){
   });
   //Medios de Pago-----------------------------------------
   var medios = [];
-  var med;
-  //Efectivo
-  if($('#efectivo').val() != ''){
-    med = {
-      id: 1,
-      imp: parseFloat(($('#efectivo').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
+  if(esPresupuesto == false){
+    var med;
+    //Efectivo
+    if($('#efectivo').val() != ''){
+      med = {
+        id: 1,
+        imp: parseFloat(($('#efectivo').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //Visa
+    if($('#visa').val() != ''){
+      med = {
+        id: 2,
+        imp: parseFloat(($('#visa').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //MasterCard
+    if($('#mastercard').val() != ''){
+      med = {
+        id: 3,
+        imp: parseFloat(($('#mastercard').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //Nevada
+    if($('#nevada').val() != ''){
+      med = {
+        id: 4,
+        imp: parseFloat(($('#nevada').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //Data
+    if($('#data').val() != ''){
+      med = {
+        id: 5,
+        imp: parseFloat(($('#data').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //CuentaCorriente
+    if($('#cuentacorriente').val() != ''){
+      med = {
+        id: 7,
+        imp: parseFloat(($('#cuentacorriente').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //CreditoArgentino
+    if($('#creditoargentino').val() != ''){
+      med = {
+        id: 6,
+        imp: parseFloat(($('#creditoargentino').val().replace('.','')).replace(',','.'))
+      };
+      medios.push(med);
+    }
+    //Descuento--------------------------------------------
+    var desc = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
+  } else {
+    var desc = 0;
   }
-  //Visa
-  if($('#visa').val() != ''){
-    med = {
-      id: 2,
-      imp: parseFloat(($('#visa').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //MasterCard
-  if($('#mastercard').val() != ''){
-    med = {
-      id: 3,
-      imp: parseFloat(($('#mastercard').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //Nevada
-  if($('#nevada').val() != ''){
-    med = {
-      id: 4,
-      imp: parseFloat(($('#nevada').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //Data
-  if($('#data').val() != ''){
-    med = {
-      id: 5,
-      imp: parseFloat(($('#data').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //CuentaCorriente
-  if($('#cuentacorriente').val() != ''){
-    med = {
-      id: 7,
-      imp: parseFloat(($('#cuentacorriente').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //CreditoArgentino
-  if($('#creditoargentino').val() != ''){
-    med = {
-      id: 6,
-      imp: parseFloat(($('#creditoargentino').val().replace('.','')).replace(',','.'))
-    };
-    medios.push(med);
-  }
-  //Descuento--------------------------------------------
-  var desc = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
 
   WaitingOpen('Guardando venta');
     $.ajax({
@@ -916,7 +929,7 @@ $('#btnPago').click(function(){
                   medi:     medios,
                   des:      desc,
                   det:      detalle,
-                  esPre:    0
+                  esPre:    esPresupuesto
                 },
       url: 'index.php/sale/setSaleMinorista',
       success: function(result){
@@ -928,5 +941,5 @@ $('#btnPago').click(function(){
           },
           dataType: 'json'
       });
-});
+};
 </script>
