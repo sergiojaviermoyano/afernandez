@@ -126,6 +126,31 @@ class Sales extends CI_Model
 			}
 		}
 	}
+
+
+	public function getTotalSaleMinorista($data = null){
+		$response = array();
+		$this->db->select('*');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
+		if($data['search']['value']!=''){
+			$this->db->where('oFecha >=',$data['search']['value']);
+		}
+		$query = $this->db->get('orden');
+		return $query->num_rows();
+	}
+
+	public function getSaleMinorista( $data = null){
+		
+		$this->db->select('*');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
+		if($data['search']['value']!=''){
+			$this->db->where('oFecha >=',$data['search']['value']);
+		}
+		$query = $this->db->get('orden');
+		return $query->result_array();
+	}
 }
 	/*
 	function getView($data = null){

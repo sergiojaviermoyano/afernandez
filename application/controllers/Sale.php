@@ -24,6 +24,33 @@ class sale extends CI_Controller {
 		echo json_encode($this->Sales->setSaleMinorista($this->input->post()));
 	}
 
+
+
+	public function listado_minorista($permission){
+		$data=array();
+		$data['list'] = array();//$this->Lists->List_List();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('sales/listado_minorista', $data, true));
+	}
+
+	public function datatable_minorista(){
+		//var_dump($_REQUEST);
+		//var_dump($this->input->post());
+
+		$totalVentas= $this->Sales->getTotalSaleMinorista($_REQUEST);
+		$ventas= $this->Sales->getSaleMinorista($_REQUEST);
+
+		$response=array(
+			'draw' => $_REQUEST['draw'],
+			'recordsTotal' => $totalVentas,
+			'recordsFiltered' => $totalVentas,
+			'data' => $ventas
+		);
+
+		echo json_encode($response);
+
+	}
+
 	/*
 	public function index($permission)
 	{
