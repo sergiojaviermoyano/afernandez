@@ -21,15 +21,14 @@ class Sales extends CI_Model
 				'venId'					=>	$data['vend']['id'],
 				'cliId'					=>	$data['clie']['id'],
 				'oDescuento'		=> 	$data['des'],
-				'oEsPresupuesto'=>	0,
-				'oEsVenta'			=> 	1,
+				'oEsPresupuesto'=>	$data['esPre'],
+				'oEsVenta'			=> 	$data['esPre'] == true ? 0 : 1,
 				'oEsPlanReserva'=>	0,
-				'oEsMayorista'	=> 	0,
-				'cajaId'				=> 	1
+				'oEsMayorista'	=> 	0
 			);
 
 			//verificar si hay cajas abiertas
-			if($data['esPre'] == 0){
+			if($data['esPre'] == false){
 				$userdata = $this->session->userdata('user_data');
 				$this->db->select('*');
 				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
@@ -71,7 +70,7 @@ class Sales extends CI_Model
 					//--------------------------------
 
 					//Si no es presupuesto, modificar stock y registrar pagos
-					if($data['esPre'] == 0){
+					if($data['esPre'] == false){
 							if($o['actualizaStock'] == 1){
 								//Actualizar stock, insertar en tabla stock
 								$stock = array(
@@ -89,7 +88,7 @@ class Sales extends CI_Model
 					//----------------------------------
 
 					//medios de pagos
-					if($data['esPre'] == 0){
+					if($data['esPre'] == false){
 						foreach ($data['medi'] as $m) {
 							$medio = array(
 								'oId'					=> $idOrden,
