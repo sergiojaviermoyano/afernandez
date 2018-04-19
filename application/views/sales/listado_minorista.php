@@ -33,6 +33,7 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
+<?php include("print_order_modal.php")?>
 <script>
   $(function () {
     //$("#groups").DataTable();
@@ -76,21 +77,8 @@
                 $.each(response.data,function(index,item){
                     var col1,col2,col3,col4, col5='';                    
                     col1='';
-                    col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
-
-                    /*if(permission.indexOf("Edit")>0  && item.ocEstado=='AC'){
-                        col1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
-                    }
-
-                    if(permission.indexOf("Del")>0){
-                        col1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Del\')"></i>';
-                    }
-
-                    if(permission.indexOf("View")>0){
-                        col1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
-                    }*/
-
-
+                   // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+                    col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
                     col2=item.oId;
                     col3=item.oFecha;
                     switch(item.oEstado){
@@ -122,125 +110,5 @@
             }
         }
     });
-  });
-
-  var idCli = 0;
-  var acCli = '';
-
-  function LoadCust(id_, action){
-  	idCli = id_;
-  	acCli = action;
-  	LoadIconAction('modalAction',action);
-  	WaitingOpen('Cargando Cliente');
-      $.ajax({
-          	type: 'POST',
-          	data: { id : id_, act: action },
-    		url: 'index.php/customer/getCustomer',
-    		success: function(result){
-			                WaitingClose();
-			                $("#modalBodyCustomer").html(result.html);
-			                setTimeout("$('#modalCustomer').modal('show')",800);
-    					},
-    		error: function(result){
-    					WaitingClose();
-    					alert("error");
-    				},
-          	dataType: 'json'
-    		});
-  }
-    
-
-  $('#btnSave').click(function(){
-
-  	if(acCli == 'View')
-  	{
-  		$('#modalCustomer').modal('hide');
-  		return;
-  	}
-
-  	var hayError = false;
-    if($('#cliId').val() == '')
-    {
-    	hayError = true;
-    }
-
-    if($('#cliNombre').val() == '')
-    {
-      hayError = true;
-    }
-
-    if($('#cliApellido').val() == '')
-    {
-      hayError = true;
-    }
-
-    if($('#cliDocumento').val() == '')
-    {
-      hayError = true;
-    }
-
-
-    if(hayError == true){
-    	$('#errorCust').fadeIn('slow');
-    	return;
-    }
-
-    $('#errorCust').fadeOut('slow');
-    WaitingOpen('Guardando cambios');
-    	$.ajax({
-          	type: 'POST',
-          	data: {
-                    id : idCli,
-                    act: acCli,
-                    name: $('#cliNombre').val(),
-                    lnam: $('#cliApellido').val(),
-                    doc: $('#docId').val(),
-                    dni: $('#cliDocumento').val(),
-                    mail: $('#cliMail').val(),
-                    dom: $('#cliDomicilio').val(),
-                    tel: $('#cliTelefono').val(),
-                    est: $('#cliEstado').val()
-                  },
-    		url: 'index.php/customer/setCustomer',
-    		success: function(result){
-                			WaitingClose();
-                			$('#modalCustomer').modal('hide');
-                			setTimeout("cargarView('customer', 'index', '"+$('#permission').val()+"');",1000);
-    					},
-    		error: function(result){
-    					WaitingClose();
-    					alert("error");
-    				},
-          	dataType: 'json'
-    		});
-  });
-
+  }); 
 </script>
-
-<style type="text/css">
-    .contenedor{ width: 350px; float: center;}
-    #camara, #foto, #imgCamera{
-        width: 320px;
-        min-height: 240px;
-        border: 1px solid #008000;
-    }
-</style>
-
-<!-- Modal -->
-<div class="modal fade" id="modalCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Cliente</h4>
-      </div>
-      <div class="modal-body" id="modalBodyCustomer">
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>

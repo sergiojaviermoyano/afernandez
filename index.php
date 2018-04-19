@@ -100,6 +100,8 @@ switch (ENVIRONMENT)
  */
 	$system_path = 'system';
 
+	
+
 /*
  *---------------------------------------------------------------
  * APPLICATION FOLDER NAME
@@ -114,6 +116,23 @@ switch (ENVIRONMENT)
  * NO TRAILING SLASH!
  */
 	$application_folder = 'application';
+
+
+
+	/*
+ *---------------------------------------------------------------
+ * ASSETS FOLDER NAME
+ *---------------------------------------------------------------
+ *
+ * If you want this front controller to use a different "application"
+ * folder than the default one you can set its name here. The folder
+ * can also be renamed or relocated anywhere on your server. If
+ * you do, use a full server path. For more info please see the user guide:
+ * http://codeigniter.com/user_guide/general/managing_apps.html
+ *
+ * NO TRAILING SLASH!
+ */
+$assets_folder = 'assets';
 
 /*
  *---------------------------------------------------------------
@@ -222,6 +241,9 @@ switch (ENVIRONMENT)
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 	// Path to the system folder
+	//define('ASSETS', str_replace('\\', '/', $system_path));
+
+	// Path to the system folder
 	define('BASEPATH', str_replace('\\', '/', $system_path));
 
 	// Path to the front controller (this file)
@@ -229,6 +251,9 @@ switch (ENVIRONMENT)
 
 	// Name of the "system folder"
 	define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
+
+	// Name of the "system folder"
+	
 
 	// The path to the "application" folder
 	if (is_dir($application_folder))
@@ -250,6 +275,27 @@ switch (ENVIRONMENT)
 		}
 
 		define('APPPATH', BASEPATH.$application_folder.DIRECTORY_SEPARATOR);
+	}
+
+	if (is_dir($assets_folder))
+	{
+		if (($_temp = realpath($assets_folder)) !== FALSE)
+		{
+			$assets_folder = $_temp;
+		}
+
+		define('ASSETS', $assets_folder.DIRECTORY_SEPARATOR);
+	}
+	else
+	{
+		if ( ! is_dir(BASEPATH.$application_folder.DIRECTORY_SEPARATOR))
+		{
+			header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+			echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
+			exit(3); // EXIT_CONFIG
+		}
+
+		define('ASSETS', BASEPATH.$application_folder.DIRECTORY_SEPARATOR);
 	}
 
 	// The path to the "views" folder
