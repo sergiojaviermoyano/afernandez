@@ -21,14 +21,14 @@ class box extends CI_Controller {
 	{
 		echo json_encode($this->Boxs->Box_List($this->input->post()));
 	}
-	
-	
+
+
 	public function getBox(){
 		$data['data'] = $this->Boxs->getBox($this->input->post());
 		$response['html'] = $this->load->view('boxs/view_', $data, true);
 		echo json_encode($response);
 	}
-	
+
 	public function setBox(){
 		$data = $this->Boxs->setBox($this->input->post());
 		if($data  == false)
@@ -37,8 +37,12 @@ class box extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
-	
+
+	public function isOpenBox(){
+		echo json_encode($this->Boxs->isOpenBox());	
+	}
+
 }

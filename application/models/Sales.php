@@ -15,20 +15,22 @@ class Sales extends CI_Model
 		}
 		else
 		{
+
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
 				'lpPorcentaje'	=> 	$data['lpr']['por'],
 				'venId'					=>	$data['vend']['id'],
 				'cliId'					=>	$data['clie']['id'],
 				'oDescuento'		=> 	$data['des'],
-				'oEsPresupuesto'=>	$data['esPre'],
-				'oEsVenta'			=> 	$data['esPre'] == true ? 0 : 1,
+				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
+				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
 				'oEsPlanReserva'=>	0,
 				'oEsMayorista'	=> 	0
 			);
 
+
 			//verificar si hay cajas abiertas
-			if($data['esPre'] == false){
+			if($data['esPre'] == 0){
 				$userdata = $this->session->userdata('user_data');
 				$this->db->select('*');
 				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
@@ -70,7 +72,7 @@ class Sales extends CI_Model
 					//--------------------------------
 
 					//Si no es presupuesto, modificar stock y registrar pagos
-					if($data['esPre'] == false){
+					if($data['esPre'] == 0){
 							if($o['actualizaStock'] == 1){
 								//Actualizar stock, insertar en tabla stock
 								$stock = array(
@@ -88,7 +90,7 @@ class Sales extends CI_Model
 					//----------------------------------
 
 					//medios de pagos
-					if($data['esPre'] == false){
+					if($data['esPre'] == 0){
 						foreach ($data['medi'] as $m) {
 							$medio = array(
 								'oId'					=> $idOrden,
@@ -108,7 +110,8 @@ class Sales extends CI_Model
 									'cctepTipo'			=>	'VN',
 									'cctepDebe'			=>	$m['imp'],
 									'cliId'					=> 	$data['clie']['id'],
-									'usrId'					=>	$userdata[0]['usrId']
+									'usrId'					=>	$userdata[0]['usrId'],
+									'cajaId'				=>  $venta['cajaId']
 								);
 
 								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {

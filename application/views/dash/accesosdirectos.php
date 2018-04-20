@@ -1,7 +1,7 @@
 <section class="content">
   <div class="row">
     <div class="col-xs-4">
-      <div class="info-box" style="cursor: pointer" onClick="cargarView('service', 'crear', '')">
+      <div class="info-box" style="cursor: pointer" onClick="cargarView('sale', 'mayorista', '')">
         <span class="info-box-icon bg-yellow"><i class="fa fa-fw fa-truck"></i></span>
 
         <div class="info-box-content">
@@ -74,6 +74,7 @@
 </section><!-- /.content -->
 
 <script>
+/*
 $('#artCode').keypress(function(e){
     var code = e.which;
       if(code==13){
@@ -175,4 +176,5 @@ function AgregarVenta(){
           dataType: 'json'
       });
 }
+*/
 </script>

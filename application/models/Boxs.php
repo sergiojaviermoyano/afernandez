@@ -7,7 +7,7 @@ class Boxs extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function Box_List($data_ = null){
 		$data = array();
 		if($data_ == null){
@@ -17,7 +17,7 @@ class Boxs extends CI_Model
 			$this->db->order_by('cajas.cajaId', 'desc');
 			$this->db->limit(10);
 			$query= $this->db->get();
-			
+
 			$data['page'] = 1;
 			$data['totalPage'] = ceil($this->db->count_all_results('cajas') / 10);
 			$data['data'] = $query->result_array();
@@ -46,10 +46,10 @@ class Boxs extends CI_Model
 		$this->db->where('cajaCierre', null);
 		$this->db->from('cajas');
 		$data['openBox'] = $this->db->count_all_results();
-		
+
 		return $data;
 	}
-	
+
 	function getBox($data = null){
 		if($data == null)
 		{
@@ -101,7 +101,7 @@ class Boxs extends CI_Model
 			return $data;
 		}
 	}
-	
+
 	function setBox($data = null){
 		if($data == null)
 		{
@@ -113,7 +113,7 @@ class Boxs extends CI_Model
 			$ape = $data['ape'];
 			$ven = $data['ven'];
 			$cie = $data['cie'];
-			
+
 			//Agregar caja
 			if($id == -1){
 				$userdata = $this->session->userdata('user_data');
@@ -143,5 +143,12 @@ class Boxs extends CI_Model
 			}
 		}
 	}
+
+	function isOpenBox(){
+	//verificar si hay cajas abiertas
+	$this->db->where('cajaCierre', null);
+	$this->db->from('cajas');
+	return $this->db->count_all_results();
+}
 }
 ?>

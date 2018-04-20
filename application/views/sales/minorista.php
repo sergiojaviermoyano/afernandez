@@ -483,7 +483,6 @@ function CalcularMediosDePago(){
   var pagos = parseFloat($('#totalPagosMedios').html());
   var descuento = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
 
-  debugger;
   $('#totalSaldoMedios').html(parseFloat(parseFloat(total) - parseFloat(pagos) - parseFloat(descuento)).toFixed(2));
   if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
     $('#btnPago').prop("disabled", true);
@@ -814,11 +813,16 @@ $('#btnSaveCustomer').click(function(){
 });
 
 $('#btnServicePresupuesto').click(function(){
-  Cobrar_(true);
+  Cobrar_(1);
 });
 
 $('#btnPago').click(function(){
-  Cobrar_(false);
+  Cobrar_(0);
+});
+
+$('#btnServiceEfectivo').click(function(){
+  $('#efectivo').val($('#totalSale').html().replace('.',','));
+  Cobrar_(0);
 });
 
 function Cobrar_(esPresupuesto){
@@ -855,7 +859,7 @@ function Cobrar_(esPresupuesto){
   });
   //Medios de Pago-----------------------------------------
   var medios = [];
-  if(esPresupuesto == false){
+  if(esPresupuesto == 0){
     var med;
     //Efectivo
     if($('#efectivo').val() != ''){
