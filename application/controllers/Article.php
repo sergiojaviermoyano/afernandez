@@ -76,6 +76,10 @@ class article extends CI_Controller {
 		echo json_encode($this->Articles->getArticleJson($this->input->post()));
 	}
 
+	public function getArticleJsonMayorista(){
+		echo json_encode($this->Articles->getArticleJsonMayorista($this->input->post()));
+	}
+
 	public function validateArticle(){
 		$data = $this->Articles->validateArticle($this->input->post());
 		if($data  == false)
@@ -99,6 +103,19 @@ class article extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+
+	public function buscadorArticlesPriceMayorista() {
+		$data = $this->Articles->buscadorArticlesPriceMayorista($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
+
 	/*
 	public function searchByCode() {
 		$data = $this->Articles->searchByCode($this->input->post());

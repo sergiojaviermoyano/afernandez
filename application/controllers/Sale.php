@@ -24,6 +24,16 @@ class sale extends CI_Controller {
 		echo json_encode($this->Sales->setSaleMinorista($this->input->post()));
 	}
 
+	public function mayorista(){
+		$data['lists'] = $this->Lists->List_List();
+		$data['final'] = $this->Customers->DefaultCustomer();
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
+		echo json_encode($this->load->view('sales/mayorista', $data, true));
+	}
+
+	public function setSaleMayorista(){
+		echo json_encode($this->Sales->setSaleMayorista($this->input->post()));
+	}
 
 
 	public function listado_minorista($permission){

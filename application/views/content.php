@@ -8,3 +8,4 @@
 <?php //$this->load->view('buscadores/singlearticles'); ?>
 <?php $this->load->view('buscadores/articlesnoprice'); ?>
 <?php $this->load->view('buscadores/articlesprice'); ?>
+<?php $this->load->view('buscadores/articlespricemayorista'); ?>

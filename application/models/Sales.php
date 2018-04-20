@@ -129,6 +129,126 @@ class Sales extends CI_Model
 		}
 	}
 
+	function setSaleMayorista($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+
+			$venta = array(
+				'lpId'					=>	$data['lpr']['id'],
+				'lpPorcentaje'	=> 	$data['lpr']['por'],
+				'venId'					=>	$data['vend']['id'],
+				'cliId'					=>	$data['clie']['id'],
+				'oDescuento'		=> 	$data['des'],
+				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
+				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
+				'oEsPlanReserva'=>	0,
+				'oEsMayorista'	=> 	1
+			);
+
+
+			//verificar si hay cajas abiertas
+			if($data['esPre'] == 0){
+				$userdata = $this->session->userdata('user_data');
+				$this->db->select('*');
+				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+				$this->db->from('cajas');
+				$query = $this->db->get();
+				$result = $query->result_array();
+				if(count($result) > 0){
+					$result = $query->result_array();
+					$venta['cajaId'] = $result[0]['cajaId'];
+				} else {
+					return false;
+				}
+			}
+			//-----------------------------------------------
+
+			$this->db->trans_start();
+			if($this->db->insert('orden', $venta) == false) {
+				$this->db->trans_complete();
+				return false;
+			}else {
+				$idOrden = $this->db->insert_id();
+
+				//Registrar Detalle
+				foreach ($data['det'] as $o) {
+					$insert = array(
+							'oId' 					=> $idOrden,
+							'artId' 				=> $o['artId'],
+							'artCode' 			=> $o['artCode'],
+							'artDescripcion'=> $o['artDescripcion'],
+							'artCosto'			=> $o['artCosto'],
+							'artVenta'			=> $o['artventa'],
+							'artVentaSD'		=> $o['artventaSD'],
+							'artCant'				=> $o['cant']
+						);
+
+					if($this->db->insert('ordendetalle', $insert) == false) {
+						return false;
+					}
+					//--------------------------------
+
+					//Si no es presupuesto, modificar stock y registrar pagos
+					if($data['esPre'] == 0){
+							if($o['actualizaStock'] == 1){
+								//Actualizar stock, insertar en tabla stock
+								$stock = array(
+										'artId' 		=> $o['artId'],
+										'stkCant'		=> $o['cant'] * -1,
+										'stkOrigen'	=> 'VN',
+										'refId'			=> $idOrden
+									);
+
+								if($this->db->insert('stock', $stock) == false) {
+									return false;
+								}
+							}
+					}
+					//----------------------------------
+
+					//medios de pagos
+					if($data['esPre'] == 0){
+						foreach ($data['medi'] as $m) {
+							$medio = array(
+								'oId'					=> $idOrden,
+								'medId'				=> $m['id'],
+								'rcbImporte'	=> $m['imp']
+							);
+
+							if($this->db->insert('recibos', $medio) == false) {
+								return false;
+							}
+
+							//Si es cuenta corriente registrar movieminto
+							if($m['id'] == 7){
+								$ctacte = array(
+									'cctepConcepto'	=>'Venta: '.$idOrden ,
+									'cctepRef'			=>	$idOrden,
+									'cctepTipo'			=>	'VN',
+									'cctepDebe'			=>	$m['imp'],
+									'cliId'					=> 	$data['clie']['id'],
+									'usrId'					=>	$userdata[0]['usrId'],
+									'cajaId'				=>  $venta['cajaId']
+								);
+
+								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
+									return false;
+								}
+							}
+						}
+					}
+					//----------------------------------
+				}
+
+				$this->db->trans_complete();
+				return $idOrden;
+			}
+		}
+	}
 
 	public function getTotalSaleMinorista($data = null){
 		$response = array();
@@ -143,7 +263,7 @@ class Sales extends CI_Model
 	}
 
 	public function getSaleMinorista( $data = null){
-		
+
 		$this->db->select('*');
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
