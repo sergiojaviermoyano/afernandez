@@ -383,7 +383,7 @@ class Articles extends CI_Model
 
 		return $articles;
 	}
-
+	*/
 	function searchByAll($data = null){
 		$str = '';
 		if($data != null){
@@ -405,21 +405,6 @@ class Articles extends CI_Model
 			$proccess = $query->result_array();
 			foreach($proccess as $a){
 				$articles = $a;
-
-				//Calcular precios
-				$pUnit = $articles['artCoste'];
-				if($articles['artIsByBox'] == 1){
-					$pUnit = $articles['artCoste'] / $articles['artCantBox'];
-				}
-
-				if($articles['artMarginIsPorcent'] == 1){
-					$articles['pVenta'] = $pUnit + ($pUnit * ($articles['artMargin'] / 100));
-				} else {
-					$articles['pVenta'] = $pUnit + $articles['artMargin'];
-				}
-
-				//$articles['stock'] = $this->stock($articles['artId']);
-
 				$art[] = $articles;
 			}
 		}
@@ -427,6 +412,7 @@ class Articles extends CI_Model
 		return $art;
 	}
 
+	/*
 	public function update_prices_by_rubro($data){
 
 

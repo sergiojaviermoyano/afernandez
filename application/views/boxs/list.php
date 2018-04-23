@@ -9,8 +9,10 @@
           if (strpos($permission,'Add') !== false) {
             if($list['openBox'] == 0) {
               echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadBox(0,\'Add\')" id="btnAdd" title="Nueva">Abrir</button>';
+              echo '<button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>';
             } else {
               echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Nueva" disabled="disabled">Abrir</button>';
+              echo '<button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" onclick="AddRetiro()">Retiro</button>';
             }
           }
           ?>
@@ -36,6 +38,7 @@
                 <th>Apertura</th>
                 <th>Cierre</th>
                 <th>Usuario</th>
+                <th>Retiros</th>
                 <!--
                 <th>Debe</th>
                 <th>Haber</th>
@@ -55,6 +58,10 @@
                         echo '<i class="fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadBox('.$c['cajaId'].',\'Close\')"></i>';
                       }
                     }
+
+                    if($c['cajaCierre'] != null){
+                        echo '<i class="fa fa-fw fa-print" style="color: gray; cursor: pointer; margin-left: 15px;" onclick="printBox('.$c['cajaId'].')"></i>';
+                      }
                     
                     if (strpos($permission,'View') !== false) {
                       echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadBox('.$c['cajaId'].',\'View\')"></i>';
@@ -69,6 +76,11 @@
                       echo '<td style="text-align: center">'.date_format($date, 'd-m-Y H:i').'</td>';
                     } else { echo '<td style="text-align: center">-</td>'; }
                     echo '<td style="text-align: left">'.$c['usrName'].', '.$c['usrLastName'].'</td>';
+                    if($c['retiro'] > 0){
+                      echo '<td style="text-align: center"><i class="fa fa-fw fa-sign-out" style="color: #3c8dbc; cursor: pointer;" onclick="verEgresos('.$c['cajaId'].')"></i></td>';
+                    }else{
+                      echo '<td style="text-align: center"></td>';
+                    }
                     echo '</tr>';
                   }
                   
@@ -133,8 +145,13 @@ $('#table_search').keyup(function(e) {
                         var row = '';
                         row += '<tr>';
                         row += '<td>';
-                        row += '<i class="fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadCtaCte('+value.cajaId+',\'Close\')"></i>';
-                        row += '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadCtaCte('+value.cajaId+',\'View\')"></i>';
+
+                        if(value.cajaCierre == null){
+                          row += '<i class="fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadBox('+value.cajaId+',\'Close\')"></i>';
+                        } else {
+                          row += '<i class="fa fa-fw fa-print" style="color: gray; cursor: pointer; margin-left: 15px;" onclick="printBox('+value.cajaId+')"></i>';
+                        }
+                        row += '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadBox('+value.cajaId+',\'View\')"></i>';
                         row += '</td>';
                         row += '<td>'+("000000000"+value.cajaId).slice(-10)+'</td>';
                         var date = new Date(value.cajaApertura);
@@ -144,6 +161,11 @@ $('#table_search').keyup(function(e) {
                           row += '<td style="text-align: center">'+("0"+date.getDate()).slice(-2)+'-'+("0"+date.getMonth()).slice(-2)+'-'+("0"+date.getFullYear()).slice(-2)+' '+("0"+date.getHours()).slice(-2)+':'+("0"+date.getMinutes()).slice(-2)+'</td>';
                         } else { row += '<td style="text-align: center">-</td>'; }
                         row += '<td style="text-align: left">'+value.usrName+', '+value.usrLastName+'</td>';
+                        if(value.retiro > 0){
+                          row +='<td style="text-align: center"><i class="fa fa-fw fa-sign-out" style="color: #3c8dbc; cursor: pointer;" onclick="verEgresos('+value.cajaId+')"></i></td>';
+                        }else{
+                          row +='<td style="text-align: center"></td>';
+                        }
                         row += '</tr>';
                         $('#credit > tbody').append(row);
                       });
@@ -256,11 +278,115 @@ $('#table_search').keyup(function(e) {
     					},
     		error: function(result){
     					WaitingClose();
-    					alert("error");
+    					ProcesarError(result.responseText, 'modalBox');
     				},
           	dataType: 'json'
     		});
   });
+
+  function AddRetiro(){
+    LoadIconAction('modalAction_','Add');
+    WaitingOpen('Cargando Retiro');
+      $.ajax({
+            type: 'POST',
+            data: null,
+        url: 'index.php/box/getRetiro', 
+        success: function(result){
+                      WaitingClose();
+                      $("#modalBodyRetiro").html(result.html);
+                      $("#retImporte").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                      setTimeout("$('#modalRetiro').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalRetiro');
+            },
+            dataType: 'json'
+        });
+  }
+
+  $('#btnSave_').click(function(){
+    
+    var hayError = false;
+    if($('#retImporte').val() == '')
+    {
+      hayError = true;
+    }
+    
+    if($('#retDescripcion').val() == '')
+    {
+      hayError = true;
+    }    
+
+    if(hayError == true){
+      $('#error_').fadeIn('slow');
+      return;
+    }
+
+    $('#error_').fadeOut('slow');
+    WaitingOpen('Guardando Retiro');
+      $.ajax({
+            type: 'POST',
+            data: { 
+                    imp: $('#retImporte').val(),
+                    des: $('#retDescripcion').val()
+                  },
+        url: 'index.php/box/setRetiro', 
+        success: function(result){
+                      WaitingClose();
+                      $('#modalRetiro').modal('hide');
+                      setTimeout("cargarView('box', 'index', '"+$('#permission').val()+"');",1000);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalRetiro');
+            },
+            dataType: 'json'
+        });
+  });
+
+function verEgresos(cajaId){
+  LoadIconAction('modalAction_','Ret');
+  WaitingOpen('Consultando Retiros');
+      $.ajax({
+            type: 'POST',
+            data: {id: cajaId},
+        url: 'index.php/box/getRetiros', 
+        success: function(result){
+                      WaitingClose();
+                      $("#modalBodyRetiro").html(result.html);
+                      setTimeout("$('#modalRetiro').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalRetiro');
+            },
+            dataType: 'json'
+        });
+}
+
+function printBox(cajaId){
+    WaitingOpen('Generando Informe...');
+    LoadIconAction('modalAction__','Print');
+    $.ajax({
+            type: 'POST',
+            data: {
+                    id : cajaId
+                  },
+        url: 'index.php/box/printBox',
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/boxs/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
+            },
+            dataType: 'json'
+        });
+}
 
 </script>
 
@@ -279,6 +405,25 @@ $('#table_search').keyup(function(e) {
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalRetiro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction_"> </span> Retiros</h4> 
+      </div>
+      <div class="modal-body" id="modalBodyRetiro">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSave_">Guardar</button>
       </div>
     </div>
   </div>
