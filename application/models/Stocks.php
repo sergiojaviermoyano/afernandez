@@ -7,7 +7,7 @@ class Stocks extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function getStockByArtId($data = null){
 		if($data == null)
 		{
@@ -15,7 +15,7 @@ class Stocks extends CI_Model
 		}
 		else
 		{
-			//Fecha 
+			//Fecha
 			$df = $data['dtFrm'];
 			$dt = $data['dtTo'];
 
@@ -31,7 +31,7 @@ class Stocks extends CI_Model
 			$data = array();
 
 
-			//Fecha 
+			//Fecha
 			$data['dateF'] = $df;
 			$data['dateT'] = $dt;
 
@@ -39,6 +39,7 @@ class Stocks extends CI_Model
 			$this->db->select('*');
 			$this->db->from('stock');
 			$this->db->where(array('stkFecha >=' => $dtFrm, 'stkFecha <= ' => $dtTo, 'artId' => $artId));
+			$this->db->order_by('stkFecha','desc');
 			$query= $this->db->get();
 			$data['mov'] = $query->result_array();
 

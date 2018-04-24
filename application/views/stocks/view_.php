@@ -13,9 +13,9 @@
         <i class="fa fa-file-text"></i>
 
         <h3 class="box-title">
-          <?php 
+          <?php
             echo 'Código: <label>'.$data['art'][0]['artBarCode'].'</label>    ';
-            echo 'Artículo: <label>'.$data['art'][0]['artDescription'].'</label>  '; 
+            echo 'Artículo: <label>'.$data['art'][0]['artDescription'].'</label>  ';
             echo 'Desde: <label>'.$data['dateF'].'</label> Hasta: <label>'.$data['dateT'].'</label>';
           ?>
         </h3>
@@ -49,19 +49,19 @@
                   echo '<td>';
                   switch ($mov['stkOrigen'])
                   {
-                    case 'RC': 
+                    case 'RC':
                               echo 'Recepción';
                               break;
 
-                    case 'VN': 
+                    case 'VN':
                               echo 'Venta';
                               break;
 
-                    case 'AJ': 
+                    case 'AJ':
                               echo 'Ajuste';
                               break;
 
-                    case 'CV': 
+                    case 'CV':
                               echo 'Anulación Venta';
                               break;
                   }
@@ -72,7 +72,7 @@
             </table>
           </div>
         </div>
-        
+
         <br>
         <div class="row">
           <div class="col-xs-4">
@@ -80,7 +80,7 @@
               <h4><i class="icon fa fa-cubes"></i> Stock Real</h4>
               <h1><?php echo ($data['stk'][0]['cant'] == '' ? '0' : $data['stk'][0]['cant']);?></h1>
             </div>
-          </div> 
+          </div>
 
           <div class="col-xs-4 col-xs-offset-4">
             <div class="alert alert-warning alert-dismissible">
@@ -96,7 +96,7 @@
           Danger alert preview. This alert is dismissable. A wonderful serenity has taken possession of my entire
           soul, like these sweet mornings of spring which I enjoy with my whole heart.
         </div>
-        
+
         <div class="alert alert-warning alert-dismissible">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
           <h4><i class="icon fa fa-warning"></i> Alert!</h4>

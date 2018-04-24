@@ -230,6 +230,36 @@ class Articles extends CI_Model
 		}
 	}
 
+	function getArticleJsonMayorista($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$idArt = $data['id'];
+
+			$data = array();
+			$query= $this->db->get_where('articles',array('artId'=>$idArt));
+			if ($query->num_rows() != 0)
+			{
+				$c = $query->result_array();
+				$data['article'] = $c[0];
+				//Cotizacion-------------------------------
+				$cotizacion = 1;
+				$query= $this->db->get('configuracion');
+				if ($query->num_rows() != 0)
+				{
+					$c = $query->result_array();
+					$cotizacion = $c[0]['cotizacionDolar'];
+				}
+				//-----------------------------------------
+				$data['article']['dolar'] = $cotizacion;
+			}
+			return $data;
+		}
+	}
+
 	function validateArticle($data = null){
 		if($data['act'] == 'Add'){
 			$query= $this->db->get_where('articles',array('artBarCode'=>$data['code']));
@@ -266,6 +296,38 @@ class Articles extends CI_Model
 		$articles = array();
 
 		$this->db->select('artId, artDescription, artBarcode, artCoste, artMarginMinorista, artMarginMinoristaIsPorcent, artCosteIsDolar, \''.floatval($cotizacion).'\' as dolar');
+		$this->db->from('articles');
+		$this->db->like('artDescription', $str, 'both');
+		$this->db->or_like('artBarCode', $str, 'both');
+		$this->db->where(array('artEstado'=>'AC'));
+		$query = $this->db->get();
+		if ($query->num_rows()!=0)
+		{
+			$articles = $query->result_array();
+			return $articles;
+		}
+
+		return array();
+	}
+
+	function buscadorArticlesPriceMayorista($data = null){
+		$str = '';
+		if($data != null){
+			$str = $data['str'];
+		}
+
+		//Cotizacion-------------------------------
+		$cotizacion = 1;
+		$query= $this->db->get('configuracion');
+		if ($query->num_rows() != 0)
+		{
+			$c = $query->result_array();
+			$cotizacion = $c[0]['cotizacionDolar'];
+		}
+		//-----------------------------------------
+		$articles = array();
+
+		$this->db->select('artId, artDescription, artBarcode, artCoste, artMarginMayorista, artMarginMayoristaIsPorcent, artCosteIsDolar, \''.floatval($cotizacion).'\' as dolar');
 		$this->db->from('articles');
 		$this->db->like('artDescription', $str, 'both');
 		$this->db->or_like('artBarCode', $str, 'both');
@@ -321,7 +383,7 @@ class Articles extends CI_Model
 
 		return $articles;
 	}
-
+	*/
 	function searchByAll($data = null){
 		$str = '';
 		if($data != null){
@@ -343,21 +405,6 @@ class Articles extends CI_Model
 			$proccess = $query->result_array();
 			foreach($proccess as $a){
 				$articles = $a;
-
-				//Calcular precios
-				$pUnit = $articles['artCoste'];
-				if($articles['artIsByBox'] == 1){
-					$pUnit = $articles['artCoste'] / $articles['artCantBox'];
-				}
-
-				if($articles['artMarginIsPorcent'] == 1){
-					$articles['pVenta'] = $pUnit + ($pUnit * ($articles['artMargin'] / 100));
-				} else {
-					$articles['pVenta'] = $pUnit + $articles['artMargin'];
-				}
-
-				//$articles['stock'] = $this->stock($articles['artId']);
-
 				$art[] = $articles;
 			}
 		}
@@ -365,6 +412,7 @@ class Articles extends CI_Model
 		return $art;
 	}
 
+	/*
 	public function update_prices_by_rubro($data){
 
 

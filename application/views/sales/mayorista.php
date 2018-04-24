@@ -3,7 +3,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Nueva Venta</h3>
+          <h3 class="box-title">Nueva Venta Mayorista</h3>
           <i class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -385,7 +385,7 @@ $('#lblProducto').keyup(function(e){
 });
 
 function BuscarCompleto(){
-   buscadorArticlesPrice($('#lblProducto').val(), $('#prodId'), $('#lblProducto'), $('#prodCant'), $('#prodPrecio'));
+   buscadorArticlesPriceMayorista($('#lblProducto').val(), $('#prodId'), $('#lblProducto'), $('#prodCant'), $('#prodPrecio'));
 }
 
 $('#prodCant').keyup(function(e) {
@@ -412,9 +412,9 @@ function AgregaraOrden(){
           data: {
                   id : $('#prodId').val()
                 },
-          url: 'index.php/article/getArticleJson',
+          url: 'index.php/article/getArticleJsonMayorista',
           success: function(result){
-                        pVenta = calcularPrecioInterno(result.article).toFixed(2);
+                        pVenta = calcularPrecioInternoMayorista(result.article).toFixed(2);
                         html = '<tr id="'+rowY+'">';
                         html+= '<td style="text-align: center; cursor: pointer;" onclick="delete_('+rowY+')"><i class="fa fa-fw fa-close" style="color: #dd4b39"></i></td>';
                         html+= '<td>'+result.article.artBarCode+'</td>';
@@ -935,7 +935,7 @@ function Cobrar_(esPresupuesto){
                   det:      detalle,
                   esPre:    esPresupuesto
                 },
-      url: 'index.php/sale/setSaleMinorista',
+      url: 'index.php/sale/setSaleMayorista',
       success: function(result){
                     WaitingClose();
             },
