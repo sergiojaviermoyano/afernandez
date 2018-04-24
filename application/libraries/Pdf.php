@@ -70,7 +70,7 @@ protected function ci()
         $html = $this->ci()->load->view($view, $data, TRUE);
         $dompdf->loadHtml($html);
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A3');//, 'portrains');
         // Render the HTML as PDF
         $dompdf->render();
         $time = time();

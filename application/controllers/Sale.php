@@ -54,6 +54,8 @@ class sale extends CI_Controller {
 	public function printComprobante(){
 		$this->load->library('pdf');
 		$data=array();
+			
+
 		$file_pdf = $this->pdf->generate_pdf('sales/print_orden',$data);
 
 		echo json_encode(array('result'=>true,'filename_url'=>$file_pdf));
