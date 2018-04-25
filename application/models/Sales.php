@@ -256,9 +256,13 @@ class Sales extends CI_Model
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
+
 			$this->db->where('oFecha >=',$data['search']['value']);
+			
 		}
+		
 		$query = $this->db->get('orden');
+		//echo $this->db->last_query();
 		return $query->num_rows();
 	}
 
@@ -285,6 +289,7 @@ class Sales extends CI_Model
 			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
 			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
 			from ordendetalle as od INNER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
+			
 			$query=$this->db->query($sql);		
 			$result['orden_detalle'] = $query->result_array();
 
@@ -299,7 +304,9 @@ class Sales extends CI_Model
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
 			$this->db->where('oFecha >=',$data['search']['value']);
+			//$this->db->limit($data['length'],$data['start']);
 		}
+		$this->db->limit($data['length'],$data['start']);
 		$query = $this->db->get('orden');
 		return $query->result_array();
 	}
