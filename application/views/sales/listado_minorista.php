@@ -100,13 +100,18 @@
                         }
                     }
                     //col4=item.oEstado;
-                    col5= (item.oEsPresupuesto==0)?'<i class="fa fa-tag"/>':' ';
+                    col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;" title="Presupuesto">P</small>':' ';
                     output.push([col1,col2,col3,col4,col5]);
                 });
                 return output;
             },
             error: function(error){
                 console.debug(error);
+            }
+        },
+        "createdRow": function ( row, data, index ) {           
+            if(data[4].search("small")>0){
+              $(row).addClass('info');
             }
         }
     });
