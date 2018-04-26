@@ -38,7 +38,7 @@ class sale extends CI_Controller {
 
 	public function listado_minorista($permission){
 		$data=array();
-		$data['list'] = array();//$this->Lists->List_List();
+		$data['list'] = array();
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('sales/listado_minorista', $data, true));
 	}
@@ -46,6 +46,29 @@ class sale extends CI_Controller {
 	public function datatable_minorista(){
 		$totalVentas= $this->Sales->getTotalSaleMinorista($_REQUEST);
 		$ventas= $this->Sales->getSaleMinorista($_REQUEST);
+
+		$response=array(
+			'draw' => $_REQUEST['draw'],
+			'recordsTotal' => $totalVentas,
+			'recordsFiltered' => $totalVentas,
+			'data' => $ventas
+		);
+
+		echo json_encode($response);
+
+	}
+
+
+	public function listado_mayorista($permission){
+		$data=array();
+		$data['list'] = array();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('sales/listado_mayorista', $data, true));
+	}
+
+	public function datatable_mayorista(){
+		$totalVentas= $this->Sales->getTotalSaleMayorista($_REQUEST);
+		$ventas= $this->Sales->getSaleMayorista($_REQUEST);
 
 		$response=array(
 			'draw' => $_REQUEST['draw'],

@@ -1,5 +1,14 @@
-INSERT INTO `afernandez`.`sismenu` (`menuName`, `menuIcon`, `menuController`, `menuView`, `menuFather`) VALUES ('Ventas Minoristas', 'fa fa-fw fa-info', 'sale', 'minorista', NULL);
-INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='minorista'), '1');
-INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='minorista'), '2');
-INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='minorista'), '3');
-INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='minorista'), '4');
+INSERT INTO `afernandez`.`sismenu` (`menuName`, `menuIcon`, `menuController`, `menuView`, `menuFather`) VALUES ('Ventas_Minoristas', 'fa fa-fw fa-info', 'sale', 'listado_minorista', NULL);
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_minorista'), '1');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_minorista'), '2');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_minorista'), '3');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_minorista'), '4');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_minorista'), '5');
+
+
+INSERT INTO `afernandez`.`sismenu` (`menuName`, `menuIcon`, `menuController`, `menuView`, `menuFather`) VALUES ('Ventas_Mayoristas', 'fa fa-fw fa-info', 'sale', 'listado_mayorista', NULL);
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_mayoristas'), '1');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_mayoristas'), '2');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_mayoristas'), '3');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_mayoristas'), '4');
+INSERT INTO `afernandez`.`sismenuactions` (`menuId`, `actId`) VALUES ((select menuId from sismenu where menuController='sale' and menuView='listado_mayoristas'), '5');

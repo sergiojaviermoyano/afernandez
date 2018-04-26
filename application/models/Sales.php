@@ -256,14 +256,50 @@ class Sales extends CI_Model
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-
-			$this->db->where('oFecha >=',$data['search']['value']);
-			
-		}
-		
+			$this->db->where('oFecha >=',$data['search']['value']);	
+			$this->db->limit($data['length'],$data['start']);		
+		}		
 		$query = $this->db->get('orden');
-		//echo $this->db->last_query();
 		return $query->num_rows();
+	}
+
+	public function getSaleMinorista ( $data = null){
+
+		$this->db->select('*');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
+		if($data['search']['value']!=''){
+			$this->db->where('oFecha >=',$data['search']['value']);
+		}
+		$this->db->limit($data['length'],$data['start']);
+		$query = $this->db->get('orden');
+		return $query->result_array();
+	}
+
+	public function getTotalSaleMayorista($data = null){
+		$response = array();
+		$this->db->select('*');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsMayorista'=>1,'oEsPlanReserva'=>0));
+		if($data['search']['value']!=''){
+			$this->db->where('oFecha >=',$data['search']['value']);	
+			$this->db->limit($data['length'],$data['start']);		
+		}		
+		$query = $this->db->get('orden');
+		return $query->num_rows();
+	}
+
+	public function getSaleMayorista( $data = null){
+
+		$this->db->select('*');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsMayorista'=>1,'oEsPlanReserva'=>0));
+		if($data['search']['value']!=''){
+			$this->db->where('oFecha >=',$data['search']['value']);
+		}
+		$this->db->limit($data['length'],$data['start']);
+		$query = $this->db->get('orden');	
+		return $query->result_array();
 	}
 
 	public function getSaleById($data){
@@ -297,19 +333,7 @@ class Sales extends CI_Model
 		}
 	}
 
-	public function getSaleMinorista( $data = null){
-
-		$this->db->select('*');
-		$this->db->order_by('oFecha','desc');
-		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
-		if($data['search']['value']!=''){
-			$this->db->where('oFecha >=',$data['search']['value']);
-			//$this->db->limit($data['length'],$data['start']);
-		}
-		$this->db->limit($data['length'],$data['start']);
-		$query = $this->db->get('orden');
-		return $query->result_array();
-	}
+	
 }
 	/*
 	function getView($data = null){
