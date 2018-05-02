@@ -142,7 +142,7 @@ class article extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
-
+*/
 	public function update_prices_by_rubro(){
 		$data=$this->Articles->update_prices_by_rubro($this->input->post());
 		if($data  == false)
@@ -154,7 +154,6 @@ class article extends CI_Controller {
 			echo json_encode(true);
 		}
 	}
-	*/
 
 	public function information($permission)
 	{
@@ -163,4 +162,15 @@ class article extends CI_Controller {
 		echo json_encode($this->load->view('articles/sales', $data, true));
 	}
 
+	public function get_for_update_prices_by_rubro(){
+		$data=$this->Articles->get_for_update_prices($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
 }

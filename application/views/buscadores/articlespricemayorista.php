@@ -184,6 +184,8 @@ function calcularPrecioInternoMayorista(article){
   var pventaMayorista = 0;
 
 	//Precio en Dolar
+  if(article['artCosteIsDolar'] == "0")
+    cotizacionDolar = 1;
 	var precioCosto = precioCosto * cotizacionDolar;
 
   //Mayorista

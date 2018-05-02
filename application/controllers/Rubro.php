@@ -7,6 +7,7 @@ class rubro extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Rubros');
+		$this->load->model('Brands');
 		$this->Users->updateSession(true);
 	}
 
@@ -70,7 +71,8 @@ class rubro extends CI_Controller {
 
 	public function upgrate($permission){
 		$data['permission'] = $permission;
-		$data['rubros'] =  $this->Rubros->Rubro_List();
+		$data['rubros'] = $this->Rubros->Rubro_List();
+		$data['brands'] = $this->Brands->Brand_list();
 		echo json_encode($this->load->view('rubros/upgrate', $data, true));
 	}
 

@@ -1,4 +1,5 @@
 <section class="content">
+  <?php if($isOpenBox == 1) {?>
   <div class="row">
     <div class="col-xs-4">
       <div class="info-box" style="cursor: pointer" onClick="cargarView('sale', 'mayorista', '')">
@@ -71,6 +72,15 @@
     -->
 
   </div><!-- /.row -->
+  <?php } else { ?>
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="direct-chat-text">
+        No hay cajas abiertas, por favor abra una caja para poder realizar operaciones.
+      </div>
+    </div>
+  </div>
+  <?php } ?>
 </section><!-- /.content -->
 
 <script>

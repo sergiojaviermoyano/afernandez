@@ -181,10 +181,12 @@ function calcularPrecioInterno(article){
   var pventaMinorista = 0;
 
 	//Precio en Dolar
+  if(article['artCosteIsDolar'] == "0")
+    cotizacionDolar = 1;
 	var precioCosto = precioCosto * cotizacionDolar;
 
   //Minorista
-  if(margenMiEsPor){
+  if(margenMiEsPor == true || margenMiEsPor == "1"){
     var importe = (parseFloat(margenMi) / 100) * parseFloat(precioCosto);
     pventaMinorista = parseFloat(parseFloat(importe) + parseFloat(precioCosto));
   } else {

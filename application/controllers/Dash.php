@@ -6,7 +6,7 @@ class dash extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Groups');
-		//$this->load->model('Customers');
+		$this->load->model('Boxs');
 		//$this->load->model('Calendar');
 	}
 
@@ -24,7 +24,8 @@ class dash extends CI_Controller {
 	}
 
 	public function accesosdirectos(){
-		echo json_encode($this->load->view('dash/accesosdirectos', null, true));
+		$data['isOpenBox'] = $this->Boxs->isOpenBox();
+		echo json_encode($this->load->view('dash/accesosdirectos', $data, true));
 	}
 
 }

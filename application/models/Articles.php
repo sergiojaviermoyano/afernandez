@@ -412,37 +412,65 @@ class Articles extends CI_Model
 		return $art;
 	}
 
-	/*
 	public function update_prices_by_rubro($data){
 
+		foreach($data['arts'] as $item ){
+			$this->db->set('artCoste', $item['coste'],FALSE);
+			$this->db->where('artId',$item['id']);
 
-		if(isset($data['artMarginIsPorcent'])){
-			$this->db->set('artCoste','artCoste + ( (artCoste*'.$data['incrementValue'].') /100)',FALSE);
-		}else{
-			$this->db->set('artCoste','artCoste +'.$data['incrementValue'].'',FALSE);
+			if(!$this->db->update("articles")){
+				return false;
+			}
 		}
-
-
-		if($data['subrId']==''){
-			$this->db->select('subrId')->where('rubId',$data['rubId'])->from('subrubros');
-			$subQuery =  $this->db->get_compiled_select();
-			$this->db->where("subrId IN (".$subQuery.")", NULL, FALSE);
-		}else{
-			$this->db->where('subrId',$data['subrId']);
-		}
-
-		if($this->db->update("articles")){
-			return true;
-		}else{
-			return false;
-		}
+		return true;
 	}
 
-	public function stock($artId)
-    {
-        $query = $this->db->query('CALL stockArt('.$artId.')');
-        return $query->result();
-    }
-		*/
+		public function get_for_update_prices($data = null){
+			if($data == null){
+				return false;
+			} else {
+				//Cotizacion-------------------------------
+				$cotizacion = 1;
+				$query= $this->db->get('configuracion');
+				if ($query->num_rows() != 0)
+				{
+					$c = $query->result_array();
+					$cotizacion = $c[0]['cotizacionDolar'];
+				}
+				//-----------------------------------------
+
+				$where = array();
+				//marca
+				if($data['mar'] != ''){
+					$where['marcaId'] = $data['mar'];
+				}
+				//subrubro
+				if($data['sub'] != ''){
+					$where['subrId'] = $data['sub'];
+				} else {
+					//Ver si es por rubro
+					if($data['rub'] != ''){
+							$this->db->where_in('subrId', $this->getSubrubros($data['rub'] ));
+					} else {
+						//nada
+					}
+				}
+				$this->db->select('artId, artBarCode, artDescription, artCoste, artMarginMinorista, artMarginMinoristaIsPorcent, artCosteIsDolar, \''.floatval($cotizacion).'\' as dolar');
+				$this->db->from('articles');
+				$this->db->where($where);
+				$query = $this->db->get();
+				return $query->result_array();
+			}
+		}
+
+	function getSubrubros($id){
+		$da = array();
+		$this->db->select('subrId');
+		$query = $this->db->get_where('subrubros', array('rubId' => $id, 'subrEstado' => 'AC'));
+		foreach ($query->result_array() as $value) {
+			array_push($da, $value['subrId']);
+		};
+		return $da;
+	}
 }
 ?>
