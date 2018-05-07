@@ -498,5 +498,33 @@ class Boxs extends CI_Model
 			return $data['id'].'.pdf';
 		}
 	}
+
+
+	public function getTotalBoxes($data = null){
+		$response = array();
+		$this->db->select('c.*,u.usrNick');
+		$this->db->from('cajas as c');
+		$this->db->join('sisusers as u','c.usrId = u.usrId', 'inner');
+		if($data['search']['value']!=''){
+			$this->db->like('u.usrNick',$data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);		
+		}
+		
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function getBoxes ( $data = null){
+		$this->db->select('c.*,u.usrNick, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as apertura, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as cierre');
+		$this->db->from('cajas as c');
+		$this->db->join('sisusers as u','c.usrId = u.usrId', 'inner');
+		if($data['search']['value']!=''){
+			$this->db->like('u.usrNick',$data['search']['value']);
+		}
+		$this->db->limit($data['length'],$data['start']);
+		$query=$this->db->get();
+		//echo $this->db->last_query();
+		return $query->result_array();
+	}
 }
 ?>

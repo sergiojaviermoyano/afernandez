@@ -23,6 +23,22 @@ class box extends CI_Controller {
 	}
 
 
+	public function datatable_listing(){
+		$totalRecords= $this->Boxs->getTotalBoxes($_REQUEST);
+		$data= $this->Boxs->getBoxes($_REQUEST);
+
+		$response=array(
+			'draw' => $_REQUEST['draw'],
+			'recordsTotal' => $totalRecords,
+			'recordsFiltered' => count($data),
+			'data' => $data
+		);
+
+		echo json_encode($response);
+
+	}
+
+
 	public function getBox(){
 		$data['data'] = $this->Boxs->getBox($this->input->post());
 		$response['html'] = $this->load->view('boxs/view_', $data, true);

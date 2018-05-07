@@ -4,227 +4,233 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Cajas</h3>
+          <h3 class="box-title">Ventas Minoristas</h3>
           <?php
+          /*
           if (strpos($permission,'Add') !== false) {
-            if($list['openBox'] == 0) {
-              echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadBox(0,\'Add\')" id="btnAdd" title="Nueva">Abrir</button>';
-              echo '<button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>';
-            } else {
-              echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Nueva" disabled="disabled">Abrir</button>';
-              echo '<button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" onclick="AddRetiro()">Retiro</button>';
-            }
+            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadCust(0,\'Add\')" id="btnAdd">Agregar</button>';
           }
+          */
           ?>
         </div><!-- /.box-header -->
-       
-        <div class="box-header">
-          <div class="box-tools">
-            <div class="input-group input-group-sm" style="width: 150px;">
-              <input type="text" id="table_search" class="form-control pull-right" placeholder="Buscar">
-
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
-              </div>
-            </div>
-          </div>
-        </div><br>
         <div class="box-body">
-          <table id="credit" class="table table-bordered table-hover">
+          <table id="datatabl1" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th width="10%">Acciones</th>
-                <th>Numero</th>
+                <th class="text-center">Acciones</th>
+                <th>Nº Caja</th>
                 <th>Apertura</th>
                 <th>Cierre</th>
                 <th>Usuario</th>
                 <th>Retiros</th>
-                <!--
-                <th>Debe</th>
-                <th>Haber</th>
-                -->
               </tr>
             </thead>
-            <tbody>
-              <?php
-                if(count($list['data']) > 0) {                  
-                  foreach($list['data'] as $c)
-                  {
-                    echo '<tr>';
-                    echo '<td>';
-
-                    if (strpos($permission,'Close') !== false) {
-                      if($c['cajaCierre'] == null){
-                        echo '<i class="fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadBox('.$c['cajaId'].',\'Close\')"></i>';
-                      }
-                    }
-
-                    if($c['cajaCierre'] != null){
-                        echo '<i class="fa fa-fw fa-print" style="color: gray; cursor: pointer; margin-left: 15px;" onclick="printBox('.$c['cajaId'].')"></i>';
-                      }
-                    
-                    if (strpos($permission,'View') !== false) {
-                      echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadBox('.$c['cajaId'].',\'View\')"></i>';
-                    }
-                    echo '</td>';
-                    echo '<td>'.str_pad($c['cajaId'], 10, "0", STR_PAD_LEFT).'</td>';
-                    $date = date_create($c['cajaApertura']);                    
-                    echo '<td style="text-align: center">'.date_format($date, 'd-m-Y H:i').'</td>';
-                    if($c['cajaCierre'] != null)
-                    {
-                      $date = date_create($c['cajaCierre']);
-                      echo '<td style="text-align: center">'.date_format($date, 'd-m-Y H:i').'</td>';
-                    } else { echo '<td style="text-align: center">-</td>'; }
-                    echo '<td style="text-align: left">'.$c['usrName'].', '.$c['usrLastName'].'</td>';
-                    if($c['retiro'] > 0){
-                      echo '<td style="text-align: center"><i class="fa fa-fw fa-sign-out" style="color: #3c8dbc; cursor: pointer;" onclick="verEgresos('.$c['cajaId'].')"></i></td>';
-                    }else{
-                      echo '<td style="text-align: center"></td>';
-                    }
-                    echo '</tr>';
-                  }
-                  
-                }
-              ?>
+            <tbody>             
             </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="8" style="text-align: center" id="footerRow">
-                <?php 
-                if($list['page'] == 1){
-                  echo '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-backward"></i></button>';
-                } else {
-                  echo '<button type="button" class="btn btn-default" onclick="page('.($list['page'] - 1).')"><i class="fa fa-fw fa-backward"></i></button>';
-                }
-
-                echo '<span style="padding: 0px 15px">'.$list['page'].'   de   '.$list['totalPage'].'</span>';
-
-                if($list['page'] == $list['totalPage']){
-                  echo '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-forward"></i></button>';
-                } else {
-                  echo '<button type="button" class="btn btn-default" onclick="page('.($list['page'] + 1).')"><i class="fa fa-fw fa-forward"></i></button>';
-                }
-                ?>
-                </td>
-              </tr>
-            </tfoot>
           </table>
         </div><!-- /.box-body -->
-
       </div><!-- /.box -->
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Caja</h4> 
+      </div>
+      <div class="modal-body" id="modalBodyBox">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalRetiro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction_"> </span> Retiros</h4> 
+      </div>
+      <div class="modal-body" id="modalBodyRetiro">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSave_">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
-$('#table_search').keyup(function(e) {
-    var code = (e.keyCode ? e.keyCode : e.which);
-    if (code==13) {
-        e.preventDefault();
+  $(function () {
+
+
+    //$("#groups").DataTable();
+
+    var _permission=$("#permission").val().split('-');
+    console.log(_permission);
+    $('#datatabl1').DataTable({
+        'processing':true,
+        'serverSide':true,
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "language": {
+                "lengthMenu": "Ver _MENU_ filas por página",
+                "zeroRecords": "No hay registros",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+                "sSearch": "Buscar:  ",
+                "oPaginate": {
+                    "sNext": "Sig.",
+                    "sPrevious": "Ant."
+                }
+        },
+        ajax:{
+            'dataType': 'json',
+            'method': 'POST',
+            'url':'box/datatable_listing',
+            'dataSrc': function(response){
+                console.log(response);
+                console.log(response.data);
+                var output = [];
+                var permission = $("#permission").val();
+                $.each(response.data,function(index,item){
+                    var col1,col2,col3,col4, col5 , col6='';                    
+                    col1='';
+                   
+                    if(_permission.indexOf("Close") && item.cajaCierre==null){
+                      col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="Close"></i>';
+                    }
+
+                    if(item.cajaCierre!=null){
+                      col1 += '<i class="bt_print fa fa-fw fa-print" style="color: gray; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" ></i>';
+                    }
+
+                    if(_permission.indexOf("View")){
+                      col1 += '<i class="bt_view fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="View" ></i>';
+                    }
+                    
+                    col2=item.cajaId;
+                    col3=(item.cajaApertura!=null)? item.apertura:'';
+                    col4=(item.cajaCierre!=null)? item.cierre:'';
+                    
+                    
+                    col5=item.usrNick;
+                    col6=0;
+                    output.push([col1,col2,col3,col4,col5 ,col6]);
+                });
+                return output;
+            },
+            error: function(error){
+                console.debug(error);
+            }
+        }
+    });
+
+
+
+    $(document).on('click','.bt_print',function(){
+      console.log("bt_print");
+      var data = $(this).data();
+      id = data.id;
+
+      WaitingOpen('Generando Informe...');
+      LoadIconAction('modalAction__','Print');
+      $.ajax({
+              type: 'POST',
+              data: {
+                      id : id
+                    },
+          url: 'index.php/box/printBox',
+          success: function(result){
+                        WaitingClose();
+                        var url = "./assets/boxs/" + result;
+                        $('#printDoc').attr('src', url);
+                        setTimeout("$('#modalPrint').modal('show')",800);
+                },
+          error: function(result){
+                WaitingClose();
+                ProcesarError(result.responseText, 'modalPrint');
+              },
+              dataType: 'json'
+          });
+      
+    });
+
+
+
+    
+
+    $(document).on('click','.bt_view,.bt_close',function(){
+      var data = $(this).data();
+      console.log("bt_view");
+      console.log(data);
+      id = data.id;
+      action = data.action;
+      LoadIconAction('modalAction',action);
+      WaitingOpen('Cargando Caja');
+        $.ajax({
+              type: 'POST',
+              data: { id : id, act: action },
+          url: 'index.php/box/getBox', 
+          success: function(result){
+                        WaitingClose();
+                        $("#modalBodyBox").html(result.html);
+                        $("#cajaImpApertura").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                        $("#cajaImpRendicion").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                        setTimeout("$('#modalBox').modal('show')",800);
+                },
+          error: function(result){
+                WaitingClose();
+                alert("error");
+              },
+              dataType: 'json'
+          });
+    });
+
+
+    function LoadBox(id_, action_){
+      id = id_;
+      action = action_;
+      LoadIconAction('modalAction',action);
+      WaitingOpen('Cargando Caja');
+        $.ajax({
+              type: 'POST',
+              data: { id : id_, act: action },
+          url: 'index.php/box/getBox', 
+          success: function(result){
+                        WaitingClose();
+                        $("#modalBodyBox").html(result.html);
+                        $("#cajaImpApertura").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                        $("#cajaImpRendicion").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+                        setTimeout("$('#modalBox').modal('show')",800);
+                },
+          error: function(result){
+                WaitingClose();
+                alert("error");
+              },
+              dataType: 'json'
+          });
     }
 
-    if (code == 32 || code == 13 || code == 188 || code == 186) {
-        page(1);
-    }
-  });
-
-
-  function page(p){
-  WaitingOpen('Cargando...');
-      $.ajax({
-            type: 'POST',
-            data: {
-              page: p,
-              txt: $('#table_search').val()
-            },
-            url: 'index.php/box/pagination', 
-            success: function(result){
-                      WaitingClose();
-                      $('#credit > tbody').html('');
-                      $.each( result.data, function( key, value ) {
-                        var row = '';
-                        row += '<tr>';
-                        row += '<td>';
-
-                        if(value.cajaCierre == null){
-                          row += '<i class="fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="LoadBox('+value.cajaId+',\'Close\')"></i>';
-                        } else {
-                          row += '<i class="fa fa-fw fa-print" style="color: gray; cursor: pointer; margin-left: 15px;" onclick="printBox('+value.cajaId+')"></i>';
-                        }
-                        row += '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadBox('+value.cajaId+',\'View\')"></i>';
-                        row += '</td>';
-                        row += '<td>'+("000000000"+value.cajaId).slice(-10)+'</td>';
-                        var date = new Date(value.cajaApertura);
-                        row += '<td style="text-align: center">'+("0"+date.getDate()).slice(-2)+'-'+("0"+date.getMonth()).slice(-2)+'-'+("0"+date.getFullYear()).slice(-2)+' '+("0"+date.getHours()).slice(-2)+':'+("0"+date.getMinutes()).slice(-2)+'</td>';
-                        if(value.cajaCierre != null) {
-                          var date = new Date(value.cajaCierre);
-                          row += '<td style="text-align: center">'+("0"+date.getDate()).slice(-2)+'-'+("0"+date.getMonth()).slice(-2)+'-'+("0"+date.getFullYear()).slice(-2)+' '+("0"+date.getHours()).slice(-2)+':'+("0"+date.getMinutes()).slice(-2)+'</td>';
-                        } else { row += '<td style="text-align: center">-</td>'; }
-                        row += '<td style="text-align: left">'+value.usrName+', '+value.usrLastName+'</td>';
-                        if(value.retiro > 0){
-                          row +='<td style="text-align: center"><i class="fa fa-fw fa-sign-out" style="color: #3c8dbc; cursor: pointer;" onclick="verEgresos('+value.cajaId+')"></i></td>';
-                        }else{
-                          row +='<td style="text-align: center"></td>';
-                        }
-                        row += '</tr>';
-                        $('#credit > tbody').append(row);
-                      });
-                      
-                      var foot = '';
-                      if(result.page == 1){
-                        foot += '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-backward"></i></button>';
-                      } else {
-                        foot += '<button type="button" class="btn btn-default" onclick="page('+(parseInt(result.page) - 1)+')"><i class="fa fa-fw fa-backward"></i></button>';
-                      }
-
-                      foot += '<span style="padding: 0px 15px">'+result.page+'   de   '+result.totalPage+'</span>';
-
-                      if(result.page == result.totalPage){
-                        foot += '<button type="button" class="btn btn-default disabled"><i class="fa fa-fw fa-forward"></i></button>';
-                      } else {
-                        foot += '<button type="button" class="btn btn-default" onclick="page('+(parseInt(result.page) + 1)+')"><i class="fa fa-fw fa-forward"></i></button>';
-                      }
-                      $('#footerRow').html(foot);
-            },
-            error: function(result){
-              WaitingClose();
-              alert("error");
-            },
-            dataType: 'json'
-        });
-
-  }
-
-  
-  var id = 0;
-  var action = '';
-  
-  function LoadBox(id_, action_){
-  	id = id_;
-  	action = action_;
-  	LoadIconAction('modalAction',action);
-  	WaitingOpen('Cargando Caja');
-      $.ajax({
-          	type: 'POST',
-          	data: { id : id_, act: action },
-    		url: 'index.php/box/getBox', 
-    		success: function(result){
-			                WaitingClose();
-			                $("#modalBodyBox").html(result.html);
-                      $("#cajaImpApertura").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-                      $("#cajaImpRendicion").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-			                setTimeout("$('#modalBox').modal('show')",800);
-    					},
-    		error: function(result){
-    					WaitingClose();
-    					alert("error");
-    				},
-          	dataType: 'json'
-    		});
-  }
-
-  
-  $('#btnSave').click(function(){
+    $('#btnSave').click(function(){
   	
   	if(action == 'View')
   	{
@@ -388,43 +394,5 @@ function printBox(cajaId){
         });
 }
 
+  }); 
 </script>
-
-
-<!-- Modal -->
-<div class="modal fade" id="modalBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Caja</h4> 
-      </div>
-      <div class="modal-body" id="modalBodyBox">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="modalRetiro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction_"> </span> Retiros</h4> 
-      </div>
-      <div class="modal-body" id="modalBodyRetiro">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave_">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
