@@ -33,7 +33,7 @@ class Sales extends CI_Model
 			if($data['esPre'] == 0){
 				$userdata = $this->session->userdata('user_data');
 				$this->db->select('*');
-				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+				$this->db->where(array('cajaCierre'=>null));
 				$this->db->from('cajas');
 				$query = $this->db->get();
 				$result = $query->result_array();
@@ -154,7 +154,7 @@ class Sales extends CI_Model
 			if($data['esPre'] == 0){
 				$userdata = $this->session->userdata('user_data');
 				$this->db->select('*');
-				$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+				$this->db->where(array('cajaCierre'=>null));
 				$this->db->from('cajas');
 				$query = $this->db->get();
 				$result = $query->result_array();
@@ -256,9 +256,9 @@ class Sales extends CI_Model
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oFecha >=',$data['search']['value']);	
-			$this->db->limit($data['length'],$data['start']);		
-		}		
+			$this->db->where('oFecha >=',$data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
 		$query = $this->db->get('orden');
 		return $query->num_rows();
 	}
@@ -282,9 +282,9 @@ class Sales extends CI_Model
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsMayorista'=>1,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oFecha >=',$data['search']['value']);	
-			$this->db->limit($data['length'],$data['start']);		
-		}		
+			$this->db->where('oFecha >=',$data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
 		$query = $this->db->get('orden');
 		return $query->num_rows();
 	}
@@ -298,15 +298,15 @@ class Sales extends CI_Model
 			$this->db->where('oFecha >=',$data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
-		$query = $this->db->get('orden');	
+		$query = $this->db->get('orden');
 		return $query->result_array();
 	}
 
 	public function getSaleById($data){
-		
+
 		if($data['id']!=0){
 			$this->db->where(array('oId'=>$data['id']));
-			$query=$this->db->get('orden');			
+			$query=$this->db->get('orden');
 			$result['orden'] = $query->row_array();
 
 			$this->db->where('cliId',$result['orden']['cliId']);
@@ -320,20 +320,20 @@ class Sales extends CI_Model
 			$this->db->where('lpId',$result['orden']['lpId']);
 			$query=$this->db->get('listadeprecios');
 			$result['lista_de_precios'] = $query->row_array();
-			
+
 			$sql="select od.*, a.*,
 			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
 			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
 			from ordendetalle as od INNER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
-			
-			$query=$this->db->query($sql);		
+
+			$query=$this->db->query($sql);
 			$result['orden_detalle'] = $query->result_array();
 
 			return $result;
 		}
 	}
 
-	
+
 }
 	/*
 	function getView($data = null){

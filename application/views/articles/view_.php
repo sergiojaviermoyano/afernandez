@@ -28,7 +28,15 @@
       <div class="col-sm-3">
         <input type="text" class="form-control" id="artCoste" value="<?php echo $data['article']['artCoste'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
       </div>
-			<label class="col-sm-4"> Es Dolar <strong style="color: #dd4b39">*</strong>: </label>
+			<?php if ($data['read'] == false){ ?>
+			<div class="col-sm-1">
+				<button class="btn btn-block btn-warning" style="width:50px; padding: 5px 0px;" onclick="sumar(21)">21%</button>
+			</div>
+			<div class="col-sm-1">
+				<button class="btn btn-block btn-success" style="width:50px; padding: 5px 0px;" onclick="sumar(10.5)">10.5%</button>
+			</div>
+		<?php } ?>
+			<label class="col-sm-2"> Es Dolar <strong style="color: #dd4b39">*</strong>: </label>
 			<div class="col-sm-1">
             <input type="checkbox" id="artCosteIsDolar" style="margin-top:10px;" <?php echo($data['article']['artCosteIsDolar'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
 
@@ -217,4 +225,16 @@ $('#artBarCode').focusout(function() {
 	    		});
 		}
 });
+
+function sumar(porcent){
+	porcent = parseFloat(porcent);
+	var precioCosto = $('#artCoste').val() == '' ? 0 : parseFloat($('#artCoste').val()).toFixed(2);
+	if(precioCosto > 0){
+		var importe = (parseFloat(porcent) / 100) * parseFloat(precioCosto);
+    importe = parseFloat(parseFloat(importe) + parseFloat(precioCosto)).toFixed(2);
+		$('#artCoste').val(parseFloat(importe).toFixed(2));
+		CalcularPrecio();
+	}
+
+}
 </script>

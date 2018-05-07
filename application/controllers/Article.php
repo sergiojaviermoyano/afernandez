@@ -155,7 +155,7 @@ class article extends CI_Controller {
 		}
 	}
 
-	public function information($permission)
+	public function information__($permission)
 	{
 		$data['list'] = array();
 		$data['permission'] = $permission;

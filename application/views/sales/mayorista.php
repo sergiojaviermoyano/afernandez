@@ -938,6 +938,8 @@ function Cobrar_(esPresupuesto){
       url: 'index.php/sale/setSaleMayorista',
       success: function(result){
                     WaitingClose();
+                    $('#modalMedios').modal('hide');
+                    setTimeout("cargarView('sale', 'mayorista', '');",800);
             },
       error: function(result){
             WaitingClose();

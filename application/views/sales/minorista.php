@@ -938,6 +938,8 @@ function Cobrar_(esPresupuesto){
       url: 'index.php/sale/setSaleMinorista',
       success: function(result){
                     WaitingClose();
+                    $('#modalMedios').modal('hide');
+                    setTimeout("cargarView('sale', 'minorista', '');",800);
             },
       error: function(result){
             WaitingClose();
