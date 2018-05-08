@@ -24,7 +24,7 @@
                 <th class="text-center">-</th>
               </tr>
             </thead>
-            <tbody>             
+            <tbody>
             </tbody>
           </table>
         </div><!-- /.box-body -->
@@ -68,14 +68,14 @@
         ajax:{
             'dataType': 'json',
             'method': 'POST',
-            'url':'sale/datatable_mayorista',
+            'url':'index.php/sale/datatable_mayorista',
             'dataSrc': function(response){
                 console.log(response);
                 console.log(response.data);
                 var output = [];
                 var permission = $("#permission").val();
                 $.each(response.data,function(index,item){
-                    var col1,col2,col3,col4, col5='';                    
+                    var col1,col2,col3,col4, col5='';
                     col1='';
                    // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
                     col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
@@ -109,11 +109,11 @@
                 console.debug(error);
             }
         },
-        "createdRow": function ( row, data, index ) {           
+        "createdRow": function ( row, data, index ) {
             if(data[4].search("small")>0){
               $(row).addClass('info');
             }
         }
     });
-  }); 
+  });
 </script>

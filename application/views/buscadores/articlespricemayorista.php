@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="buscadorArticlesPriceMayorista" tabindex="3000" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document" ><!--style="width: 50%"-->
+  <div class="modal-dialog" role="document" style="width: 80%" ><!--style="width: 50%"-->
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title"><i class="fa fa-search" style="color: #3c8dbc"></i> Buscar Artículo</h4>
