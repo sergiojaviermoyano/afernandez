@@ -7,11 +7,10 @@
         <h4 class="modal-title" id="myModalLabel">Comprobante Venta Minoristas </h4>
       </div>
       <div class="modal-body" >
-        <iframe id="iframe_pdf" style="width:100%;min-height:600px"></iframe>  
+        <iframe id="iframe_pdf" style="width:100%;min-height:600px"></iframe>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -24,8 +23,6 @@
         var customer_table=$('table#customers');
         $(document).on('click','.fa-print',function(){
             var id=$(this).data('id');
-            console.log("====> table#customers  PRINT: "+id+"");
-            
 
             WaitingOpen('Generando Comprobante');
             $.ajax({
@@ -49,7 +46,6 @@
             return false;
         });
         function Print(id){
-            console.log("TEST");
             return false;
         }
     })
