@@ -30,10 +30,15 @@
                 data: { id : id, act: 'Print' },
                 url: 'index.php/sale/printComprobante',
                 success: function(result){
-                    console.log(result);
+                    /*console.log(result);
                         WaitingClose();
                         $("#iframe_pdf").attr('src',result.filename_url);
                         $('#print_order_modal').modal('show');
+                    */
+                    WaitingClose();
+                    var url = "./assets/reports/orders_minorista/" + result;
+                    $('#printDoc').attr('src', url);
+                    setTimeout("$('#modalPrint').modal('show')",800);
                 },
                 error: function(result){
                     WaitingClose();

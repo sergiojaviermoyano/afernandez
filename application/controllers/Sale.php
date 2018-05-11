@@ -81,11 +81,14 @@ class sale extends CI_Controller {
 
 	}
 
-	public function printComprobante(){		
+	public function printComprobante(){
+		/*
 		$this->load->library('pdf');
-		$data=array();	
+		$data=array();
 		$data['orden_data']=$this->Sales->getSaleById($_REQUEST);
 		$file_pdf = $this->pdf->generate_pdf('sales/print_orden',$data);
 		echo json_encode(array('result'=>true,'filename_url'=>$file_pdf));
+		*/
+		echo json_encode($this->Sales->getSaleById($_REQUEST));
 	}
 }
