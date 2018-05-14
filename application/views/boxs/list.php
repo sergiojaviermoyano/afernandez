@@ -7,7 +7,7 @@
         <h3 class="box-title">Cajas</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            if($list['openBox'] != 0) {?>
+            if($list['openBox'] == 0) {?>
               <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-id="0" data-action="Add" id="btnAdd" title="Nueva">Abrir</button>
               <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>
             <?php } else { ?>
