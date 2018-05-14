@@ -4,13 +4,17 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Ventas Minoristas</h3>
+        <h3 class="box-title">Cajas</h3>
           <?php
-          /*
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadCust(0,\'Add\')" id="btnAdd">Agregar</button>';
+            if($list['openBox'] != 0) {?>
+              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-id="0" data-action="Add" id="btnAdd" title="Nueva">Abrir</button>
+              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>
+            <?php } else { ?>
+              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Nueva" disabled="disabled">Abrir</button>
+              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" onclick="AddRetiro()">Retiro</button>
+            <?php }
           }
-          */
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -205,6 +209,13 @@
           });
     });
 
+    $(document).on('click','#btnAdd',function(){
+      var data = $(this).data();
+      console.debug(data['id']);
+      console.debug(data['action']);
+      LoadBox(data['id'],data['action']);
+      return false;// 
+    });
 
     function LoadBox(id_, action_){
       id = id_;
