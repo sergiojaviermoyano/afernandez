@@ -505,8 +505,12 @@ class Boxs extends CI_Model
 		$this->db->select('c.*,u.usrNick');
 		$this->db->from('cajas as c');
 		$this->db->join('sisusers as u','c.usrId = u.usrId', 'inner');
+		$this->db->order_by('c.cajaId','desc');
 		if($data['search']['value']!=''){
-			$this->db->like('u.usrNick',$data['search']['value']);
+			$this->db->where('c.cajaId',$data['search']['value']);
+			$this->db->or_like('u.usrNick',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);		
 		}
 		
@@ -515,11 +519,15 @@ class Boxs extends CI_Model
 	}
 
 	public function getBoxes ( $data = null){
-		$this->db->select('c.*,u.usrNick, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as apertura, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as cierre');
+		$this->db->select('c.*,u.usrNick, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as apertura, DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i") as cierre');
 		$this->db->from('cajas as c');
 		$this->db->join('sisusers as u','c.usrId = u.usrId', 'inner');
+		$this->db->order_by('c.cajaId','desc');
 		if($data['search']['value']!=''){
-			$this->db->like('u.usrNick',$data['search']['value']);
+			$this->db->where('c.cajaId',$data['search']['value']);
+			$this->db->or_like('u.usrNick',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i")',$data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
 		$query=$this->db->get();
