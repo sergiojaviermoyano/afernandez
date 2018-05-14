@@ -80,7 +80,7 @@
                    // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
                     col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
                     col2=item.oId;
-                    col3=item.oFecha;
+                    col3=item.fecha;
                     switch(item.oEstado){
                         case 'AC':{
                             col4='<small class="label pull-left bg-green">Activa</small>';
