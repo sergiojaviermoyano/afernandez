@@ -20,7 +20,7 @@ class article extends CI_Controller {
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
 
-  public function listing(){
+  	public function listing(){
 
 		$total=$this->Articles->getTotalArticles($_REQUEST);
 		$result = $this->Articles->Articles_List_datatable($_REQUEST);

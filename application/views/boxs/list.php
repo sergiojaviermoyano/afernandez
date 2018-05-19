@@ -109,7 +109,7 @@
         ajax:{
             'dataType': 'json',
             'method': 'POST',
-            'url':'box/datatable_listing',
+            'url':'index.php/box/datatable_listing',
             'dataSrc': function(response){
                 console.log(response);
                 console.log(response.data);

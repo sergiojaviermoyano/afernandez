@@ -26,7 +26,8 @@ class Articles extends CI_Model
 		$this->db->order_by('artDescription', 'desc');
 		if($data['search']['value']!=''){
 			$this->db->like('artDescription', $data['search']['value']);
-			$this->db->limit($data['length'],$data['start']);
+			$this->db->or_like('artBarCode', $data['search']['value']);
+			//$this->db->limit($data['length'],$data['start']);
 		}
 		$query= $this->db->get('articles');
 		return $query->num_rows();
@@ -38,7 +39,9 @@ class Articles extends CI_Model
 			$this->db->like('artDescription', $data['search']['value']);
 			$this->db->or_like('artBarCode', $data['search']['value']);
 		}
+		$this->db->limit($data['length'],$data['start']);
 		$query= $this->db->get('articles');
+		//echo $this->db->last_query();
 
 		if ($query->num_rows()!=0)
 		{
