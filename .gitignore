@@ -1,4 +1,4 @@
 *.htaccess
 application/config/config.php
-assets/reports
+assets/reports/*
 assets/plugin/HTMLtoPDF
