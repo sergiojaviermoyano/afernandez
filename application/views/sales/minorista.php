@@ -3,7 +3,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Nueva Venta</h3>
+          <h3 class="box-title" style="color: #00a65a"><strong>Nueva Venta <i class="fa fa-fw fa-cart-plus"></i></strong></h3>
           <i class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
         </div><!-- /.box-header -->
         <div class="box-body">

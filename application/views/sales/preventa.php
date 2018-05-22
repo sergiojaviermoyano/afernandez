@@ -3,7 +3,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title" style="color: #f39c12"><strong>Nueva Venta Mayorista <i class="fa fa-fw fa-truck"></i></strong></h3>
+          <h3 class="box-title" style="color: #dd4b39"><strong>Plan Reserva <i class="fa fa-fw fa-clock-o"></i></strong></h3>
           <i class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -76,8 +76,8 @@
                     <strong class="text-green"><h1 id="totalSale">0,00</h1></strong>
                   </div>
                   <div style="text-align: right; padding: 5px;">
-                    <button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>
-                    <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
+                    <!--<button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>-->
+                    <!--<button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>-->
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
               </div>
@@ -385,7 +385,7 @@ $('#lblProducto').keyup(function(e){
 });
 
 function BuscarCompleto(){
-   buscadorArticlesPriceMayorista($('#lblProducto').val(), $('#prodId'), $('#lblProducto'), $('#prodCant'), $('#prodPrecio'));
+   buscadorArticlesPrice($('#lblProducto').val(), $('#prodId'), $('#lblProducto'), $('#prodCant'), $('#prodPrecio'));
 }
 
 $('#prodCant').keyup(function(e) {
@@ -412,9 +412,9 @@ function AgregaraOrden(){
           data: {
                   id : $('#prodId').val()
                 },
-          url: 'index.php/article/getArticleJsonMayorista',
+          url: 'index.php/article/getArticleJson',
           success: function(result){
-                        pVenta = calcularPrecioInternoMayorista(result.article).toFixed(2);
+                        pVenta = calcularPrecioInterno(result.article).toFixed(2);
                         html = '<tr id="'+rowY+'">';
                         html+= '<td style="text-align: center; cursor: pointer;" onclick="delete_('+rowY+')"><i class="fa fa-fw fa-close" style="color: #dd4b39"></i></td>';
                         html+= '<td>'+result.article.artBarCode+'</td>';
@@ -484,11 +484,11 @@ function CalcularMediosDePago(){
   var descuento = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
 
   $('#totalSaldoMedios').html(parseFloat(parseFloat(total) - parseFloat(pagos) - parseFloat(descuento)).toFixed(2));
-  if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
+  /*if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
     $('#btnPago').prop("disabled", true);
   } else {
     $('#btnPago').prop("disabled", false);
-  }
+  }*/
 }
 
 $('.calcula').keyup(function() {
@@ -935,11 +935,11 @@ function Cobrar_(esPresupuesto){
                   det:      detalle,
                   esPre:    esPresupuesto
                 },
-      url: 'index.php/sale/setSaleMayorista',
+      url: 'index.php/sale/setSalePreventa',
       success: function(result){
                     WaitingClose();
                     $('#modalMedios').modal('hide');
-                    setTimeout("cargarView('sale', 'mayorista', '');",800);
+                    setTimeout("cargarView('sale', 'preventa', '');",800);
             },
       error: function(result){
             WaitingClose();

@@ -27,7 +27,7 @@
     </div>
 
     <div class="col-xs-4">
-      <div class="info-box" style="cursor: pointer" onClick="AgregarVenta()">
+      <div class="info-box" style="cursor: pointer" onClick="cargarView('sale', 'preventa')">
         <span class="info-box-icon bg-red"><i class="fa fa-fw fa-clock-o"></i></span>
 
         <div class="info-box-content">
