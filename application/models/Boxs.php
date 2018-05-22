@@ -274,8 +274,7 @@ class Boxs extends CI_Model
 	}
 
 	function printBox($data = null){
-		if($data == null)
-		{
+		if($data == null){
 			return false;
 		}
 		else
@@ -286,15 +285,14 @@ class Boxs extends CI_Model
 
 			$html = '<table width="100%" style="font-family: Impact, Charcoal, sans-serif; font-size: 15px;">';
 			$html .= '	<tr>
-							<td width="10%">
-								<img src="./assets/images/logo.png">
-							</td>
+							
 							<td style="text-align: center; font-family: Impact, Charcoal, sans-serif;" >
-								<strong style="font-size: 60px; color: gray;">EL GALLO</strong> <br>
-								<strong>SERVICIO INTEGRAL DEL AUTOMOTOR<br>
-								<i>Paula Albarracín de Sarmiento N° 184<br>
-								Tel.: 0264 - 4961850 Cel.: 0264 - 154045426<br>
-								C.P. 5442 - Caucete San Juan </i>
+								<h1 style="font-size: 55px; color: #72324a;" >ADOLFO FERNANDEZ </h1>
+							
+								<strong>Soluciones Electronicas<br>
+								<i>Fray Justo Santa Maria de Oro 489<br>
+								Tel. 496-3903 - Cel. 154514219<br>
+								C.P. 5442 Caucete - San Juan </i>
 							</td>
 						</tr>';
 			$html .= '	<tr><td colspan="2"><center><h1>Resumen Cierre de Caja '.str_pad($result['box']['cajaId'], 10, "0", STR_PAD_LEFT).'</h1></center></td></tr>';
@@ -468,7 +466,7 @@ class Boxs extends CI_Model
 							</td>
 					  	</tr>';
 			$html .= '</table>';
-
+			//die($html);						
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF
@@ -484,7 +482,11 @@ class Boxs extends CI_Model
 			//guardamos a PDF
 			//$dompdf->stream("TrabajosPedndientes.pdf");
 			$output = $dompdf->output();
-			file_put_contents('assets/boxs/'.$data['id'].'.pdf', $output);
+
+			if(!is_dir(ASSETS.'boxs/')){	
+				mkdir(ASSETS.'boxs/');
+			}
+			file_put_contents(ASSETS.'boxs/'.$data['id'].'.pdf', $output);
 
 			//Eliminar archivos viejos ---------------
 			$dir = opendir('assets/boxs/');
