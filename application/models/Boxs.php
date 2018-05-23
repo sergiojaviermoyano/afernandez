@@ -285,10 +285,10 @@ class Boxs extends CI_Model
 
 			$html = '<table width="100%" style="font-family: Impact, Charcoal, sans-serif; font-size: 15px;">';
 			$html .= '	<tr>
-							
+
 							<td style="text-align: center; font-family: Impact, Charcoal, sans-serif;" >
 								<h1 style="font-size: 55px; color: #72324a;" >ADOLFO FERNANDEZ </h1>
-							
+
 								<strong>Soluciones Electronicas<br>
 								<i>Fray Justo Santa Maria de Oro 489<br>
 								Tel. 496-3903 - Cel. 154514219<br>
@@ -358,10 +358,10 @@ class Boxs extends CI_Model
 											<strong>$ '.$result['box']['cliente'].'</strong>
 										</td>
 										<td width="15%" style="text-align: right:">
-											Servicios:
+											<!--Servicios:-->
 										</td>
 										<td width="35%">
-											'.$result['box']['servicios'].'
+											<!--'.$result['box']['servicios'].'-->
 										</td>
 									</tr>
 									<tr>
@@ -466,7 +466,7 @@ class Boxs extends CI_Model
 							</td>
 					  	</tr>';
 			$html .= '</table>';
-			//die($html);						
+			//die($html);
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF
@@ -483,7 +483,7 @@ class Boxs extends CI_Model
 			//$dompdf->stream("TrabajosPedndientes.pdf");
 			$output = $dompdf->output();
 
-			if(!is_dir(ASSETS.'boxs/')){	
+			if(!is_dir(ASSETS.'boxs/')){
 				mkdir(ASSETS.'boxs/');
 			}
 			file_put_contents(ASSETS.'boxs/'.$data['id'].'.pdf', $output);
@@ -513,9 +513,9 @@ class Boxs extends CI_Model
 			$this->db->or_like('u.usrNick',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i")',$data['search']['value']);
-			$this->db->limit($data['length'],$data['start']);		
+			$this->db->limit($data['length'],$data['start']);
 		}
-		
+
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
