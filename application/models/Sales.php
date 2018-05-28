@@ -423,6 +423,36 @@ class Sales extends CI_Model
 		return $query->result_array();
 	}
 
+
+	public function getTotalReservaFiltered($data = null){
+		$response = array();
+		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsPlanReserva'=>1));
+		if($data['search']['value']!=''){
+			$this->db->where('oId',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query = $this->db->get('orden');
+		return $query->num_rows();
+	}
+
+	public function getReservaFiltered( $data = null){
+
+		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->order_by('oFecha','desc');
+		$this->db->where(array('oEsPlanReserva'=>1));
+		if($data['search']['value']!=''){
+			$this->db->where('oId',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+		}
+		$this->db->limit($data['length'],$data['start']);
+		$query = $this->db->get('orden');
+		//echo $this->db->last_query();
+		return $query->result_array();
+	}
+
 	public function getSaleById($data){
 
 		if($data['id']!=0){

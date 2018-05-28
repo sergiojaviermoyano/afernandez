@@ -91,6 +91,28 @@ class sale extends CI_Controller {
 
 	}
 
+	public function listado_reserva($permission){
+		$data=array();
+		$data['list'] = array();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('sales/listado_reserva', $data, true));
+	}
+
+	public function datatable_reserva(){
+		$totalVentas= $this->Sales->getTotalReservaFiltered($_REQUEST);
+		$ventas= $this->Sales->getReservaFiltered($_REQUEST);
+
+		$response=array(
+			'draw' => $_REQUEST['draw'],
+			'recordsTotal' => $totalVentas,
+			'recordsFiltered' => $totalVentas,
+			'data' => $ventas
+		);
+
+		echo json_encode($response);
+
+	}
+
 	public function printComprobante(){
 		/*
 		$this->load->library('pdf');
