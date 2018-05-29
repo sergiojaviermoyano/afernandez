@@ -10,6 +10,7 @@ class sale extends CI_Controller {
 		$this->load->model('Lists');
 		$this->load->model('Customers');
 		$this->load->model('Vendedores');
+		$this->load->model('Orders');
 		$this->Users->updateSession(true);
 	}
 
@@ -18,6 +19,14 @@ class sale extends CI_Controller {
 		$data['final'] = $this->Customers->DefaultCustomer();
 		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		echo json_encode($this->load->view('sales/minorista', $data, true));
+	}
+
+	public function minoristaGet($oId){
+		$data['lists'] = $this->Lists->List_List();
+		$data['final'] = $this->Customers->DefaultCustomer();
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
+		$data['order'] = $this->Orders->getOrder($oId);
+		echo json_encode($this->load->view('sales/minoristaGet', $data, true));
 	}
 
 	public function setSaleMinorista(){
@@ -29,6 +38,14 @@ class sale extends CI_Controller {
 		$data['final'] = $this->Customers->DefaultCustomer();
 		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		echo json_encode($this->load->view('sales/mayorista', $data, true));
+	}
+
+	public function mayoristaGet($oId){
+		$data['lists'] = $this->Lists->List_List();
+		$data['final'] = $this->Customers->DefaultCustomer();
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
+		$data['order'] = $this->Orders->getOrder($oId);
+		echo json_encode($this->load->view('sales/mayoristaGet', $data, true));
 	}
 
 	public function setSaleMayorista(){

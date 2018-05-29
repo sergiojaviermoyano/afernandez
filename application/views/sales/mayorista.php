@@ -827,6 +827,8 @@ $('#btnServiceEfectivo').click(function(){
 
 function Cobrar_(esPresupuesto){
   //Barrer Informacion
+  //Id de la operación
+  var opId = -1;
   //Lista de Precio y su porcentaje-----------------------
   var selected = $('#lpId').find('option:selected');
   var lp = {
@@ -933,7 +935,8 @@ function Cobrar_(esPresupuesto){
                   medi:     medios,
                   des:      desc,
                   det:      detalle,
-                  esPre:    esPresupuesto
+                  esPre:    esPresupuesto,
+                  oId:      opId
                 },
       url: 'index.php/sale/setSaleMayorista',
       success: function(result){

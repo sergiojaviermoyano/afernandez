@@ -52,4 +52,9 @@ class customer extends CI_Controller {
 		$data = $this->Customers->findCustomer($this->input->post());
 		echo json_encode($data);
 	}
+
+	public function findCustomerId(){
+		$data = $this->Customers->findCustomerId($this->input->post());
+		echo json_encode($data);
+	}
 }

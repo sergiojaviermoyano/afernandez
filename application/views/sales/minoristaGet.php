@@ -1,9 +1,10 @@
+<input type="hidden" id="oId" value="<?php echo $order['order']['oId'];?>"
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title" style="color: #00a65a"><strong>Nueva Venta <i class="fa fa-fw fa-cart-plus"></i></strong></h3>
+          <h3 class="box-title" style="color: #00a65a"><strong>Cobrar Presupuesto <i class="fa fa-fw fa-cart-plus"></i></strong></h3>
           <i class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -16,9 +17,9 @@
 	        				<label style="margin-top: 7px">Lista de Precios</label>
 		        		</div>
 		        		<div class="col-xs-8">
-		        			<select class="form-control" id="lpId">
+		        			<select class="form-control" id="lpId" disabled>
 						      <?php foreach ($lists as $key => $item):?>
-						        <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpDefault'] == true ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
+						        <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpId'] == $order['order']['lpId'] ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
 						      <?php endforeach;?>
 						    </select>
 		        		</div>
@@ -30,7 +31,7 @@
   	        				<label style="margin-top: 7px">Cliente</label>
   		        		</div>
   		        		<div class="col-xs-4">
-  						      <input type="number" id="cliSearch" class="form-control" >
+  						      <input type="number" id="cliSearch" class="form-control" readonly>
   		        		</div>
                   <div class="col-xs-1">
                     <i class="fa fa-fw fa-search text-teal" style="margin-top: 12px"></i>
@@ -55,10 +56,10 @@
 	        				<label style="margin-top: 7px">Vendedor</label>
 		        		</div>
 		        		<div class="col-xs-8">
-                  <select class="form-control select2" id="venId">
+                  <select class="form-control select2" id="venId" disabled> <!--select2-->
                     <option id="-1" selected></option>
 						      <?php foreach ($vendedores as $key => $item):?>
-						        <option value="<?php echo $item['id'];?>"><?php echo $item['codigo'].' - '.$item['nombre'];?> </option>
+						        <option value="<?php echo $item['id'];?>" <?php echo $item['id'] == $order['order']['venId'] ?'selected':''?>><?php echo $item['codigo'].' - '.$item['nombre'];?> </option>
 						      <?php endforeach;?>
 						    </select>
 		        		</div>
@@ -76,7 +77,7 @@
                     <strong class="text-green"><h1 id="totalSale">0,00</h1></strong>
                   </div>
                   <div style="text-align: right; padding: 5px;">
-                    <button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>
+                    <!--<button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>-->
                     <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
@@ -84,18 +85,18 @@
             </div>
         	</div>
         	<!-- Buscador -->
-        	<div class="row">
+          <!--
+          <div class="row">
         		<div class="col-xs-12">
         			<div class="box box-default box-solid">
 			            <div class="box-header with-border">
 			              <h3 class="box-title">Buscador de Artículos</h3>
-			              <!-- /.box-tools -->
 			            </div>
-			            <!-- /.box-header -->
 			            <div class="box-body">
 			            	<div class="row">
 				                <div class="col-xs-1">
 				                   <!--<button class="btn btn-block btn-warning" id="btnManualArt"><i class="fa fa-fw fa-hand-paper-o"></i></button>-->
+                           <!--
 				                </div>
 				                <div class="col-xs-1" style="margin-top: 7px; text-align: right;">
 				                    <label>Producto</label>
@@ -118,7 +119,8 @@
 			        </div>
         		</div>
         	</div>
-        	<!-- Detalle y Total -->
+          -->
+          <!-- Detalle y Total -->
         	<div class="row">
         		<div class="col-xs-12">
         			<div class="box box-warning box-solid">
@@ -140,8 +142,24 @@
 				            		</tr>
 				            	</thead>
 				            	<tbody>
-
-								</tbody>
+                        <?php
+                        //var_dump($order['detalle']);
+                        foreach ($order['detalle'] as $item) {
+                          echo '<tr>';
+                          echo '<td></td>';
+                          echo '<td>'.$item['artBarCode'].'</td>';
+                          echo '<td>'.$item['artDescripcion'].'</td>';
+                          echo '<td style="text-align: right">'.number_format($item['artCant'],2).'</td>';
+                          echo '<td style="text-align: right">'.number_format($item['artVenta'],2).'</td>';
+                          echo '<td style="text-align: right">'.number_format($item['artVenta'] * $item['artCant'], 2).'</td>';
+                          echo '<td style="display: none">'.$item['artId'].'</td>';
+                          echo '<td style="display: none">'.$item['artCosto'].'</td>';
+                          echo '<td style="display: none">1</td>';
+                          echo '<td style="display: none">'.$item['artVentaSD'].'</td>';
+                          echo '</tr>';
+                        }
+                        ?>
+								      </tbody>
 			            	</table>
 			            </div>
 			        </div>
@@ -313,12 +331,11 @@
 </div>
 
 <script>
-//$("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-//$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:','});
 $(".select2").select2();
 
-setTimeout("$('#venId').select2('open');",800);
+//setTimeout("$('#venId').select2('open');",800);
+//$('#venId').select2({disabled:readonly});
 $('#venId').on("select2:select", function(e) {
    $('#lblProducto').focus();
 });
@@ -699,13 +716,13 @@ $('#btnServiceEfectivo').click(function(){
 
   //Buscador de cliente
   function BuscarCliente(){
-    if($('#cliSearch').val()) {
-      //Buscar datos por dni
+    //if($('#cliSearch').val()) {
+      //Buscar datos por Id
       WaitingOpen('Buscando Cliente');
       $.ajax({
             type: 'POST',
-            data: { dni : $('#cliSearch').val() },
-        url: 'index.php/customer/findCustomer',
+            data: { id : <?php echo $order['order']['lpId'];?> },
+        url: 'index.php/customer/findCustomerId',
         success: function(result){
                       WaitingClose();
                       if(!result){
@@ -718,7 +735,7 @@ $('#btnServiceEfectivo').click(function(){
                         $('#lblDocumento').html(result.cliente.cliDocumento);
                         $('#cliId').val(result.cliente.cliId);
                         $('#cliSearch').val('');
-                        setTimeout("$('#venId').select2('open');",800);
+                        //setTimeout("$('#venId').select2('open');",800);
                       }
               },
         error: function(result){
@@ -727,7 +744,7 @@ $('#btnServiceEfectivo').click(function(){
             },
             dataType: 'json'
         });
-    }
+    //}
 
   //setTimeout("$('#modalCli').modal('show');",1000);
   function CargarModalNuevoCliente(dni){
@@ -828,7 +845,7 @@ $('#btnServiceEfectivo').click(function(){
 function Cobrar_(esPresupuesto){
   //Barrer Informacion
   //Id de la operación
-  var opId = -1;
+  var opId = $('#oId').val();
   //Lista de Precio y su porcentaje-----------------------
   var selected = $('#lpId').find('option:selected');
   var lp = {
@@ -951,4 +968,6 @@ function Cobrar_(esPresupuesto){
           dataType: 'json'
       });
 };
+BuscarCliente();
+Calcular();
 </script>
