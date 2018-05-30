@@ -92,7 +92,7 @@
 			              <!-- /.box-tools -->
 			            </div>
 			            <!-- /.box-header -->
-			            <div class="box-body">
+			            <div class="box-body" id="divBuscador">
 			            	<div class="row">
 				                <div class="col-xs-1">
 				                   <!--<button class="btn btn-block btn-warning" id="btnManualArt"><i class="fa fa-fw fa-hand-paper-o"></i></button>-->

@@ -56,7 +56,7 @@ class Sales extends CI_Model
 				}
 			} else {
 				//Es el cobro de un presupuesto
-				if($this->db->update('orden', array('oEstado' => 'FA'), array('oId'=>$oId)) == false) {
+				if($this->db->update('orden', array('oEstado' => 'FA', 'cajaId' => $venta['cajaId']), array('oId'=>$oId)) == false) {
 					$this->db->trans_complete();
 					return false;
 				}
@@ -187,7 +187,7 @@ class Sales extends CI_Model
 				}
 			} else {
 				//Es el cobro de un presupuesto
-				if($this->db->update('orden', array('oEstado' => 'FA'), array('oId'=>$oId)) == false) {
+				if($this->db->update('orden', array('oEstado' => 'FA', 'cajaId' => $venta['cajaId']), array('oId'=>$oId)) == false) {
 					$this->db->trans_complete();
 					return false;
 				}
