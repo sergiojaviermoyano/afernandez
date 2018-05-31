@@ -4,10 +4,26 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Comprobante Venta Minoristas </h4>
+        <h4 class="modal-title" id="myModalLabel">Comprobante Venta Reserva </h4>
       </div>
       <div class="modal-body" >
         <iframe id="iframe_pdf" style="width:100%;min-height:600px"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_order_detail" tabindex="-1" role="dialog" aria-labelledby="modalOrderDetail">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Detall de Venta Reserva</h4>
+      </div>
+      <div class="modal-body">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -50,8 +66,41 @@
             //$("#print_order_modal").modal("show");
             return false;
         });
-        function Print(id){
+        
+        $(document).on('click','.fa-search',function(){
+            var id=$(this).data('id');
+            console.debug("====> fa-search: %o <====",id);
+
+            $.ajax({
+                type: 'POST',
+                data: { id : id, act: 'Print' },
+                url: 'index.php/sale/detailComprobante',
+                success: function(result){
+                    
+                    WaitingClose();
+                    console.log(result);
+                    $("#modal_order_detail").find('.modal-body').html(result.html);                    
+                    $('#modal_order_detail').modal('show');                   
+                    return false;
+                    
+                    
+                   /* WaitingClose();
+                    var url = "./assets/reports/orders_minorista/" + result;
+                    $('#printDoc').attr('src', url);
+                    setTimeout("$('#modalPrint').modal('show')",800);*/
+                },
+                error: function(result){
+                    WaitingClose();
+                    ProcesarError(result.responseText, 'modalRubro');
+                },
+                dataType: 'json'
+            });
+
+            //
             return false;
-        }
+        });
+        
+
+
     })
 </script>

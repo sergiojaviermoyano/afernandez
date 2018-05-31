@@ -123,4 +123,10 @@ class sale extends CI_Controller {
 		*/
 		echo json_encode($this->Sales->getSaleById($_REQUEST));
 	}
+
+
+	public function detailComprobante(){
+		$order_detail_output=$this->Sales->getReservaDetailHTML($_REQUEST);
+		echo json_encode(array('html'=>$order_detail_output));
+	}
 }

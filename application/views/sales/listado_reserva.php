@@ -4,7 +4,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Ventas Mayoristas</h3>
+          <h3 class="box-title">Ventas Reservas</h3>
           <?php
           /*
           if (strpos($permission,'Add') !== false) {
@@ -78,8 +78,10 @@
                 $.each(response.data,function(index,item){
                     var col1,col2,col3,col4, col5='';
                     col1='';
-                   // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
-                    col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
+                    col1+='<i class="fa fa-fw fa-print"  style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
+                    col1+='<i class="fa fa-fw fa-search" style="color: #00a65a; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
+                    col1+='<i class="fa fa-fw fa-plus"   style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
+                    
                     col2=item.oId;
                     col3=item.fecha;
                     switch(item.oEstado){
