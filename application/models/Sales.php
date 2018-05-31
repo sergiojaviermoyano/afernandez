@@ -507,7 +507,7 @@ class Sales extends CI_Model
 			$importe_total=0;
 
 			$html = '
-			<table style="width:80%;  border-spacing: 10px;    border-collapse: separate; color: #72324a;">
+			<table style="width:100%;  border-spacing: 10px;    border-collapse: separate; color: #72324a;">
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
 						<h1 style="font-size:55px !important; text-align:center; width:100%; padding-botton:0px;">
@@ -594,6 +594,8 @@ class Sales extends CI_Model
 			ini_set("memory_limit","300M");
 			//Tamaño de la página y orientación
 			$dompdf->set_paper('A3','portrait');
+			//$dompdf->set_option('isHtml5ParserEnabled', TRUE);
+
 			//lanzamos a render
 			$dompdf->render();
 			//guardamos a PDF
