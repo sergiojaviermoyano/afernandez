@@ -41,7 +41,6 @@ var row___ = 0, rows___ = 0;
 var move___ = 0;
 var minLenght___ = 2;
 function buscadorArticlesPriceMayorista(string, id, detail, nextFocus, price){
-  debugger;
   id____ = id;
   detail____ = detail;
   nextFocus____ = nextFocus;
@@ -95,6 +94,11 @@ function BuscarArticlePriceMayorista(){
 
 
                           }
+                        }else {
+                            detail____.prop('disabled', false);
+                            detail____.focus();
+                            $('#divBuscador').addClass('has-error');
+                            setTimeout(function () { $('#divBuscador').removeClass('has-error');}, 1000);
                         }
                 },
           error: function(result){

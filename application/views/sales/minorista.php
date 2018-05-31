@@ -92,7 +92,7 @@
 			              <!-- /.box-tools -->
 			            </div>
 			            <!-- /.box-header -->
-			            <div class="box-body">
+			            <div class="box-body" id="divBuscador">
 			            	<div class="row">
 				                <div class="col-xs-1">
 				                   <!--<button class="btn btn-block btn-warning" id="btnManualArt"><i class="fa fa-fw fa-hand-paper-o"></i></button>-->
@@ -827,6 +827,8 @@ $('#btnServiceEfectivo').click(function(){
 
 function Cobrar_(esPresupuesto){
   //Barrer Informacion
+  //Id de la operación
+  var opId = -1;
   //Lista de Precio y su porcentaje-----------------------
   var selected = $('#lpId').find('option:selected');
   var lp = {
@@ -933,7 +935,8 @@ function Cobrar_(esPresupuesto){
                   medi:     medios,
                   des:      desc,
                   det:      detalle,
-                  esPre:    esPresupuesto
+                  esPre:    esPresupuesto,
+                  oId:      opId
                 },
       url: 'index.php/sale/setSaleMinorista',
       success: function(result){

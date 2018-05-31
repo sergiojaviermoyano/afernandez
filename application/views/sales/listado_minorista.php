@@ -87,11 +87,11 @@
                             break;
                         }
                         case 'IN':{
-                            col4='<small class="label pull-left bg-red">Activa</small>';
+                            col4='<small class="label pull-left bg-red">Inactiva</small>';
                             break;
                         }
                         case 'FA':{
-                            col4='<small class="label pull-left bg-blue">Activa</small>';
+                            col4='<small class="label pull-left bg-blue">Facturado</small>';
                             break;
                         }
                         default:{
@@ -100,7 +100,11 @@
                         }
                     }
                     //col4=item.oEstado;
-                    col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;" title="Presupuesto">P</small>':' ';
+                    if(item.oEstado == 'AC'){
+                        col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-orange" style="font-size:14px; margin-right:5px; cursor: pointer;" title="Cobrar" onClick="cobrar(' + item.oId + ')">P</small>':' ';
+                    } else {
+                        col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;">P</small>':' ';
+                    }
                     output.push([col1,col2,col3,col4,col5]);
                 });
                 return output;
@@ -116,4 +120,8 @@
         }
     });
   });
+
+  function cobrar(id){
+    cargarView('sale','minoristaGet',id);
+  }
 </script>

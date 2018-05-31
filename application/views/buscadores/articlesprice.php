@@ -67,6 +67,7 @@ function BuscarArticlePrice(){
                           if(resultList.length == 1){
                               seleccionarArticlePrice(resultList[0].artId, resultList[0].artDescription, calcularPrecioInterno(resultList[0]));
                           } else {
+
                             $.each(resultList, function(index, result){
                                 var row___ = '<tr>';
                                 row___ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
@@ -91,9 +92,12 @@ function BuscarArticlePrice(){
                               $('#buscadorArticlesPrice').modal('show');
                               setTimeout(function () { $('#txtArtPrice').focus();}, 1000);
                             }
-
-
                           }
+                        } else {
+                            detail___.prop('disabled', false);
+                            detail___.focus();
+                            $('#divBuscador').addClass('has-error');
+                            setTimeout(function () { $('#divBuscador').removeClass('has-error');}, 1000);
                         }
                 },
           error: function(result){

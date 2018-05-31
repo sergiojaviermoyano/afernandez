@@ -15,7 +15,7 @@ class Sales extends CI_Model
 		}
 		else
 		{
-
+			$oId = $data['oId'];
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
 				'lpPorcentaje'	=> 	$data['lpr']['por'],
@@ -25,11 +25,11 @@ class Sales extends CI_Model
 				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
 				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
 				'oEsPlanReserva'=>	0,
-				'oEsMayorista'	=> 	0
+				'oEsMayorista'	=> 	0,
+				'oEstado'				=> 	$data['esPre'] == 1 ? 'AC' : 'FA'
 			);
-
-
 			//verificar si hay cajas abiertas
+
 			if($data['esPre'] == 0){
 				$userdata = $this->session->userdata('user_data');
 				$this->db->select('*');
@@ -47,27 +47,37 @@ class Sales extends CI_Model
 			//-----------------------------------------------
 
 			$this->db->trans_start();
-			if($this->db->insert('orden', $venta) == false) {
-				$this->db->trans_complete();
-				return false;
-			}else {
-				$idOrden = $this->db->insert_id();
-
+			if($oId < 0){ // Es una venta o un nuevo presupuesto
+				if($this->db->insert('orden', $venta) == false) {
+					$this->db->trans_complete();
+					return false;
+				}else{
+					$idOrden = $this->db->insert_id();
+				}
+			} else {
+				//Es el cobro de un presupuesto
+				if($this->db->update('orden', array('oEstado' => 'FA', 'cajaId' => $venta['cajaId']), array('oId'=>$oId)) == false) {
+					$this->db->trans_complete();
+					return false;
+				}
+			}
 				//Registrar Detalle
 				foreach ($data['det'] as $o) {
-					$insert = array(
-							'oId' 					=> $idOrden,
-							'artId' 				=> $o['artId'],
-							'artCode' 			=> $o['artCode'],
-							'artDescripcion'=> $o['artDescripcion'],
-							'artCosto'			=> $o['artCosto'],
-							'artVenta'			=> $o['artventa'],
-							'artVentaSD'		=> $o['artventaSD'],
-							'artCant'				=> $o['cant']
-						);
+					if($oId < 0){
+						$insert = array(
+								'oId' 					=> $idOrden,
+								'artId' 				=> $o['artId'],
+								'artCode' 			=> $o['artCode'],
+								'artDescripcion'=> $o['artDescripcion'],
+								'artCosto'			=> $o['artCosto'],
+								'artVenta'			=> $o['artventa'],
+								'artVentaSD'		=> $o['artventaSD'],
+								'artCant'				=> $o['cant']
+							);
 
-					if($this->db->insert('ordendetalle', $insert) == false) {
-						return false;
+						if($this->db->insert('ordendetalle', $insert) == false) {
+							return false;
+						}
 					}
 					//--------------------------------
 
@@ -79,7 +89,7 @@ class Sales extends CI_Model
 										'artId' 		=> $o['artId'],
 										'stkCant'		=> $o['cant'] * -1,
 										'stkOrigen'	=> 'VN',
-										'refId'			=> $idOrden
+										'refId'			=> $oId < 0 ? $idOrden : $oId
 									);
 
 								if($this->db->insert('stock', $stock) == false) {
@@ -93,7 +103,7 @@ class Sales extends CI_Model
 					if($data['esPre'] == 0){
 						foreach ($data['medi'] as $m) {
 							$medio = array(
-								'oId'					=> $idOrden,
+								'oId'					=> $oId < 0 ? $idOrden : $oId,
 								'medId'				=> $m['id'],
 								'rcbImporte'	=> $m['imp']
 							);
@@ -105,8 +115,8 @@ class Sales extends CI_Model
 							//Si es cuenta corriente registrar movieminto
 							if($m['id'] == 7){
 								$ctacte = array(
-									'cctepConcepto'	=>'Venta: '.$idOrden ,
-									'cctepRef'			=>	$idOrden,
+									'cctepConcepto'	=>'Venta: '.($oId < 0 ? $idOrden : $oId),
+									'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
 									'cctepTipo'			=>	'VN',
 									'cctepDebe'			=>	$m['imp'],
 									'cliId'					=> 	$data['clie']['id'],
@@ -124,8 +134,7 @@ class Sales extends CI_Model
 				}
 
 				$this->db->trans_complete();
-				return $idOrden;
-			}
+				return $oId < 0 ? $idOrden : $oId;
 		}
 	}
 
@@ -136,7 +145,7 @@ class Sales extends CI_Model
 		}
 		else
 		{
-
+			$oId = $data['oId'];
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
 				'lpPorcentaje'	=> 	$data['lpr']['por'],
@@ -146,7 +155,8 @@ class Sales extends CI_Model
 				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
 				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
 				'oEsPlanReserva'=>	0,
-				'oEsMayorista'	=> 	1
+				'oEsMayorista'	=> 	1,
+				'oEstado'				=> 	$data['esPre'] == 1 ? 'AC' : 'FA'
 			);
 
 
@@ -168,27 +178,38 @@ class Sales extends CI_Model
 			//-----------------------------------------------
 
 			$this->db->trans_start();
-			if($this->db->insert('orden', $venta) == false) {
-				$this->db->trans_complete();
-				return false;
-			}else {
-				$idOrden = $this->db->insert_id();
+			if($oId < 0){ // Es una venta o un nuevo presupuesto
+				if($this->db->insert('orden', $venta) == false) {
+					$this->db->trans_complete();
+					return false;
+				}else{
+					$idOrden = $this->db->insert_id();
+				}
+			} else {
+				//Es el cobro de un presupuesto
+				if($this->db->update('orden', array('oEstado' => 'FA', 'cajaId' => $venta['cajaId']), array('oId'=>$oId)) == false) {
+					$this->db->trans_complete();
+					return false;
+				}
+			}
 
 				//Registrar Detalle
 				foreach ($data['det'] as $o) {
-					$insert = array(
-							'oId' 					=> $idOrden,
-							'artId' 				=> $o['artId'],
-							'artCode' 			=> $o['artCode'],
-							'artDescripcion'=> $o['artDescripcion'],
-							'artCosto'			=> $o['artCosto'],
-							'artVenta'			=> $o['artventa'],
-							'artVentaSD'		=> $o['artventaSD'],
-							'artCant'				=> $o['cant']
-						);
+					if($oId < 0){
+						$insert = array(
+								'oId' 					=> $idOrden,
+								'artId' 				=> $o['artId'],
+								'artCode' 			=> $o['artCode'],
+								'artDescripcion'=> $o['artDescripcion'],
+								'artCosto'			=> $o['artCosto'],
+								'artVenta'			=> $o['artventa'],
+								'artVentaSD'		=> $o['artventaSD'],
+								'artCant'				=> $o['cant']
+							);
 
-					if($this->db->insert('ordendetalle', $insert) == false) {
-						return false;
+						if($this->db->insert('ordendetalle', $insert) == false) {
+							return false;
+						}
 					}
 					//--------------------------------
 
@@ -200,7 +221,7 @@ class Sales extends CI_Model
 										'artId' 		=> $o['artId'],
 										'stkCant'		=> $o['cant'] * -1,
 										'stkOrigen'	=> 'VN',
-										'refId'			=> $idOrden
+										'refId'			=> $oId < 0 ? $idOrden : $oId
 									);
 
 								if($this->db->insert('stock', $stock) == false) {
@@ -214,7 +235,7 @@ class Sales extends CI_Model
 					if($data['esPre'] == 0){
 						foreach ($data['medi'] as $m) {
 							$medio = array(
-								'oId'					=> $idOrden,
+								'oId'					=> $oId < 0 ? $idOrden : $oId,
 								'medId'				=> $m['id'],
 								'rcbImporte'	=> $m['imp']
 							);
@@ -226,8 +247,8 @@ class Sales extends CI_Model
 							//Si es cuenta corriente registrar movieminto
 							if($m['id'] == 7){
 								$ctacte = array(
-									'cctepConcepto'	=>'Venta: '.$idOrden ,
-									'cctepRef'			=>	$idOrden,
+									'cctepConcepto'	=>'Venta: '.$oId < 0 ? $idOrden : $oId ,
+									'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
 									'cctepTipo'			=>	'VN',
 									'cctepDebe'			=>	$m['imp'],
 									'cliId'					=> 	$data['clie']['id'],
@@ -245,8 +266,7 @@ class Sales extends CI_Model
 				}
 
 				$this->db->trans_complete();
-				return $idOrden;
-			}
+				return $oId < 0 ? $idOrden : $oId;
 		}
 	}
 
@@ -257,7 +277,6 @@ class Sales extends CI_Model
 		}
 		else
 		{
-
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
 				'lpPorcentaje'	=> 	$data['lpr']['por'],

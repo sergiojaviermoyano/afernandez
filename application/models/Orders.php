@@ -106,56 +106,29 @@ class Orders extends CI_Model
 		}
 	}
 
-	function getOrder($data = null){
-		if($data == null)
+	function getOrder($oId = null){
+		if($oId == null)
 		{
 			return false;
 		}
 		else
 		{
-			$action = $data['act'];
-			$idOrder = $data['id'];
 			$data = array();
+
 			//Datos del Ordern
-			$query= $this->db->get_where('ordendecompra',array('ocId'=>$idOrder));
+			$query= $this->db->get_where('orden',array('oId'=>$oId));
 			if ($query->num_rows() > 0)
 			{
 				$order = $query->result_array();
 				$data['order'] = $order[0];
-				$this->db->select("ocd.*, a.artBarCode");
-				$this->db->from('ordendecompradetalle ocd');
-				$this->db->join('articles a','a.artId=ocd.artId');
-				$this->db->where('ocId',$idOrder);
+				$this->db->select("od.*, a.artBarCode");
+				$this->db->from('ordendetalle od');
+				$this->db->join('articles a','a.artId=od.artId');
+				$this->db->where('oId',$oId);
 				$query = $this->db->get();
 				$detalleCompra=($query->num_rows()>0)?$query->result_array():array();
-				$data['detalleCompra']=$detalleCompra;
-
-			} else {
-				$Order = array();
-				$this->db->select_max('ocId');
- 				$query = $this->db->get('ordendecompra');
- 				$id = $query->result_array();
-				$Order['ocId'] = $id[0]['ocId'] + 1;
-				$Order['ocObservacion'] = '';
-				$Order['ocFecha'] = '';
-				$Order['ocEstado'] = '';
-				$Order['ocEsPresupuesto'] = '';
-				$Order['usrId'] = '';
-				$Order['lpId'] = '';
-				$Order['cliId'] = '';
-				$Order['redondeo'] = '0';
-				$data['order'] = $Order;
-				$data['detalleCompra']=array();
+				$data['detalle']=$detalleCompra;
 			}
-
-			//Readonly
-			$readonly = false;
-			if($action == 'Del' || $action == 'View'){
-				$readonly = true;
-			}
-			$data['read'] = $readonly;
-			$data['act'] = $action;
-
 			return $data;
 		}
 	}
