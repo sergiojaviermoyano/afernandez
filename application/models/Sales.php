@@ -593,7 +593,7 @@ class Sales extends CI_Model
 			//aumentamos memoria del servidor si es necesario
 			ini_set("memory_limit","300M");
 			//Tamaño de la página y orientación
-			$dompdf->set_paper('a3','portrait');
+			$dompdf->set_paper('A3','portrait');
 			//lanzamos a render
 			$dompdf->render();
 			//guardamos a PDF
