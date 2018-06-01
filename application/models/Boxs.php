@@ -521,7 +521,7 @@ class Boxs extends CI_Model
 	}
 
 	public function getBoxes ( $data = null){
-		$this->db->select('c.*,u.usrNick, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as apertura, DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i") as cierre');
+		$this->db->select('c.*,u.usrNick, DATE_FORMAT(c.cajaApertura, "%d-%m-%Y %H:%i") as apertura, DATE_FORMAT(c.cajaCierre, "%d-%m-%Y %H:%i") as cierre, (select sum(retImporte) from retiros where cajaId = c.cajaId) as retiro');
 		$this->db->from('cajas as c');
 		$this->db->join('sisusers as u','c.usrId = u.usrId', 'inner');
 		$this->db->order_by('c.cajaId','desc');

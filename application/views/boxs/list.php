@@ -12,7 +12,7 @@
               <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>
             <?php } else { ?>
               <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Nueva" disabled="disabled">Abrir</button>
-              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" onclick="AddRetiro()">Retiro</button>
+              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnRet" title="Retiro" >Retiro</button>
             <?php }
           }
           ?>
@@ -29,7 +29,7 @@
                 <th>Retiros</th>
               </tr>
             </thead>
-            <tbody>             
+            <tbody>
             </tbody>
           </table>
         </div><!-- /.box-body -->
@@ -46,10 +46,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Caja</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Caja</h4>
       </div>
       <div class="modal-body" id="modalBodyBox">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -65,10 +65,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction_"> </span> Retiros</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction_"> </span> Retiros</h4>
       </div>
       <div class="modal-body" id="modalBodyRetiro">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -116,9 +116,9 @@
                 var output = [];
                 var permission = $("#permission").val();
                 $.each(response.data,function(index,item){
-                    var col1,col2,col3,col4, col5 , col6='';                    
+                    var col1,col2,col3,col4, col5 , col6='';
                     col1='';
-                   
+
                     if(_permission.indexOf("Close") && item.cajaCierre==null){
                       col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="Close"></i>';
                     }
@@ -130,14 +130,18 @@
                     if(_permission.indexOf("View")){
                       col1 += '<i class="bt_view fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="View" ></i>';
                     }
-                    
+
                     col2=item.cajaId;
                     col3=(item.cajaApertura!=null)? item.apertura:'';
                     col4=(item.cajaCierre!=null)? item.cierre:'';
-                    
-                    
+
+
                     col5=item.usrNick;
-                    col6=0;
+                    if(item.retiro > 0)
+                      col6='<td style="text-align: center"><i class="fa fa-fw fa-sign-out" style="color: #3c8dbc; cursor: pointer;" id="btnConsRet" data-id="'+item.cajaId+'"></i></td>';
+                      else {
+                      col6='';
+                      }
                     output.push([col1,col2,col3,col4,col5 ,col6]);
                 });
                 return output;
@@ -175,12 +179,12 @@
               },
               dataType: 'json'
           });
-      
+
     });
 
 
 
-    
+
 
     $(document).on('click','.bt_view,.bt_close',function(){
       var data = $(this).data();
@@ -193,7 +197,7 @@
         $.ajax({
               type: 'POST',
               data: { id : id, act: action },
-          url: 'index.php/box/getBox', 
+          url: 'index.php/box/getBox',
           success: function(result){
                         WaitingClose();
                         $("#modalBodyBox").html(result.html);
@@ -214,7 +218,7 @@
       console.debug(data['id']);
       console.debug(data['action']);
       LoadBox(data['id'],data['action']);
-      return false;// 
+      return false;//
     });
 
     function LoadBox(id_, action_){
@@ -225,7 +229,7 @@
         $.ajax({
               type: 'POST',
               data: { id : id_, act: action },
-          url: 'index.php/box/getBox', 
+          url: 'index.php/box/getBox',
           success: function(result){
                         WaitingClose();
                         $("#modalBodyBox").html(result.html);
@@ -242,7 +246,7 @@
     }
 
     $('#btnSave').click(function(){
-  	
+
   	if(action == 'View')
   	{
   		$('#modalBox').modal('hide');
@@ -269,7 +273,7 @@
         default: hayError = true;
       }
     }
-    
+
 
     if(hayError == true){
     	$('#error').fadeIn('slow');
@@ -280,14 +284,14 @@
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
-          	data: { 
-                    id : id, 
-                    act: action, 
+          	data: {
+                    id : id,
+                    act: action,
                     ape: $('#cajaImpApertura').val(),
                     ven: $('#cajaImpVentas').val(),
                     cie: $('#cajaImpRendicion').val()
                   },
-    		url: 'index.php/box/setBox', 
+    		url: 'index.php/box/setBox',
     		success: function(result){
                 			WaitingClose();
                 			$('#modalBox').modal('hide');
@@ -301,13 +305,18 @@
     		});
   });
 
+  $(document).on('click','#btnRet',function(){
+    AddRetiro();
+    return false;//
+  });
+
   function AddRetiro(){
     LoadIconAction('modalAction_','Add');
     WaitingOpen('Cargando Retiro');
       $.ajax({
             type: 'POST',
             data: null,
-        url: 'index.php/box/getRetiro', 
+        url: 'index.php/box/getRetiro',
         success: function(result){
                       WaitingClose();
                       $("#modalBodyRetiro").html(result.html);
@@ -323,17 +332,17 @@
   }
 
   $('#btnSave_').click(function(){
-    
+
     var hayError = false;
     if($('#retImporte').val() == '')
     {
       hayError = true;
     }
-    
+
     if($('#retDescripcion').val() == '')
     {
       hayError = true;
-    }    
+    }
 
     if(hayError == true){
       $('#error_').fadeIn('slow');
@@ -344,11 +353,11 @@
     WaitingOpen('Guardando Retiro');
       $.ajax({
             type: 'POST',
-            data: { 
+            data: {
                     imp: $('#retImporte').val(),
                     des: $('#retDescripcion').val()
                   },
-        url: 'index.php/box/setRetiro', 
+        url: 'index.php/box/setRetiro',
         success: function(result){
                       WaitingClose();
                       $('#modalRetiro').modal('hide');
@@ -362,13 +371,21 @@
         });
   });
 
+
+$(document).on('click','#btnConsRet',function(){
+  var data = $(this).data();
+  id = data.id;
+  verEgresos(id);
+  return false;//
+});
+
 function verEgresos(cajaId){
   LoadIconAction('modalAction_','Ret');
   WaitingOpen('Consultando Retiros');
       $.ajax({
             type: 'POST',
             data: {id: cajaId},
-        url: 'index.php/box/getRetiros', 
+        url: 'index.php/box/getRetiros',
         success: function(result){
                       WaitingClose();
                       $("#modalBodyRetiro").html(result.html);
@@ -405,5 +422,5 @@ function printBox(cajaId){
         });
 }
 
-  }); 
+  });
 </script>
