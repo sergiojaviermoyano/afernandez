@@ -536,5 +536,14 @@ class Boxs extends CI_Model
 		//echo $this->db->last_query();
 		return $query->result_array();
 	}
+
+	public function getPagosOrden($data = null){
+		$this->db->select('recibos.rcbImporte, DATE_FORMAT(recibos.rcbFecha, \'%d-%m-%Y %H:%i\') as rcbFecha, mediosdepago.medDescripcion');
+		$this->db->from('recibos');
+		$this->db->join('mediosdepago', 'mediosdepago.medId = recibos.medId');
+		$this->db->where(array('oId' => $data['id']));
+		$query = $this->db->get();
+		return $query->result_array();
+	}
 }
 ?>

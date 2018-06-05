@@ -63,6 +63,10 @@ class sale extends CI_Controller {
 		echo json_encode($this->Sales->setSalePreventa($this->input->post()));
 	}
 
+	public function setSalePago(){
+		echo json_encode($this->Sales->setSalePago($this->input->post()));
+	}
+
 	public function listado_minorista($permission){
 		$data=array();
 		$data['list'] = array();

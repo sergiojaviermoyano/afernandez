@@ -347,7 +347,7 @@ class Sales extends CI_Model
 					//----------------------------------
 
 					//medios de pagos
-					if($data['esPre'] == 0){
+					if($data['esPre'] == 0 && isset($data['medi'])){
 						foreach ($data['medi'] as $m) {
 							$medio = array(
 								'oId'					=> $idOrden,
@@ -383,6 +383,75 @@ class Sales extends CI_Model
 				$this->db->trans_complete();
 				return $idOrden;
 			}
+		}
+	}
+
+	function setSalePago($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+
+			//verificar si hay cajas abiertas
+			$userdata = $this->session->userdata('user_data');
+			$this->db->select('*');
+			$this->db->where(array('cajaCierre'=>null));
+			$this->db->from('cajas');
+			$query = $this->db->get();
+			$result = $query->result_array();
+			if(count($result) > 0){
+				$result = $query->result_array();
+				$venta['cajaId'] = $result[0]['cajaId'];
+			} else {
+				return false;
+			}
+			//-----------------------------------------------
+
+			$this->db->trans_start();
+			$oId = $data['oId'];
+			//medios de pagos
+			foreach ($data['medi'] as $m) {
+				$medio = array(
+					'oId'					=> $oId,
+					'medId'				=> $m['id'],
+					'rcbImporte'	=> $m['imp']
+				);
+
+				if($this->db->insert('recibos', $medio) == false) {
+					return false;
+				}
+			}
+			if($data['saldo'] == 0){
+				//Facturada
+				//Actualizar orden de compra
+				$update = array('oEstado' => 'FA');
+				if($this->db->update('orden', $update, array('oId'=>$oId)) == false) {
+					return false;
+				}
+
+				$query = $this->db->get_where('stockreserva', array('refId' => $oId));
+				foreach ($query->result_array() as $item) {
+					$stock = array(
+							'artId' 		=> $item['artId'],
+							'stkCant'		=> $item['stkCant'] * -1,
+							'stkOrigen'	=> 'VN',
+							'refId'			=> $oId
+						);
+
+						if($this->db->insert('stockreserva', $stock) == false) {
+							return false;
+						}
+
+						if($this->db->insert('stock', $stock) == false) {
+							return false;
+						}
+				}
+			}
+			//----------------------------------
+			$this->db->trans_complete();
+			return $oId;
 		}
 	}
 
@@ -459,7 +528,7 @@ class Sales extends CI_Model
 
 	public function getReservaFiltered( $data = null){
 
-		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha, (select IF(sum(rcbImporte) IS NULL, 0, sum(rcbImporte))  from recibos r where r.oId = orden.oId) as  pago, (select sum(artVenta * artCant) from ordendetalle d where d.oId = orden.oId) as total');
 		$this->db->order_by('oFecha','desc');
 		$this->db->where(array('oEsPlanReserva'=>1));
 		if($data['search']['value']!=''){
@@ -728,7 +797,7 @@ class Sales extends CI_Model
 				</tr>
 			</table>
 				';
-			
+
 			return $html;
 		}
 		return false;

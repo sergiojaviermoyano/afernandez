@@ -87,4 +87,8 @@ class box extends CI_Controller {
 	public function printBox(){
 		echo json_encode($this->Boxs->printBox($this->input->post()));
 	}
+
+	public function getPagosOrden(){
+		echo json_encode($this->Boxs->getPagosOrden($this->input->post()));
+	}
 }

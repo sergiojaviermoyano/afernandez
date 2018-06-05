@@ -245,17 +245,19 @@
               <td><input type="text" class="form-control calcula" id="data" value="" ></td>
             </tr>
             <!-- Cuenta Corriente -->
+            <!--
             <tr>
               <td style="width:60%; text-align: right;">Cuenta Corriente</td>
               <td style="width:1%; padding-left:5px; padding-right:5px;">$</td>
               <td><input type="text" class="form-control calcula" id="cuentacorriente" value="" ></td>
-            </tr>
+            </tr>-->
             <!-- Credito Argentino -->
+            <!--
             <tr>
               <td style="width:60%; text-align: right;">Crédito Argentino</td>
               <td style="width:1%; padding-left:5px; padding-right:5px;">$</td>
               <td><input type="text" class="form-control calcula" id="creditoargentino" value="" ></td>
-            </tr>
+            </tr>-->
           </table>
           <hr>
           <table style="width:100%; ">
@@ -272,11 +274,12 @@
               <td style="text-align: right;"><strong class="text-blue"><h1 style="margin-top:1px; margin-buttom: 1px;" id="totalPagosMedios">0,00</h1></strong></td>
             </tr>
             <!-- Descuento -->
+            <!--
             <tr>
               <td style="width:60%; text-align: right;">Descuento (-)</td>
               <td style="width:1%; padding-left:5px; padding-right:5px;">$</td>
               <td><input type="text" class="form-control calcula" id="descuento" value="" ></td>
-            </tr>
+            </tr>-->
             <!-- Saldo -->
             <tr>
               <td style="width:60%; text-align: right; padding-top: 7px;">Saldo</td>
@@ -455,9 +458,9 @@ $('#btnServiceBuy').click(function(){
     $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
     $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
     $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    //$('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    //$('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    //$('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
     $('#totalSaleMedios').html(importeVenta.toFixed(2));
     $('#modalMedios').modal('show');
     CalcularMediosDePago();
@@ -471,8 +474,8 @@ function SumarPagos(){
   var mastercard = parseFloat($('#mastercard').val() == '' ? 0 : ($('#mastercard').val().replace('.','')).replace(',','.'));
   var nevada = parseFloat($('#nevada').val() == '' ? 0 : ($('#nevada').val().replace('.','')).replace(',','.'));
   var data = parseFloat($('#data').val() == '' ? 0 : ($('#data').val().replace('.','')).replace(',','.'));
-  var cuentacorriente = parseFloat($('#cuentacorriente').val() == '' ? 0 : ($('#cuentacorriente').val().replace('.','')).replace(',','.'));
-  var creditoargentino = parseFloat($('#creditoargentino').val() == '' ? 0 : ($('#creditoargentino').val().replace('.','')).replace(',','.'));
+  var cuentacorriente = 0;//parseFloat($('#cuentacorriente').val() == '' ? 0 : ($('#cuentacorriente').val().replace('.','')).replace(',','.'));
+  var creditoargentino = 0;//parseFloat($('#creditoargentino').val() == '' ? 0 : ($('#creditoargentino').val().replace('.','')).replace(',','.'));
 
   $('#totalPagosMedios').html(parseFloat(efectivo + visa + mastercard + nevada + data + cuentacorriente + creditoargentino).toFixed(2));
 }
@@ -481,7 +484,7 @@ function CalcularMediosDePago(){
   SumarPagos();
   var total = parseFloat($('#totalSaleMedios').html());
   var pagos = parseFloat($('#totalPagosMedios').html());
-  var descuento = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
+  var descuento = 0;//parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
 
   $('#totalSaldoMedios').html(parseFloat(parseFloat(total) - parseFloat(pagos) - parseFloat(descuento)).toFixed(2));
   /*if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
@@ -902,6 +905,7 @@ function Cobrar_(esPresupuesto){
       medios.push(med);
     }
     //CuentaCorriente
+    /*
     if($('#cuentacorriente').val() != ''){
       med = {
         id: 7,
@@ -916,9 +920,9 @@ function Cobrar_(esPresupuesto){
         imp: parseFloat(($('#creditoargentino').val().replace('.','')).replace(',','.'))
       };
       medios.push(med);
-    }
+    }*/
     //Descuento--------------------------------------------
-    var desc = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
+    var desc = 0;//parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
   } else {
     var desc = 0;
   }
