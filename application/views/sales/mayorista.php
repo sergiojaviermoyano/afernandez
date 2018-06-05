@@ -450,6 +450,12 @@ $('#btnServiceBuy').click(function(){
   var importeVenta = parseFloat($('#totalSale').html());
   if(importeVenta > 0){
     //Clean medios
+    if($('#cliId').val() == '1'){
+      //Consumidor final
+      $('#cuentacorriente').prop("disabled", true);
+    } else {
+      $('#cuentacorriente').prop("disabled", false);
+    }
     $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
     $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
     $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
