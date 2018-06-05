@@ -91,15 +91,18 @@ class Boxs extends CI_Model
 				$this->db->select('sum(ordendetalle.artVenta * ordendetalle.artCant) as suma', false);
 				$this->db->from('ordendetalle');
 				$this->db->join('orden', 'orden.oId = ordendetalle.oId');
-				$this->db->where(array('orden.cajaId'=>$idBox, 'orden.oEstado' => 'AC'));
+				$this->db->where(array('orden.cajaId'=>$idBox));
+				$this->db->where_in('orden.oEstado', array('AC','FA'));
+				//$this->db->where(array('orden.cajaId'=>$idBox,'orden.oEstado' => 'FA'));
 				$query = $this->db->get();
+				//echo $this->db->last_query();
 				$data['box']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
 
 				$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r
-										  join orden as o on o.oId = r.oId
 										  join mediosdepago as m on m.medId = r.medId
-										  where o.cajaId = '.$idBox.'
+										  where r.cajaId = '.$idBox.'
 										  GROUP BY r.medId');
+											//join orden as o on o.oId = r.oId
 
 				$data['box']['medios'] = $query->result_array();
 
@@ -318,7 +321,7 @@ class Boxs extends CI_Model
 						<tr>
 							<td colspan="2"><hr></td>
 						</tr> ';
-			$importe = $result['box']['cajaImpApertura'] + $result['box']['cajaImpVentas'] + $result['box']['cliente'] - $result['box']['proveedor'];
+			$importe = $result['box']['cajaImpApertura'] +  $result['box']['cliente'] - $result['box']['proveedor']; //$result['box']['cajaImpVentas'] +
 			$html .= '	<tr>
 							<td colspan="2">
 								<table width="100%">
@@ -327,7 +330,7 @@ class Boxs extends CI_Model
 											Fondo Inicial (+):
 										</td>
 										<td width="27%">
-											<strong>$ '.$result['box']['cajaImpApertura'].'</strong>
+											<strong>$ '.number_format($result['box']['cajaImpApertura'],2).'</strong>
 										</td>
 										<td width="15%">
 
@@ -338,10 +341,10 @@ class Boxs extends CI_Model
 									</tr>
 									<tr>
 										<td width="23%">
-											Importe Cobrado (+):
+											Importe Vendido (*):
 										</td>
 										<td width="27%">
-											<strong>$ '.$result['box']['cajaImpVentas'].'</strong>
+											<strong>$ '.number_format($result['box']['cajaImpVentas'],2).'</strong>
 										</td>
 										<td width="15%" style="text-align: right:">
 											Ventas:
@@ -384,12 +387,12 @@ class Boxs extends CI_Model
 										</td>
 									</tr>';
 									foreach ($result['box']['medios'] as $key => $item):
-									if($item['medDescripcion'] != 'Efectivo'){
-										$importe -= $item['importe'];
+									if($item['medDescripcion'] == 'Efectivo'){
+										$importe += $item['importe'];
 									}
 								    $html .= '<tr>
 												<td width="23%">
-													'.$item['medDescripcion'].' '.($item['medDescripcion'] == 'Efectivo' ? '(*)': '(-)').':
+													'.$item['medDescripcion'].' '.($item['medDescripcion'] == 'Efectivo' ? '(+)': '(-)').':
 												</td>
 												<td width="27%">
 													<strong>$ '.$item['importe'].'</strong>
@@ -398,7 +401,7 @@ class Boxs extends CI_Model
 
 												</td>
 												<td width="35%">
-													'.($item['medDescripcion'] == 'Efectivo' ? '<i>(*) No Afecta el resultado </i>': '').'
+													'.($item['medDescripcion'] == 'Efectivo' ? '<!--<i>(*) No Afecta el resultado </i>-->': '').'
 												</td>
 											</tr>';
 								    endforeach;

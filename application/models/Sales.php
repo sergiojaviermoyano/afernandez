@@ -105,7 +105,8 @@ class Sales extends CI_Model
 							$medio = array(
 								'oId'					=> $oId < 0 ? $idOrden : $oId,
 								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp']
+								'rcbImporte'	=> $m['imp'],
+								'cajaId'			=> $venta['cajaId']
 							);
 
 							if($this->db->insert('recibos', $medio) == false) {
@@ -237,7 +238,8 @@ class Sales extends CI_Model
 							$medio = array(
 								'oId'					=> $oId < 0 ? $idOrden : $oId,
 								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp']
+								'rcbImporte'	=> $m['imp'],
+								'cajaId'			=> $venta['cajaId']
 							);
 
 							if($this->db->insert('recibos', $medio) == false) {
@@ -352,7 +354,8 @@ class Sales extends CI_Model
 							$medio = array(
 								'oId'					=> $idOrden,
 								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp']
+								'rcbImporte'	=> $m['imp'],
+								'cajaId'			=> $venta['cajaId']
 							);
 
 							if($this->db->insert('recibos', $medio) == false) {
@@ -416,7 +419,8 @@ class Sales extends CI_Model
 				$medio = array(
 					'oId'					=> $oId,
 					'medId'				=> $m['id'],
-					'rcbImporte'	=> $m['imp']
+					'rcbImporte'	=> $m['imp'],
+					'cajaId'			=> $venta['cajaId']
 				);
 
 				if($this->db->insert('recibos', $medio) == false) {
