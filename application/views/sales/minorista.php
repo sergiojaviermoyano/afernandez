@@ -447,6 +447,8 @@ function AgregaraOrden(){
 
 /********************************* Cobrar Venta *******************************/
 $('#btnServiceBuy').click(function(){
+  if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
+    return false;
   var importeVenta = parseFloat($('#totalSale').html());
   if(importeVenta > 0){
     //Clean medios
@@ -832,6 +834,8 @@ $('#btnServiceEfectivo').click(function(){
 });
 
 function Cobrar_(esPresupuesto){
+  if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
+    return false;
   //Barrer Informacion
   //Id de la operación
   var opId = -1;
