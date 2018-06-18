@@ -182,7 +182,7 @@ class Boxs extends CI_Model
 					$userdata = $this->session->userdata('user_data');
 
 					$data = array(
-					   'cajaApertura' 	=> date('Y-m-d H:i:s'),
+					   //'cajaApertura' 	=> date('Y-m-d H:i:s'),
 					   'cajaCierre'		=> null,
 					   'usrId'			=> $userdata[0]['usrId'],
 					   'cajaImpApertura'=> $ape,
