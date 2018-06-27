@@ -135,7 +135,6 @@ $('#buscadorArticlesPriceMayorista').on('hidden.bs.modal', function() {
         }, timeout___);
       }
     } else {
-      debugger;
       var removeStyle = $("#tableArtPriceDetail > tbody tr:nth-child("+row___+")");
       if(code == 13){//Seleccionado
         removeStyle.css('background-color', 'white');
@@ -179,7 +178,6 @@ function seleccionarArticlePriceMayorista(id, desc, price){
 }
 
 function calcularPrecioInternoMayorista(article){
-  debugger;
   var precioCosto 				= article['artCoste'];
 	var cotizacionDolar 		= article['dolar'];
   var margenMa      			= article['artMarginMayorista'];

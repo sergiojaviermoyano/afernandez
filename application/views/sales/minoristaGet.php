@@ -864,8 +864,9 @@ function Cobrar_(esPresupuesto){
   var table = $('#detailSale > tbody> tr');
   var detalle = [];
   table.each(function(r) {
+    debugger;
     var object = {
-      artId:          parseInt(this.children[6].textContent),
+      artId:          (this.children[6].textContent == '' ? '-' : parseInt(this.children[6].textContent)),
       cant:           parseFloat(this.children[3].textContent),
       artDescripcion: this.children[2].textContent,
       artCosto:       parseFloat(this.children[7].textContent),

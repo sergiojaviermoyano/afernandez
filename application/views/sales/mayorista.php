@@ -95,7 +95,7 @@
 			            <div class="box-body" id="divBuscador">
 			            	<div class="row">
 				                <div class="col-xs-1">
-				                   <!--<button class="btn btn-block btn-warning" id="btnManualArt"><i class="fa fa-fw fa-hand-paper-o"></i></button>-->
+				                   <button class="btn btn-block btn-warning" id="btnManualArt"><i class="fa fa-fw fa-hand-paper-o"></i></button>
 				                </div>
 				                <div class="col-xs-1" style="margin-top: 7px; text-align: right;">
 				                    <label>Producto</label>
@@ -313,8 +313,8 @@
 </div>
 
 <script>
-//$("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-//$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+$("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:','});
 $(".select2").select2();
 
@@ -337,13 +337,14 @@ function Calcular(){
 
 var rowY = 8000;
 var pagos = [];
-/*
+
 $('#btnManualArt').click(function(){
   LoadIconAction('modalActionManual','Add');
   $('#artMdescripcion').val('');
   $('#artMprecio').val('');
   $('#artMcantidad').val('');
   $('#modalArtManual').modal('show');
+  setTimeout("$('#artMdescripcion').focus();",800);
 });
 
 $('#btnAddManualArt').click(function(){
@@ -362,11 +363,11 @@ $('#btnAddManualArt').click(function(){
   html+= '</tr>';
   rowY++;
   $('#detailSale > tbody').prepend(html);
-  $('#lblProducto').focus();
+  setTimeout("$('#lblProducto').focus();",800);
   Calcular();
   $('#modalArtManual').modal('hide');
 });
-*/
+
 function delete_(id){
   $('#'+id).remove();
   Calcular();
@@ -858,7 +859,7 @@ function Cobrar_(esPresupuesto){
   var detalle = [];
   table.each(function(r) {
     var object = {
-      artId:          parseInt(this.children[6].textContent),
+      artId:          (this.children[6].textContent == '-' ? '-' : parseInt(this.children[6].textContent)),
       cant:           parseFloat(this.children[3].textContent),
       artDescripcion: this.children[2].textContent,
       artCosto:       parseFloat(this.children[7].textContent),

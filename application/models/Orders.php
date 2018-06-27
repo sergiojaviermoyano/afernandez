@@ -123,7 +123,7 @@ class Orders extends CI_Model
 				$data['order'] = $order[0];
 				$this->db->select("od.*, a.artBarCode");
 				$this->db->from('ordendetalle od');
-				$this->db->join('articles a','a.artId=od.artId');
+				$this->db->join('articles a','a.artId=od.artId', 'left outer');
 				$this->db->where('oId',$oId);
 				$query = $this->db->get();
 				$detalleCompra=($query->num_rows()>0)?$query->result_array():array();

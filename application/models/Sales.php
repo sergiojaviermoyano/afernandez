@@ -18,14 +18,14 @@ class Sales extends CI_Model
 			$oId = $data['oId'];
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
-				'lpPorcentaje'	=> 	$data['lpr']['por'],
+				'lpPorcentaje'			=> 	$data['lpr']['por'],
 				'venId'					=>	$data['vend']['id'],
 				'cliId'					=>	$data['clie']['id'],
-				'oDescuento'		=> 	$data['des'],
-				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
-				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
-				'oEsPlanReserva'=>	0,
-				'oEsMayorista'	=> 	0,
+				'oDescuento'			=> 	$data['des'],
+				'oEsPresupuesto'		=>	$data['esPre'] == 1 ? 1 : 0,
+				'oEsVenta'				=> 	$data['esPre'] == 1 ? 0 : 1,
+				'oEsPlanReserva'		=>	0,
+				'oEsMayorista'			=> 	0,
 				'oEstado'				=> 	$data['esPre'] == 1 ? 'AC' : 'FA'
 			);
 			//verificar si hay cajas abiertas
@@ -66,12 +66,12 @@ class Sales extends CI_Model
 					if($oId < 0){
 						$insert = array(
 								'oId' 					=> $idOrden,
-								'artId' 				=> $o['artId'],
-								'artCode' 			=> $o['artCode'],
-								'artDescripcion'=> $o['artDescripcion'],
-								'artCosto'			=> $o['artCosto'],
-								'artVenta'			=> $o['artventa'],
-								'artVentaSD'		=> $o['artventaSD'],
+								'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
+								'artCode' 				=> $o['artCode'],
+								'artDescripcion'		=> $o['artDescripcion'],
+								'artCosto'				=> $o['artCosto'],
+								'artVenta'				=> $o['artventa'],
+								'artVentaSD'			=> $o['artventaSD'],
 								'artCant'				=> $o['cant']
 							);
 
@@ -85,15 +85,17 @@ class Sales extends CI_Model
 					if($data['esPre'] == 0){
 							if($o['actualizaStock'] == 1){
 								//Actualizar stock, insertar en tabla stock
-								$stock = array(
-										'artId' 		=> $o['artId'],
-										'stkCant'		=> $o['cant'] * -1,
-										'stkOrigen'	=> 'VN',
-										'refId'			=> $oId < 0 ? $idOrden : $oId
-									);
+								if($o['artId'] != '-'){
+									$stock = array(
+											'artId' 		=> $o['artId'],
+											'stkCant'		=> $o['cant'] * -1,
+											'stkOrigen'		=> 'VN',
+											'refId'			=> $oId < 0 ? $idOrden : $oId
+										);
 
-								if($this->db->insert('stock', $stock) == false) {
-									return false;
+									if($this->db->insert('stock', $stock) == false) {
+										return false;
+									}
 								}
 							}
 					}
@@ -149,14 +151,14 @@ class Sales extends CI_Model
 			$oId = $data['oId'];
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
-				'lpPorcentaje'	=> 	$data['lpr']['por'],
+				'lpPorcentaje'			=> 	$data['lpr']['por'],
 				'venId'					=>	$data['vend']['id'],
 				'cliId'					=>	$data['clie']['id'],
-				'oDescuento'		=> 	$data['des'],
-				'oEsPresupuesto'=>	$data['esPre'] == 1 ? 1 : 0,
-				'oEsVenta'			=> 	$data['esPre'] == 1 ? 0 : 1,
-				'oEsPlanReserva'=>	0,
-				'oEsMayorista'	=> 	1,
+				'oDescuento'			=> 	$data['des'],
+				'oEsPresupuesto'		=>	$data['esPre'] == 1 ? 1 : 0,
+				'oEsVenta'				=> 	$data['esPre'] == 1 ? 0 : 1,
+				'oEsPlanReserva'		=>	0,
+				'oEsMayorista'			=> 	1,
 				'oEstado'				=> 	$data['esPre'] == 1 ? 'AC' : 'FA'
 			);
 
@@ -199,12 +201,12 @@ class Sales extends CI_Model
 					if($oId < 0){
 						$insert = array(
 								'oId' 					=> $idOrden,
-								'artId' 				=> $o['artId'],
-								'artCode' 			=> $o['artCode'],
-								'artDescripcion'=> $o['artDescripcion'],
-								'artCosto'			=> $o['artCosto'],
-								'artVenta'			=> $o['artventa'],
-								'artVentaSD'		=> $o['artventaSD'],
+								'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
+								'artCode' 				=> $o['artCode'],
+								'artDescripcion'		=> $o['artDescripcion'],
+								'artCosto'				=> $o['artCosto'],
+								'artVenta'				=> $o['artventa'],
+								'artVentaSD'			=> $o['artventaSD'],
 								'artCant'				=> $o['cant']
 							);
 
@@ -218,16 +220,19 @@ class Sales extends CI_Model
 					if($data['esPre'] == 0){
 							if($o['actualizaStock'] == 1){
 								//Actualizar stock, insertar en tabla stock
-								$stock = array(
+								if($o['artId'] != '-'){
+									$stock = array(
 										'artId' 		=> $o['artId'],
 										'stkCant'		=> $o['cant'] * -1,
-										'stkOrigen'	=> 'VN',
+										'stkOrigen'		=> 'VN',
 										'refId'			=> $oId < 0 ? $idOrden : $oId
 									);
 
 								if($this->db->insert('stock', $stock) == false) {
 									return false;
 								}
+								}
+								
 							}
 					}
 					//----------------------------------
@@ -281,14 +286,14 @@ class Sales extends CI_Model
 		{
 			$venta = array(
 				'lpId'					=>	$data['lpr']['id'],
-				'lpPorcentaje'	=> 	$data['lpr']['por'],
+				'lpPorcentaje'			=> 	$data['lpr']['por'],
 				'venId'					=>	$data['vend']['id'],
 				'cliId'					=>	$data['clie']['id'],
-				'oDescuento'		=> 	$data['des'],
-				'oEsPresupuesto'=>	0,
-				'oEsVenta'			=> 	0,
-				'oEsPlanReserva'=>	1,
-				'oEsMayorista'	=> 	0
+				'oDescuento'			=> 	$data['des'],
+				'oEsPresupuesto'		=>	0,
+				'oEsVenta'				=> 	0,
+				'oEsPlanReserva'		=>	1,
+				'oEsMayorista'			=> 	0
 			);
 
 
@@ -318,12 +323,12 @@ class Sales extends CI_Model
 				foreach ($data['det'] as $o) {
 					$insert = array(
 							'oId' 					=> $idOrden,
-							'artId' 				=> $o['artId'],
-							'artCode' 			=> $o['artCode'],
-							'artDescripcion'=> $o['artDescripcion'],
-							'artCosto'			=> $o['artCosto'],
-							'artVenta'			=> $o['artventa'],
-							'artVentaSD'		=> $o['artventaSD'],
+							'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
+							'artCode' 				=> $o['artCode'],
+							'artDescripcion'		=> $o['artDescripcion'],
+							'artCosto'				=> $o['artCosto'],
+							'artVenta'				=> $o['artventa'],
+							'artVentaSD'			=> $o['artventaSD'],
 							'artCant'				=> $o['cant']
 						);
 
@@ -335,15 +340,17 @@ class Sales extends CI_Model
 					//Si no es presupuesto, modificar stock y registrar pagos
 					if($o['actualizaStock'] == 1){
 						//Actualizar stock, insertar en tabla stock
-						$stock = array(
-								'artId' 		=> $o['artId'],
-								'stkCant'		=> $o['cant'],
-								'stkOrigen'	=> 'VN',
-								'refId'			=> $idOrden
-							);
+						if($o['artId'] != '-'){
+							$stock = array(
+									'artId' 		=> $o['artId'],
+									'stkCant'		=> $o['cant'],
+									'stkOrigen'	=> 'VN',
+									'refId'			=> $idOrden
+								);
 
-						if($this->db->insert('stockreserva', $stock) == false) {
-							return false;
+							if($this->db->insert('stockreserva', $stock) == false) {
+								return false;
+							}
 						}
 					}
 					//----------------------------------
@@ -712,6 +719,7 @@ class Sales extends CI_Model
 			$query=$this->db->get('listadeprecios');
 			$result['lista_de_precios'] = $query->row_array();
 
+			/*
 			$sql="select od.*, a.*,
 			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
 			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
@@ -719,6 +727,14 @@ class Sales extends CI_Model
 
 			$query=$this->db->query($sql);
 			$result['orden_detalle'] = $query->result_array();
+			*/
+			$this->db->select("od.*");
+			$this->db->from('ordendetalle od');
+			$this->db->join('articles a','a.artId=od.artId', 'left outer');
+			$this->db->where('oId',$data['id']);
+			$query = $this->db->get();
+			$detalleCompra=($query->num_rows()>0)?$query->result_array():array();
+			$result['orden_detalle']=$detalleCompra;
 
 			//return $result;
 
