@@ -626,18 +626,20 @@ class Sales extends CI_Model
 						<table style="width:100%;  border-collapse: collapse; border: 0px;">';
 							$total_art=count($result['orden_detalle']);
 							foreach($result['orden_detalle'] as $item){
-								$importe_total+= floatval($item['artVenta']);
+								$importe_total+= floatval($item['artVenta'] * $item['artCant']);
 								$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:20px;">';
 								$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 10px ;">'.$item['artCant'].'</td>';
-								$html.= '<td style="width:75%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.$item['artDescripcion'].'</td>';
-								$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.$item['artVenta'].'</td>';
+								$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.$item['artDescripcion'].'</td>';
+								$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.number_format($item['artVenta'], 2).'</td>';
+								$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
 								$html.= '</tr>';
 							}
 
 							for($i=($total_art);  $i<=12; $i++){
 								$html.= '<tr style="border:1px solid #72324a !important;">';
 									$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
-									$html.= '<td style="width:75%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
+									$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
+									$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
 									$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
 									$html.= '</tr>';
 							}

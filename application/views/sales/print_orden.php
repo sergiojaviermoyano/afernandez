@@ -50,11 +50,11 @@
 			<table style="width:100%;  border-collapse: collapse; border: 0px;">
 				<?php $total_art=count($orden_data['orden_detalle'])?>
 				<?php foreach($orden_data['orden_detalle'] as $key => $item):?>
-					<?php $importe_total+= floatval($item['artVenta']);?>
+					<?php $importe_total+= floatval($item['artVenta'] * $item['artCant']);?>
 					<tr style="border:1px solid #72324a !important;text-align:center; font-size:20px;">
 						<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 10px ;"><?php echo  $item['artCant']?> </td>
 						<td style="width:75%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;"><?php echo  $item['artDescripcion']?> </td>
-						<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;"><?php echo  $item['artVenta']?> </td>
+						<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;"><?php echo  $item['artVenta'] * $item['artCant']?> </td>
 					</tr>
 				<?php endforeach;?>
 				<?php for($i=($total_art);  $i<=12; $i++):?>
