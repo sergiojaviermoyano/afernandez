@@ -27,7 +27,7 @@
               
             </div><!-- /.col -->
             <div class="col-xs-4">
-              <button class="btn btn-primary btn-block btn-flat" id="login">Ingresar</button>
+              <button type="submit" class="btn btn-primary btn-block btn-flat" id="login">Ingresar</button>
             </div><!-- /.col -->
           </div>
         </div>
@@ -42,46 +42,57 @@
   <script>
   
   //A este script despùes llevarlo a un archivo js
-  $('#login').click(function(){
-      var hayError = false;
-      if($('#usrName').val() == '')
-      {
-        hayError = true;
+  $(function(){
+
+    $(document).keypress(function (e) {
+      if(e.keyCode=='13'){ //Keycode for "Return"
+        $('#login').click();
       }
+    });
+    
+  
+    $('#login').click(function(){
+        var hayError = false;
+        if($('#usrName').val() == '')
+        {
+          hayError = true;
+        }
 
-      if($('#usrPassword').val() == ''){
-        hayError = true;
-      }
+        if($('#usrPassword').val() == ''){
+          hayError = true;
+        }
 
-      if(hayError == true){
-        $('#errorLgn').fadeIn('slow');
-        return;
-      }
+        if(hayError == true){
+          $('#errorLgn').fadeIn('slow');
+          return;
+        }
 
-      $('#errorLgn').fadeOut('hide');
+        $('#errorLgn').fadeOut('hide');
 
-    	WaitingOpen('Validando datos');
-      $.ajax({
-          type: 'POST',
-          data: { 
-                  usr: $('#usrName').val(),
-                  pas: $('#usrPassword').val()
+        WaitingOpen('Validando datos');
+        $.ajax({
+            type: 'POST',
+            data: { 
+                    usr: $('#usrName').val(),
+                    pas: $('#usrPassword').val()
+                  },
+            url: 'index.php/login/sessionStart_', 
+            success: function(result){
+                  WaitingClose();
+                  if(result == 0){
+                    $('#errorLgn').fadeIn('slow');
+                  }else{
+                    window.location.href = 'dash';
+                  }
                 },
-    			url: 'index.php/login/sessionStart_', 
-    			success: function(result){
+            error: function(result){
                 WaitingClose();
-                if(result == 0){
-                  $('#errorLgn').fadeIn('slow');
-                }else{
-                  window.location.href = 'dash';
-                }
-    					},
-    			error: function(result){
-    					WaitingClose();
-              $('#errorLgn').fadeIn('slow');
-    					},
-          dataType: 'json'
-    		});
+                $('#errorLgn').fadeIn('slow');
+                },
+            dataType: 'json'
+          });
+    });
+
   });
 
   </script>
