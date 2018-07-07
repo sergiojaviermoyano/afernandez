@@ -134,6 +134,21 @@ switch (ENVIRONMENT)
  */
 $assets_folder = 'assets';
 
+	/*
+ *---------------------------------------------------------------
+ * ASSETS FOLDER NAME
+ *---------------------------------------------------------------
+ *
+ * If you want this front controller to use a different "application"
+ * folder than the default one you can set its name here. The folder
+ * can also be renamed or relocated anywhere on your server. If
+ * you do, use a full server path. For more info please see the user guide:
+ * http://codeigniter.com/user_guide/general/managing_apps.html
+ *
+ * NO TRAILING SLASH!
+ */
+$backup_folder = 'backup_site';
+
 /*
  *---------------------------------------------------------------
  * VIEW FOLDER NAME
@@ -275,6 +290,28 @@ $assets_folder = 'assets';
 		}
 
 		define('APPPATH', BASEPATH.$application_folder.DIRECTORY_SEPARATOR);
+	}
+
+	if (is_dir($backup_folder))
+	{
+		if (($_temp = realpath($application_folder)) !== FALSE)
+		{
+			$application_folder = $_temp;
+		}
+		define('BACKUPFOLDER', $backup_folder.DIRECTORY_SEPARATOR);
+	}
+	else
+	{	
+		if ( ! is_dir(BASEPATH.$backup_folder.DIRECTORY_SEPARATOR))
+		{	mkdir($backup_folder);
+			/*header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+			echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
+			
+			exit(3); // EXIT_CONFIG*/
+		}
+
+		define('BACKUPFOLDER', BASEPATH.$backup_folder.DIRECTORY_SEPARATOR);
+		
 	}
 
 	if (is_dir($assets_folder))
