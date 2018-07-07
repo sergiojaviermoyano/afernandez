@@ -23,6 +23,7 @@
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepDebe'] , 2 , "," , "." ).'</td>';
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepHaber'] , 2 , "," , "." ).'</td>';
           echo '<td style="text-align:center">'.$m['usrNick'].'</td>';
+          echo '<td style="text-align:center"><a href="">Ver Detalle</a></td>';
 	      	echo '</tr>';
 	      	$debe+= $m['cctepDebe'];
 	      	$haber+= $m['cctepHaber'];
