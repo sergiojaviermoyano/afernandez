@@ -23,7 +23,15 @@ class backup extends CI_Controller {
 	}
 
 	public function create_fullbackup(){
+		$this->load->dbutil();
+		$backup =$this->dbutil->backup();
 		
-		die("FINS");
+		$this->load->helper('file');
+		$fileName = 'afernandez_'.date('Y_m_d_Hmi').'.sql.zip';
+		write_file(BACKUPFOLDER.'/'.$fileName, $backup);
+		  
+		$this->load->helper('download');
+		force_download($fileName, $backup);
+		exit(3);
 	}
 }
