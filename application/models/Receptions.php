@@ -174,7 +174,7 @@ class Receptions extends CI_Model
 						$query = $this->db->get_where('receptionsdetail', array('recId'=>$id));
 						foreach ($query->result_array() as $art) {
 							$insert = array(
-									'recId' 		=> $id,
+									'refId' 		=> $id,
 									'artId' 		=> $art['artId'],
 									'stkCant'		=> $art['recdCant'],
 									'stkOrigen'		=> 'RC'
