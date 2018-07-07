@@ -25,7 +25,7 @@ class Cuentacorrientes extends CI_Model
 			$query = $this->db->get();
 
 			$result['data'] = $query->result_array();	
-
+			//var_dump($result['data']);
 			return $result;
 		}
 	}
