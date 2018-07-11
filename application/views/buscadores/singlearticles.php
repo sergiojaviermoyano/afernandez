@@ -39,7 +39,7 @@ var id_, detail_, nextFocus_;
 var timer, timeout = 1000;
 var row = 0, rows = 0;
 var move = 0;
-var minLenght = 2;
+var minLenght = 0;
 function buscadorArticlesSingles(string, id, detail, nextFocus){
   id_ = id;
   detail_ = detail;

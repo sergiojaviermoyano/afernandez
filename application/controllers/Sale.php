@@ -23,9 +23,9 @@ class sale extends CI_Controller {
 
 	public function minoristaGet($oId){
 		$data['lists'] = $this->Lists->List_List();
-		$data['final'] = $this->Customers->DefaultCustomer();
-		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		$data['order'] = $this->Orders->getOrder($oId);
+		$data['final'] = $this->Customers->CustomerById($data['order']['order']['cliId']);
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		echo json_encode($this->load->view('sales/minoristaGet', $data, true));
 	}
 
@@ -42,9 +42,9 @@ class sale extends CI_Controller {
 
 	public function mayoristaGet($oId){
 		$data['lists'] = $this->Lists->List_List();
-		$data['final'] = $this->Customers->DefaultCustomer();
-		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		$data['order'] = $this->Orders->getOrder($oId);
+		$data['final'] = $this->Customers->CustomerById($data['order']['order']['cliId']);
+		$data['vendedores'] = $this->Vendedores->getActiveVendedores();
 		echo json_encode($this->load->view('sales/mayoristaGet', $data, true));
 	}
 

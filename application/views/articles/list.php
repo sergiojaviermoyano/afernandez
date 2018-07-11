@@ -134,7 +134,7 @@
                       $("#cotizacionDolar").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
                       CalcularPrecio();
 			                setTimeout("$('#modalArticle').modal('show')",800);
-                      $("[data-mask]").inputmask();
+                      //$("[data-mask]").inputmask();
     					},
     		error: function(result){
     					WaitingClose();

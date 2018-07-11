@@ -153,6 +153,17 @@ class Customers extends CI_Model
 		}
 	}
 
+	function CustomerById($id){
+		$query= $this->db->get_where('clientes',array('cliId'=>$id));
+		if ($query->num_rows() != 0)
+		{
+			$c = $query->result_array();
+			return $c[0];
+		} else {
+			return false;
+		}
+	}
+
 	function findCustomer($data = null){
 	if($data == null)
 	{

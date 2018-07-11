@@ -574,7 +574,7 @@ class Sales extends CI_Model
 			$sql="select od.*, a.*,
 			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
 			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
-			from ordendetalle as od INNER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
+			from ordendetalle as od LEFT OUTER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
 
 			$query=$this->db->query($sql);
 			$result['orden_detalle'] = $query->result_array();

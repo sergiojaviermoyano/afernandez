@@ -721,7 +721,7 @@ $('#btnServiceEfectivo').click(function(){
       WaitingOpen('Buscando Cliente');
       $.ajax({
             type: 'POST',
-            data: { id : <?php echo $order['order']['lpId'];?> },
+            data: { id : <?php echo $order['order']['order']['cliId'];?> },
         url: 'index.php/customer/findCustomerId',
         success: function(result){
                       WaitingClose();
