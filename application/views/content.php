@@ -9,6 +9,7 @@
 <?php $this->load->view('buscadores/articlesnoprice'); ?>
 <?php $this->load->view('buscadores/articlesprice'); ?>
 <?php $this->load->view('buscadores/articlespricemayorista'); ?>
+<?php $this->load->view('buscadores/clientes'); ?>
 
 
 <!-- Modal -->

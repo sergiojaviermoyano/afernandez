@@ -33,7 +33,7 @@
   						      <input type="number" id="cliSearch" class="form-control" >
   		        		</div>
                   <div class="col-xs-1">
-                    <i class="fa fa-fw fa-search text-teal" style="margin-top: 12px"></i>
+                    <i class="fa fa-fw fa-search text-teal" style="margin-top: 12px; cursor: pointer;" id="buscador"></i>
                   </div>
           			</div>
                 <div class="row">
@@ -505,165 +505,6 @@ $('.calcula').keyup(function() {
 });
 /****************************** Fin Cobrar Venta ******************************/
 
-
-/*
-
-function addItem(medId, tmpId, tipo){
-  //Buscar si ya esta el tmpId en el array y eliminar
-  pagos = pagos.filter(function( obj ) {
-    return obj.tmp !== tmpId;
-  });
-
-  if(medId == -1){
-    //Medio multiple (tarjeta)
-    if($('#'+tmpId+'_medId').val() == -1 || $('#'+tmpId+'_importe').val() == ''){
-      alert('Completa el valor');
-    }else{
-      var object = {
-        mId:      $('#'+tmpId+'_medId').val(),
-        imp:      $('#'+tmpId+'_importe').val(),
-        tmp:      tmpId,
-        de1:      $('#'+tmpId+'_des1').val(),
-        de2:      $('#'+tmpId+'_des2').val(),
-        de3:      $('#'+tmpId+'_des3').val(),
-      };
-      pagos.push(object);
-      var div = '#'+tmpId+'_load';
-      $(div).hide();
-    }
-  } else {
-    //Medio simple (efectivo / cta cte / etc)
-    if($('#'+medId+'_importe').val() == ''){
-      alert('Completa el valor');
-    }else{
-      var object = {
-        mId:      medId,
-        imp:      $('#'+medId+'_importe').val(),
-        tmp:      tmpId,
-        de1:      null,
-        de2:      null,
-        de3:      null
-      };
-      pagos.push(object);
-      var div = '#'+tmpId+'_load';
-      $(div).hide();
-    }
-  }
-  CargarImportes();
-}
-
-function CargarImportes(){
-  var pag = 0;
-  $.each(pagos, function(index, result){
-      $('#'+result.tmp+'_total').html(parseFloat(result.imp).toFixed(2));
-      pag += parseFloat(result.imp);
-  });
-
-  $('#pagos_suma').html(parseFloat(pag).toFixed(2));
-}
-
-$('#btnPago').click(function(){
-  var importeAPagar = parseFloat($('#totalSale').html().replace(',',''));
-  var importePagado = parseFloat($('#pagos_suma').html());
-
-  if(importeAPagar == importePagado){
-    //Barrer articulos.-
-    var table = $('#detailSale > tbody> tr');
-    var detalle = [];
-    table.each(function(r) {
-      var object = {
-        artId:          parseInt(this.children[6].textContent),
-        srvdCant:       parseFloat(this.children[3].textContent),
-        artDescripcion: this.children[2].textContent,
-        artCosto:       parseFloat(this.children[7].textContent),
-        artventa:       parseFloat(this.children[4].textContent),
-        artProvCode:    this.children[1].textContent,
-        actualizaStock: parseInt(this.children[8].textContent)
-      };
-
-      detalle.push(object);
-    });
-    //------------------
-    WaitingOpen('Cobrando...');
-    $.ajax({
-          type: 'POST',
-          data: {
-                  id : -1,
-                  pa : pagos,
-                  dt : detalle,
-                  cl : $('#cliId').val()
-                },
-      url: 'index.php/sale/setSale',
-      success: function(result){
-                    WaitingClose();
-                    if(result == true){
-                      $('#modalMedios').modal('hide');
-                      setTimeout("cargarView('dash', 'accesosdirectos', '');",800);
-                    } else {
-                      alert('Error');
-                    }
-            },
-      error: function(result){
-            WaitingClose();
-            ProcesarError(result.responseText, 'modalMedios');
-          },
-          dataType: 'json'
-      });
-  }else{
-    alert('el pago no es igual');
-  }
-});
-
-$('#btnServiceEfectivo').click(function(){
-  var importeVenta = parseFloat($('#totalSale').html());
-  if(importeVenta > 0){
-    //Barrer articulos.-
-    var table = $('#detailSale > tbody> tr');
-    var detalle = [];
-    table.each(function(r) {
-      var object = {
-        artId:          parseInt(this.children[6].textContent),
-        srvdCant:       parseFloat(this.children[3].textContent),
-        artDescripcion: this.children[2].textContent,
-        artCosto:       parseFloat(this.children[7].textContent),
-        artventa:       parseFloat(this.children[4].textContent),
-        artProvCode:    this.children[1].textContent,
-        actualizaStock: parseInt(this.children[8].textContent)
-      };
-
-      detalle.push(object);
-    });
-    //------------------
-    WaitingOpen('Cobrando...');
-    $.ajax({
-          type: 'POST',
-          data: {
-                  id : -1,
-                  dt : detalle,
-                  cl : $('#cliId').val(),
-                  im : importeVenta
-                },
-      url: 'index.php/sale/setSaleEfectivo',
-      success: function(result){
-                    WaitingClose();
-                    if(result == true){
-                      setTimeout("cargarView('dash', 'accesosdirectos', '');",800);
-                    } else {
-                      alert('Error');
-                    }
-            },
-      error: function(result){
-            WaitingClose();
-            ProcesarError(result.responseText, 'modal__');
-          },
-          dataType: 'json'
-      });
-  }else{
-
-  }
-});
-
-*/
   $(function(){
     $('#lpId').on('change',function(){
       //debugger;
@@ -704,6 +545,10 @@ $('#btnServiceEfectivo').click(function(){
       if(code==13){
         BuscarCliente();
       }
+  });
+
+  $('#buscador').click(function(){
+    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#cliId'));
   });
 
   //Buscador de cliente
