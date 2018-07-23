@@ -99,46 +99,46 @@ class Sales extends CI_Model
 								}
 							}
 					}
-					//----------------------------------
+				}
+				//----------------------------------
 
-					//medios de pagos
-					if($data['esPre'] == 0){
-						foreach ($data['medi'] as $m) {
-							$medio = array(
-								'oId'					=> $oId < 0 ? $idOrden : $oId,
-								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp'],
-								'cajaId'			=> $venta['cajaId']
+				//medios de pagos
+				if($data['esPre'] == 0){
+					foreach ($data['medi'] as $m) {
+						$medio = array(
+							'oId'					=> $oId < 0 ? $idOrden : $oId,
+							'medId'				=> $m['id'],
+							'rcbImporte'	=> $m['imp'],
+							'cajaId'			=> $venta['cajaId']
+						);
+
+						if($this->db->insert('recibos', $medio) == false) {
+							return false;
+						}
+
+						//Si es cuenta corriente registrar movieminto
+						if($m['id'] == 7){
+							$ctacte = array(
+								'cctepConcepto'	=>'Venta: '.($oId < 0 ? $idOrden : $oId),
+								'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
+								'cctepTipo'			=>	'VN',
+								'cctepDebe'			=>	$m['imp'],
+								'cliId'					=> 	$data['clie']['id'],
+								'usrId'					=>	$userdata[0]['usrId'],
+								'cajaId'				=>  $venta['cajaId']
 							);
 
-							if($this->db->insert('recibos', $medio) == false) {
+							if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
 								return false;
-							}
-
-							//Si es cuenta corriente registrar movieminto
-							if($m['id'] == 7){
-								$ctacte = array(
-									'cctepConcepto'	=>'Venta: '.($oId < 0 ? $idOrden : $oId),
-									'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
-									'cctepTipo'			=>	'VN',
-									'cctepDebe'			=>	$m['imp'],
-									'cliId'					=> 	$data['clie']['id'],
-									'usrId'					=>	$userdata[0]['usrId'],
-									'cajaId'				=>  $venta['cajaId']
-								);
-
-								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
-									return false;
-								}
 							}
 						}
 					}
-					//----------------------------------
 				}
-
-				$this->db->trans_complete();
-				return $oId < 0 ? $idOrden : $oId;
+				//----------------------------------
 		}
+
+		$this->db->trans_complete();
+		return $oId < 0 ? $idOrden : $oId;
 	}
 
 	function setSaleMayorista($data = null){
@@ -196,84 +196,84 @@ class Sales extends CI_Model
 				}
 			}
 
-				//Registrar Detalle
-				foreach ($data['det'] as $o) {
-					if($oId < 0){
-						$insert = array(
-								'oId' 					=> $idOrden,
-								'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
-								'artCode' 				=> $o['artCode'],
-								'artDescripcion'		=> $o['artDescripcion'],
-								'artCosto'				=> $o['artCosto'],
-								'artVenta'				=> $o['artventa'],
-								'artVentaSD'			=> $o['artventaSD'],
-								'artCant'				=> $o['cant']
-							);
+			//Registrar Detalle
+			foreach ($data['det'] as $o) {
+				if($oId < 0){
+					$insert = array(
+							'oId' 					=> $idOrden,
+							'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
+							'artCode' 				=> $o['artCode'],
+							'artDescripcion'		=> $o['artDescripcion'],
+							'artCosto'				=> $o['artCosto'],
+							'artVenta'				=> $o['artventa'],
+							'artVentaSD'			=> $o['artventaSD'],
+							'artCant'				=> $o['cant']
+						);
 
-						if($this->db->insert('ordendetalle', $insert) == false) {
+					if($this->db->insert('ordendetalle', $insert) == false) {
+						return false;
+					}
+				}
+				//--------------------------------
+
+				//Si no es presupuesto, modificar stock y registrar pagos
+				if($data['esPre'] == 0){
+						if($o['actualizaStock'] == 1){
+							//Actualizar stock, insertar en tabla stock
+							if($o['artId'] != '-'){
+								$stock = array(
+									'artId' 		=> $o['artId'],
+									'stkCant'		=> $o['cant'] * -1,
+									'stkOrigen'		=> 'VN',
+									'refId'			=> $oId < 0 ? $idOrden : $oId
+								);
+
+							if($this->db->insert('stock', $stock) == false) {
+								return false;
+							}
+							}
+							
+						}
+				}
+			}
+			//----------------------------------
+
+			//medios de pagos
+			if($data['esPre'] == 0){
+				foreach ($data['medi'] as $m) {
+					$medio = array(
+						'oId'					=> $oId < 0 ? $idOrden : $oId,
+						'medId'				=> $m['id'],
+						'rcbImporte'	=> $m['imp'],
+						'cajaId'			=> $venta['cajaId']
+					);
+
+					if($this->db->insert('recibos', $medio) == false) {
+						return false;
+					}
+
+					//Si es cuenta corriente registrar movieminto
+					if($m['id'] == 7){
+						$ctacte = array(
+							'cctepConcepto'	=>'Venta: '.$oId < 0 ? $idOrden : $oId ,
+							'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
+							'cctepTipo'			=>	'VN',
+							'cctepDebe'			=>	$m['imp'],
+							'cliId'					=> 	$data['clie']['id'],
+							'usrId'					=>	$userdata[0]['usrId'],
+							'cajaId'				=>  $venta['cajaId']
+						);
+
+						if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
 							return false;
 						}
 					}
-					//--------------------------------
-
-					//Si no es presupuesto, modificar stock y registrar pagos
-					if($data['esPre'] == 0){
-							if($o['actualizaStock'] == 1){
-								//Actualizar stock, insertar en tabla stock
-								if($o['artId'] != '-'){
-									$stock = array(
-										'artId' 		=> $o['artId'],
-										'stkCant'		=> $o['cant'] * -1,
-										'stkOrigen'		=> 'VN',
-										'refId'			=> $oId < 0 ? $idOrden : $oId
-									);
-
-								if($this->db->insert('stock', $stock) == false) {
-									return false;
-								}
-								}
-								
-							}
-					}
-					//----------------------------------
-
-					//medios de pagos
-					if($data['esPre'] == 0){
-						foreach ($data['medi'] as $m) {
-							$medio = array(
-								'oId'					=> $oId < 0 ? $idOrden : $oId,
-								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp'],
-								'cajaId'			=> $venta['cajaId']
-							);
-
-							if($this->db->insert('recibos', $medio) == false) {
-								return false;
-							}
-
-							//Si es cuenta corriente registrar movieminto
-							if($m['id'] == 7){
-								$ctacte = array(
-									'cctepConcepto'	=>'Venta: '.$oId < 0 ? $idOrden : $oId ,
-									'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
-									'cctepTipo'			=>	'VN',
-									'cctepDebe'			=>	$m['imp'],
-									'cliId'					=> 	$data['clie']['id'],
-									'usrId'					=>	$userdata[0]['usrId'],
-									'cajaId'				=>  $venta['cajaId']
-								);
-
-								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
-									return false;
-								}
-							}
-						}
-					}
-					//----------------------------------
 				}
+			}
+			//----------------------------------
 
-				$this->db->trans_complete();
-				return $oId < 0 ? $idOrden : $oId;
+			$this->db->trans_complete();
+			return $oId < 0 ? $idOrden : $oId;
 		}
 	}
 
@@ -353,42 +353,42 @@ class Sales extends CI_Model
 							}
 						}
 					}
-					//----------------------------------
+				}
+				//----------------------------------
 
-					//medios de pagos
-					if($data['esPre'] == 0 && isset($data['medi'])){
-						foreach ($data['medi'] as $m) {
-							$medio = array(
-								'oId'					=> $idOrden,
-								'medId'				=> $m['id'],
-								'rcbImporte'	=> $m['imp'],
-								'cajaId'			=> $venta['cajaId']
+				//medios de pagos
+				if($data['esPre'] == 0 && isset($data['medi'])){
+					foreach ($data['medi'] as $m) {
+						$medio = array(
+							'oId'					=> $idOrden,
+							'medId'				=> $m['id'],
+							'rcbImporte'	=> $m['imp'],
+							'cajaId'			=> $venta['cajaId']
+						);
+
+						if($this->db->insert('recibos', $medio) == false) {
+							return false;
+						}
+
+						//Si es cuenta corriente registrar movieminto
+						if($m['id'] == 7){
+							$ctacte = array(
+								'cctepConcepto'	=>'Venta: '.$idOrden ,
+								'cctepRef'			=>	$idOrden,
+								'cctepTipo'			=>	'VN',
+								'cctepDebe'			=>	$m['imp'],
+								'cliId'					=> 	$data['clie']['id'],
+								'usrId'					=>	$userdata[0]['usrId'],
+								'cajaId'				=>  $venta['cajaId']
 							);
 
-							if($this->db->insert('recibos', $medio) == false) {
+							if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
 								return false;
-							}
-
-							//Si es cuenta corriente registrar movieminto
-							if($m['id'] == 7){
-								$ctacte = array(
-									'cctepConcepto'	=>'Venta: '.$idOrden ,
-									'cctepRef'			=>	$idOrden,
-									'cctepTipo'			=>	'VN',
-									'cctepDebe'			=>	$m['imp'],
-									'cliId'					=> 	$data['clie']['id'],
-									'usrId'					=>	$userdata[0]['usrId'],
-									'cajaId'				=>  $venta['cajaId']
-								);
-
-								if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {
-									return false;
-								}
 							}
 						}
 					}
-					//----------------------------------
 				}
+				//----------------------------------
 
 				$this->db->trans_complete();
 				return $idOrden;
