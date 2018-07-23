@@ -72,6 +72,11 @@
     -->
 
   </div><!-- /.row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <?php $this->load->view('buscadores/articlespricemain'); ?>
+    </div>
+  </div>
   <?php } else { ?>
   <div class="row">
     <div class="col-xs-4">
@@ -84,6 +89,8 @@
 </section><!-- /.content -->
 
 <script>
+
+setTimeout(function () { $('#txtArtPriceMain').focus();}, 1000);
 /*
 $('#artCode').keypress(function(e){
     var code = e.which;
