@@ -41,6 +41,7 @@ class sale extends CI_Controller {
 	}
 
 	public function mayoristaGet($oId){
+		
 		$data['lists'] = $this->Lists->List_List();
 		$data['order'] = $this->Orders->getOrder($oId);
 		$data['final'] = $this->Customers->CustomerById($data['order']['order']['cliId']);

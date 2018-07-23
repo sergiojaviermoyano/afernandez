@@ -65,6 +65,27 @@
 
 <!-- Modal -->
 
+<!-- Modal -->
+<div class="modal fade" id="modalDetail" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Detalle </h4>
+      </div>
+      <div class="modal-body" id="modalBodyDetail">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
 <script>
 $(".select2").select2();
 
@@ -163,27 +184,32 @@ $('#btnSave').click(function(){
 });
 
 
-function LoadRec(id_){
+function LoadRec(id_,action){
+  console.debug("====> LoadRec: %o  -  %o",id_,action);
   LoadIconAction('modalActionX','View');
   WaitingOpen('Cargando Recepción');
-    $.ajax({
-          type: 'POST',
-          data: { id : id_, act: 'View' },
-      url: 'index.php/reception/getReception', 
-      success: function(result){
-                    WaitingClose();
-                    $("#modalBodyReception").html(result.html);
-                    $(".select2").select2();
-                    $('#recFecha').datepicker({maxDate: '0'});
-                    $("#tcImporte").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-                    setTimeout("$('#modalReception').modal('show')",800);
-            },
-      error: function(result){
-            WaitingClose();
-            alert("error");
-          },
-          dataType: 'json'
-      });
+  $.ajax({
+    type: 'GET',
+    data: { },
+    url: 'index.php/sale/mayoristaGet/'+id_, 
+    success: function(result){
+      console.debug("result: %o",result);
+      WaitingClose();
+      $("#modalDetail #modalBodyDetail").html(result);
+      $("#modalDetail #modalBodyDetail").find("#btnServiceEfectivo").hide();
+      $("#modalDetail #modalBodyDetail").find("#btnServiceBuy").hide();
+      $("#modalDetail #modalBodyDetail").find("h3.box-title strong").html("Detalle de Venta");
+      //$(".select2").select2();
+      //$('#recFecha').datepicker({maxDate: '0'});
+      //$("#tcImporte").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+      setTimeout("$('#modalDetail').modal('show')",800);
+    },
+    error: function(result){
+          WaitingClose();
+          alert("error");
+        },
+        dataType: 'json'
+    });
 }
 
 </script>

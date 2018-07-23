@@ -1,4 +1,5 @@
 <input type="hidden" id="oId" value="<?php echo $order['order']['oId'];?>"
+
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -126,10 +127,13 @@
         			<div class="box box-warning box-solid">
 			            <div class="box-header with-border">
 			              <h3 class="box-title">Detalle</h3>
+
 			              <!-- /.box-tools -->
 			            </div>
 			            <!-- /.box-header -->
 			            <div class="box-body">
+                   
+
 			            	<table class="table table-bordered table-hover" id="detailSale">
 			            		<thead>
 				            		<tr>
@@ -720,7 +724,7 @@ $('#btnServiceEfectivo').click(function(){
       WaitingOpen('Buscando Cliente');
       $.ajax({
             type: 'POST',
-            data: { id : <?php echo $order['order']['order']['cliId'];?> },
+            data: { id : <?php echo $order['order']['cliId'];?> },
         url: 'index.php/customer/findCustomerId',
         success: function(result){
                       WaitingClose();

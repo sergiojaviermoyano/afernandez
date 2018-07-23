@@ -108,7 +108,7 @@ class Sales extends CI_Model
 								'oId'					=> $oId < 0 ? $idOrden : $oId,
 								'medId'				=> $m['id'],
 								'rcbImporte'	=> $m['imp'],
-								'cajaId'			=> $venta['cajaId']
+								//'cajaId'			=> $venta['cajaId']
 							);
 
 							if($this->db->insert('recibos', $medio) == false) {
