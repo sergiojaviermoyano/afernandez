@@ -19,7 +19,7 @@
 	      foreach ($data['data'] as $m) {
 	      	echo '<tr>';
 	      	echo '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
-	      	echo '<td '.($m['cctepTipo'] == 'RC' ? 'onClick="LoadRec('.$m['cctepRef'].')" style="cursor: pointer"' : '').'>'.$m['cctepConcepto'].'</td>';
+	      	echo '<td '.($m['cctepTipo'] == 'VN' ? 'onClick="LoadRec('.$m['cctepRef'].')" style="cursor: pointer"' : '').'>'.$m['cctepConcepto'].'</td>';
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepDebe'] , 2 , "," , "." ).'</td>';
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepHaber'] , 2 , "," , "." ).'</td>';
           echo '<td style="text-align:center">'.$m['usrNick'].'</td>';

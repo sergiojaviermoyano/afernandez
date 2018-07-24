@@ -102,9 +102,9 @@
          <label class="col-sm-4"> Sub-rubro <strong style="color: #dd4b39">*</strong></label>
         <div class="col-sm-5">
           <select class="form-control" name="subrId" id="subrId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
-            <option value="">Seleccionar Rubro</option>
+            <option value="">Seleccionar Sub-rubro</option>
             <?php foreach ($rubros as $key => $item):?>
-              <option value="<?php echo $item['subrId'];?>" <?php echo ($data['article']['subrId']==$item['subrId'])?'selected':''?> ><?php echo $item['rubDescripcion'];?> - <?php echo $item['subrDescripcion'];?></option>
+              <option value="<?php echo $item['subrId'];?>" <?php echo ($data['article']['subrId']==$item['subrId'])?'selected':''?> ><?php //echo $item['rubDescripcion'];?> <?php echo $item['subrDescripcion'];?></option>
             <?php endforeach;?>
           </select>
         </div>

@@ -106,9 +106,9 @@ class Sales extends CI_Model
 				if($data['esPre'] == 0){
 					foreach ($data['medi'] as $m) {
 						$medio = array(
-							'oId'					=> $oId < 0 ? $idOrden : $oId,
+							'oId'				=> $oId < 0 ? $idOrden : $oId,
 							'medId'				=> $m['id'],
-							'rcbImporte'	=> $m['imp'],
+							'rcbImporte'		=> $m['imp'],
 							'cajaId'			=> $venta['cajaId']
 						);
 
@@ -119,10 +119,10 @@ class Sales extends CI_Model
 						//Si es cuenta corriente registrar movieminto
 						if($m['id'] == 7){
 							$ctacte = array(
-								'cctepConcepto'	=>'Venta: '.($oId < 0 ? $idOrden : $oId),
-								'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
-								'cctepTipo'			=>	'VN',
-								'cctepDebe'			=>	$m['imp'],
+								'cctepConcepto'			=> 'Venta: '.($oId < 0 ? $idOrden : $oId),
+								'cctepRef'				=>	$oId < 0 ? $idOrden : $oId,
+								'cctepTipo'				=>	'VN',
+								'cctepDebe'				=>	$m['imp'],
 								'cliId'					=> 	$data['clie']['id'],
 								'usrId'					=>	$userdata[0]['usrId'],
 								'cajaId'				=>  $venta['cajaId']
@@ -237,7 +237,7 @@ class Sales extends CI_Model
 				}
 			}
 			//----------------------------------
-
+			
 			//medios de pagos
 			if($data['esPre'] == 0){
 				foreach ($data['medi'] as $m) {
@@ -255,10 +255,10 @@ class Sales extends CI_Model
 					//Si es cuenta corriente registrar movieminto
 					if($m['id'] == 7){
 						$ctacte = array(
-							'cctepConcepto'	=>'Venta: '.$oId < 0 ? $idOrden : $oId ,
-							'cctepRef'			=>	$oId < 0 ? $idOrden : $oId,
-							'cctepTipo'			=>	'VN',
-							'cctepDebe'			=>	$m['imp'],
+							'cctepConcepto'			=>'Venta: '.($oId < 0 ? $idOrden : $oId),
+							'cctepRef'				=>	$oId < 0 ? $idOrden : $oId,
+							'cctepTipo'				=>	'VN',
+							'cctepDebe'				=>	$m['imp'],
 							'cliId'					=> 	$data['clie']['id'],
 							'usrId'					=>	$userdata[0]['usrId'],
 							'cajaId'				=>  $venta['cajaId']
@@ -373,7 +373,7 @@ class Sales extends CI_Model
 						//Si es cuenta corriente registrar movieminto
 						if($m['id'] == 7){
 							$ctacte = array(
-								'cctepConcepto'	=>'Venta: '.$idOrden ,
+								'cctepConcepto'	=>'Venta: '. $idOrden ,
 								'cctepRef'			=>	$idOrden,
 								'cctepTipo'			=>	'VN',
 								'cctepDebe'			=>	$m['imp'],
