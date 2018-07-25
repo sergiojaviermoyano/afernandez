@@ -78,7 +78,6 @@
                 success: function(result){
                     
                     WaitingClose();
-                    console.log(result);
                     $("#modal_order_detail").find('.modal-body').html(result.html);                    
                     $('#modal_order_detail').modal('show');                   
                     return false;
