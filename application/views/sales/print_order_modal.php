@@ -67,7 +67,7 @@
             return false;
         });
         
-        $(document).on('click','.fa-search',function(){
+        $(document).on('click','.fa-sticky-note-o',function(){
             var id=$(this).data('id');
             console.debug("====> fa-search: %o <====",id);
 

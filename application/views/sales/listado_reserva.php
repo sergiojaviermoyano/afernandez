@@ -81,7 +81,7 @@
                     var col1,col2,colpago,coltotal,col3,col4, col5='';
                     col1='';
                     col1+='<i class="fa fa-fw fa-print"  style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
-                    col1+='<i class="fa fa-fw fa-search" style="color: #00a65a; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
+                    col1+='<i class="fa fa-fw fa-sticky-note-o" style="color: #00a65a; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
                     if(item.oEstado != 'FA')
                     col1+='<i class="fa fa-fw fa-plus"   style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="pagando('+item.oId+', '+parseFloat(item.pago).toFixed(2)+', '+parseFloat(item.total).toFixed(2)+')"></i>';
 
