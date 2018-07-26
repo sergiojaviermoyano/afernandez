@@ -72,14 +72,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Detalle </h4>
       </div>
       <div class="modal-body" id="modalBodyDetail">
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -142,7 +140,7 @@ $('#btnAdd').click(function(){
           });
   }
 });
-$('#btnSave').click(function(){
+$('#btnSave22').click(function(){
   setTimeout("$('#error').hide('slow');",2000);
   if($('#cctepConcepto').val() == ''){
     $('#error').show('slow');
@@ -175,7 +173,6 @@ $('#btnSave').click(function(){
         });
 });
 function LoadRec(id_,action){
-  console.debug("====> LoadRec: %o  -  %o",id_,action);
   LoadIconAction('modalActionX','View');
   WaitingOpen('Cargando Recepción');
   $.ajax({
@@ -188,6 +185,7 @@ function LoadRec(id_,action){
       $("#modalDetail #modalBodyDetail").html(result);
       $("#modalDetail #modalBodyDetail").find("#btnServiceEfectivo").hide();
       $("#modalDetail #modalBodyDetail").find("#btnServiceBuy").hide();
+      $("#modalDetail #modalBodyDetail").find("#closex").hide();
       $("#modalDetail #modalBodyDetail").find("h3.box-title strong").html("Detalle de Venta");
       //$(".select2").select2();
       //$('#recFecha').datepicker({maxDate: '0'});
@@ -245,7 +243,7 @@ function LoadRec(id_,action){
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+        <button type="button" class="btn btn-primary" id="btnSave22">Guardar</button>
       </div>
     </div>
   </div>

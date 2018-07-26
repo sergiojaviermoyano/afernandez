@@ -67,7 +67,7 @@
             return false;
         });
         
-        $(document).on('click','.fa-search',function(){
+        $(document).on('click','.fa-sticky-note-o',function(){
             var id=$(this).data('id');
             console.debug("====> fa-search: %o <====",id);
 
@@ -78,7 +78,6 @@
                 success: function(result){
                     
                     WaitingClose();
-                    console.log(result);
                     $("#modal_order_detail").find('.modal-body').html(result.html);                    
                     $('#modal_order_detail').modal('show');                   
                     return false;

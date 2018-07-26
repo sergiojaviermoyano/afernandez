@@ -5,7 +5,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title" style="color: #f39c12"><strong>Cobrar Presupuesto Mayorista <i class="fa fa-fw fa-truck"></i></strong></h3>
-          <i class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
+          <i id="closex" class="fa fa-fw fa-close text-red pull-right" onclick="cargarView('dash', 'accesosdirectos', '')" style="cursor: pointer"></i>
         </div><!-- /.box-header -->
         <div class="box-body">
         	<div class="row">
