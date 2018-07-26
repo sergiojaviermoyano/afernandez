@@ -11,7 +11,7 @@ class backup extends CI_Controller {
 
 	public function index($permission)
 	{
-		$data['list'] = $this->Backups->Backup_List();
+		$data['list'] = null;//$this->Backups->Backup_List();
 		$data['permission'] = $permission;
 		$this->load->view('backups/list', $data);
 	}

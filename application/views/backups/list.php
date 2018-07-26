@@ -10,10 +10,11 @@
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="GenerarBackup()" id="btnAdd" >Generar</button>';
           }
           ?>
+          <a href="<?php echo base_url()?>backup/create_fullbackup"  class="btn btn-block btn-success">Generar</a>
         </div><!-- /.box-header -->
         <div class="box-body">
           <div class="alert alert-danger alert-dismissible">
-            <h4><i class="icon fa fa-fw fa-database"></i> ¡Importante!</h4>
+            <h4><i class="icon fa fa-fw fa-database"></i> Importante!</h4>
             Esto permitira generar un copia de seguridad de sus datos. Por favor guarde en un lugar seguro el archivo generado.
           </div>
 
@@ -36,7 +37,7 @@ function GenerarBackup(){
     WaitingOpen('Generado BackUp');
     var data_ajax={
                     type: 'POST',
-                    url: "index.php/backup/generate",
+                    url: "index.php/backup/create_fullbackup",
                     data: null,
                     success: function( data ) {
                               WaitingClose();
