@@ -587,26 +587,26 @@ class Sales extends CI_Model
 			$importe_total=0;
 
 			$html = '
-			<table style="width:100%;  border-spacing: 10px;    border-collapse: separate; color: #72324a;">
+			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a;">
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
-						<h1 style="font-size:55px !important; text-align:center; width:100%; padding-botton:0px;">
+						<h1 style="font-size:30px !important; text-align:center; width:100%; padding-botton:0px;     margin: 0px auto;">
 							ADOLFO FERNANDEZ
-							<br><span style="width:100%; text-align:right; padding-top:0px; font-size:15px !important;">Soluciones Electronicas</span>
+							<br><span style="width:100%; text-align:right; padding-top:0px; font-size:13px !important;">Soluciones Electronicas</span>
 						</h1>
-						<p style="text-align:center; width:100%;">Fray Justo Santa Maria de Oro 489</p>
-						<p style="text-align:center; width:100%;">C.P. 5442 Caucete - San Juan - Tel. 496-3903 - Cel. 154514219</p>
+						<p style="text-align:center; width:100%;  margin: 0px auto;">Fray Justo Santa Maria de Oro 489</p>
+						<p style="text-align:center; width:100%; margin: 0px auto;">C.P. 5442 Caucete - San Juan - Tel. 496-3903 - Cel. 154514219</p>
 					</td>
 				</tr>
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
 						<table style="width:100%;">
-							<tr style="text-align:center; font-size:20px; font-weight:bold; color:#000000;">
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:10px; height:30px;">'.$fecha[0].'</td>
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:10px; height:30px">'.$fecha[1].'</td>
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:10px; height:30px">'.$fecha[2].'</td>
-								<td style="width:70% !important; border:2px solid #72324a !important; padding-top:10px; height:30px;font-size:25px;">
-									<span style="width:100%; font-size:18px;">NO VALIDO COMO FACTURA</span> <br>
+							<tr style="text-align:center; font-size:18px; font-weight:bold; color:#000000;">
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px;">'.$fecha[0].'</td>
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[1].'</td>
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[2].'</td>
+								<td style="width:70% !important; border:2px solid #72324a !important; padding-top:5px; height:10px; font-size:16px;">
+									<span style="width:100%; font-size:13px;">NO VALIDO COMO FACTURA</span> <br>
 									PRESUPUESTO VALIDO POR 15 DIAS
 								</td>
 							</tr>
@@ -618,12 +618,12 @@ class Sales extends CI_Model
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
 						<table style="width:100%;">
 							<tr>
-								<td style="width:10%; padding-top:20px;"> Señor: </td>
-								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:10px;font-size:20px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].'</td>
+								<td style="width:10%; padding-top:0px;"> Señor: </td>
+								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:0px;font-size:14px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].'</td>
 							</tr>
 							<tr>
-								<td style="width:10%; padding-top:20px;"> Domicilio:  </td>
-								<td style="width:90%; border-bottom: 1px dotted #72324a; padding-top:10px;">'.$result['cliente']['cliDomicilio'].'</td>
+								<td style="width:10%; padding-top:0px;"> Domicilio:  </td>
+								<td style="width:90%; border-bottom: 1px dotted #72324a; padding-top:0px;">'.$result['cliente']['cliDomicilio'].'</td>
 							</tr>
 						</table>
 					</td>
@@ -634,20 +634,20 @@ class Sales extends CI_Model
 							$total_art=count($result['orden_detalle']);
 							foreach($result['orden_detalle'] as $item){
 								$importe_total+= floatval($item['artVenta'] * $item['artCant']);
-								$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:20px;">';
-								$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 10px ;">'.$item['artCant'].'</td>';
-								$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.$item['artDescripcion'].'</td>';
-								$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.number_format($item['artVenta'], 2).'</td>';
-								$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  10px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
+								$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:15px;">';
+								$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
+								$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.$item['artDescripcion'].'</td>';
+								$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
+								$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
 								$html.= '</tr>';
 							}
 
-							for($i=($total_art);  $i<=12; $i++){
+							for($i=($total_art);  $i<=20; $i++){
 								$html.= '<tr style="border:1px solid #72324a !important;">';
-									$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
-									$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
-									$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
-									$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
+									$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"> </td>';
+									$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+									$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+									$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
 									$html.= '</tr>';
 							}
 						$html .= '</table>
@@ -655,17 +655,17 @@ class Sales extends CI_Model
 				</tr>
 
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan="2" style="font-size:40px; text-align:right; padding: 10px;">
+					<td colspan="2" style="font-size:30px; text-align:right; padding: 0px;">
 						$
 					</td>
-					<td colspan="1" style="border:2px solid #72324a !important; margin:0px auto; padding: 10px;border-radius: 10px; text-align:right; font-size:23px; color:#000000;">
+					<td colspan="1" style="border:2px solid #72324a !important; margin:0px auto; padding: 0px;border-radius: 10px; text-align:right; font-size:20px; color:#000000;">
 					 '.number_format($importe_total, 2).'
 					</td>
 				</tr>
 			</table>
 				';
 			//-------------------------------------
-
+			//die($html);			
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF
@@ -675,7 +675,7 @@ class Sales extends CI_Model
 			//aumentamos memoria del servidor si es necesario
 			ini_set("memory_limit","300M");
 			//Tamaño de la página y orientación
-			$dompdf->set_paper('A3','portrait');
+			$dompdf->set_paper('A$','portrait');
 			//$dompdf->set_option('isHtml5ParserEnabled', TRUE);
 
 			//lanzamos a render
