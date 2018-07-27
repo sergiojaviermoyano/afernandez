@@ -33,7 +33,7 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
-<?php $this->load->view('sales/print_order_modal'); ?>
+
 <script>
   $(function () {
     //$("#groups").DataTable();

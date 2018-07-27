@@ -10,7 +10,7 @@
 <?php $this->load->view('buscadores/articlesprice'); ?>
 <?php $this->load->view('buscadores/articlespricemayorista'); ?>
 <?php $this->load->view('buscadores/clientes'); ?>
-
+<?php $this->load->view('sales/print_order_modal'); ?>
 
 <!-- Modal -->
 <div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
