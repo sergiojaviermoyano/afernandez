@@ -5,11 +5,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">BackUp</h3>
-          <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="GenerarBackup()" id="btnAdd" >Generar</button>';
-          }
-          ?>
+          <br><br>
           <a href="<?php echo base_url()?>backup/create_fullbackup"  class="btn btn-block btn-success">Generar</a>
         </div><!-- /.box-header -->
         <div class="box-body">

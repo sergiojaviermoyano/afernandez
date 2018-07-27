@@ -13,7 +13,7 @@ class backup extends CI_Controller {
 	{
 		$data['list'] = null;//$this->Backups->Backup_List();
 		$data['permission'] = $permission;
-		$this->load->view('backups/list', $data);
+		echo json_encode($this->load->view('backups/list', $data, true));
 	}
 
 	public function generate()
