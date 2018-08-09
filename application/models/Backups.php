@@ -39,5 +39,119 @@ class Backups extends CI_Model
 
 		return true;
 	}
+
+	function importar($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$querys	= $data['query'];
+            
+            $response[] = array();
+            $response['queryError'] = array(); 
+            $response['rowInserted'] = 0; 
+            $response['rowUpdated'] = 0; 
+
+            $queryArray = explode('~~', $querys);
+            $rowInserted = 0;
+            $rowUpdated = 0;
+            //Recorrer uno por uno e insertar, si no inserta, hacer el update
+            foreach ($queryArray as $row) {
+            	if($row != ''){
+            		try{
+            			//Primero el insert de rubros , despues update de subrubos, luego update de marcas y al final insert de articulos
+            			if(!$this->db->simple_query($row)){
+            				//Registro para actualizar rubros
+            				if (strpos($row, "INSERT INTO `rubros` ") !== false) {
+            					$rowItem = explode(') VALUES (', $row);
+							 	$rowItem = str_replace(');', '', $rowItem[1]);
+							 	$rowItem = explode(',', $rowItem);
+							 	$data = array(
+											   	//'rubId'						=> $code,
+											   	'rubDescripcion' 				=> $rowItem[1],
+											   	'rubEstado'						=> $rowItem[2]
+											);
+							 	if($this->db->update('rubros', $data, array('rubId'=>$rowItem[0])) == false) {
+							 		$response['queryError'][] = 'Rubro: '.$rowItem[1].'('.$rowItem[0].')';
+							 	} else {
+							 		$response['rowUpdated']++;
+							 	}
+            				}
+            				//-----------------------------------------
+            				//Registro para actualizar sub rubros
+            				if (strpos($row, "INSERT INTO `subrubros` ") !== false) {
+            					$rowItem = explode(') VALUES (', $row);
+							 	$rowItem = str_replace(');', '', $rowItem[1]);
+							 	$rowItem = explode(',', $rowItem);
+							 	$data = array(
+											   	//'subrId'						=> $code,
+											   	'subrDescripcion' 				=> $rowItem[1],
+											   	'rubId'			 				=> $rowItem[2],
+											   	'subrEstado'					=> $rowItem[3]
+											);
+							 	if($this->db->update('subrubros', $data, array('subrId'=>$rowItem[0])) == false) {
+							 		$response['queryError'][] = 'SubRubro: '.$rowItem[1].'('.$rowItem[0].')';
+							 	} else {
+							 		$response['rowUpdated']++;
+							 	}
+            				}
+							//-----------------------------------------
+							//Registro para actualizar marcas
+							if (strpos($row, "INSERT INTO `marcaart` ") !== false) {
+            					$rowItem = explode(') VALUES (', $row);
+							 	$rowItem = str_replace(');', '', $rowItem[1]);
+							 	$rowItem = explode(',', $rowItem);
+							 	$data = array(
+											   	//'id'						=> $code,
+											   	'descripcion' 				=> $rowItem[1],
+											);
+							 	if($this->db->update('marcaart', $data, array('id'=>$rowItem[0])) == false) {
+							 		$response['queryError'][] = 'marca: '.$rowItem[1].'('.$rowItem[0].')';
+							 	} else {
+							 		$response['rowUpdated']++;
+							 	}
+            				}
+							//-----------------------------------------
+            				//Registro para actualizar Artículos;
+            				if (strpos($row, "INSERT INTO `articles`") !== false) {
+							 	$rowItem = explode(') VALUES (', $row);
+							 	$rowItem = str_replace(');', '', $rowItem[1]);
+							 	$rowItem = explode(',', $rowItem);
+							 	$data = array(
+											   	//'artBarCode'					=> $code,
+											   	'artDescription' 				=> $rowItem[1],
+											   	'artCoste'						=> $rowItem[2],
+											   	'artMarginMinorista'			=> $rowItem[3],
+											   	'artMarginMinoristaIsPorcent' 	=> $rowItem[4],
+											   	'artEstado' 					=> $rowItem[5],
+												'artMinimo'						=> $rowItem[6],
+												'subrId'						=> $rowItem[8],
+												'artMarginMayorista'			=> $rowItem[9],
+												'artMarginMayoristaIsPorcent' 	=> $rowItem[10],
+												'artCosteIsDolar'				=> $rowItem[11],
+												'marcaId'						=> $rowItem[12]
+											);
+							 	if($this->db->update('articles', $data, array('artBarCode'=>$rowItem[0])) == false) {
+							 		$response['queryError'][] = 'Articulo: '.$rowItem[1].'('.$rowItem[0].')';
+							 	} else {
+							 		$response['rowUpdated']++;
+							 	}
+							}
+            			} else {
+            				//Registro insertado
+            				$response['rowInserted']++;
+            			}
+            		}catch(Execption $e){
+            			$response['queryError'][] = $e;
+            		}
+            	}
+            }
+            
+			return $response;
+
+		}
+	}
 }
 ?>

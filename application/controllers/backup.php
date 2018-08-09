@@ -7,6 +7,10 @@ class backup extends CI_Controller {
     {
 		parent::__construct();
 		$this->load->model('Backups');
+		$this->load->model('Articles');
+		$this->load->model('Rubros');
+		$this->load->model('Brands');
+		$this->Users->updateSession(true);
 	}
 
 	public function index($permission)
@@ -33,5 +37,20 @@ class backup extends CI_Controller {
 		$this->load->helper('download');
 		force_download($fileName, $backup);
 		exit(3);
+	}
+
+	public function update($permission)
+	{
+		$data['articles'] = $this->Articles->Articles_List();
+		$data['rubros']	= $this->Rubros->Rubro_List();
+		$data['subrubros'] = $this->Rubros->SubRubro_List();
+		$data['marcas'] = $this->Brands->Brand_list();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('backups/update', $data, true));
+	}
+
+	public function importar(){
+		$data['data'] = $this->Backups->importar($this->input->post());
+		echo json_encode($data);
 	}
 }
