@@ -586,8 +586,10 @@ class Sales extends CI_Model
 			$fecha=explode('-',$fecha);
 			$importe_total=0;
 
+			$pages=count($result['orden_detalle'])/20;
+			
 			$html = '
-			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a;">
+			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
 						<h1 style="font-size:30px !important; text-align:center; width:100%; padding-botton:0px;     margin: 0px auto;">
@@ -628,32 +630,62 @@ class Sales extends CI_Model
 						</table>
 					</td>
 				</tr>
-				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;">
-						<table style="width:100%;  border-collapse: collapse; border: 0px;">';
-							$total_art=count($result['orden_detalle']);
-							foreach($result['orden_detalle'] as $item){
-								$importe_total+= floatval($item['artVenta'] * $item['artCant']);
-								$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:15px;">';
-								$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
-								$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; text-align:left;border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.$item['artDescripcion'].'</td>';
-								$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
-								$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
-								$html.= '</tr>';
-							}
+				</table>';
+				$next_page=0;
+				for( $i=0; $i<ceil($pages);$i++){					
+					
+					$rows=count($result['orden_detalle']);
+					$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
+						<tr style="border:2px solid #72324a !important; margin:0px auto;">
+							<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;">
+								<table style="width:100%;  border-collapse: collapse; border: 0px;">';
+									$total_art=count($result['orden_detalle']);	
 
-							for($i=($total_art);  $i<=20; $i++){
-								$html.= '<tr style="border:1px solid #72324a !important;">';
-									$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"> </td>';
-									$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
-									$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
-									$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
-									$html.= '</tr>';
-							}
-						$html .= '</table>
-					</td>
-				</tr>
+									$from=$next_page;
 
+									$to=$next_page+20;
+									$next_page= $to;
+									
+									$row=0;
+									
+									for($j=$from;$j<=$to;$j++){
+										
+										if(!isset($result['orden_detalle'][$j])){
+											break;
+										}
+										
+										$item=$result['orden_detalle'][$j];
+
+										//var_dump($result['orden_detalle'][$j]);
+										//continue;
+										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
+										$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:15px;">';
+										$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
+										$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; text-align:left;border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.$item['artDescripcion'].'</td>';
+										$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
+										$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
+										$html.= '</tr>';
+										$row++;
+										if(!isset($result['orden_detalle'][$row])){											
+											break;
+										}
+									}
+									
+									for($j=$row+1;  $j<=20;$j++){
+										$html.= '<tr style="border:1px solid #72324a !important;">';
+											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"> </td>';
+											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+											$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+											$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+											$html.= '</tr>';
+									}
+								$html .= '</table>
+							</td>
+						</tr>
+						</table><br>';
+				}
+				
+				$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">				
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan="2" style="font-size:30px; text-align:right; padding: 0px;">
 						$
@@ -662,8 +694,7 @@ class Sales extends CI_Model
 					 '.number_format($importe_total, 2).'
 					</td>
 				</tr>
-			</table>
-				';
+			</table>';
 			//-------------------------------------
 			//die($html);			
 			//se incluye la libreria de dompdf
@@ -719,15 +750,7 @@ class Sales extends CI_Model
 			$query=$this->db->get('listadeprecios');
 			$result['lista_de_precios'] = $query->row_array();
 
-			/*
-			$sql="select od.*, a.*,
-			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
-			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
-			from ordendetalle as od INNER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
-
-			$query=$this->db->query($sql);
-			$result['orden_detalle'] = $query->result_array();
-			*/
+		
 			$this->db->select("od.*");
 			$this->db->from('ordendetalle od');
 			$this->db->join('articles a','a.artId=od.artId', 'left outer');
@@ -744,7 +767,7 @@ class Sales extends CI_Model
 			$importe_total=0;
 
 			$html = '
-			<table style="width:100%;  border-spacing: 10px;    border-collapse: separate; color: #72324a;">
+			<table style="width:100%;  border-spacing: 10px;    border-collapse: separate; color: #72324a; page-break-inside: avoid;">
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
 						<h1 style="font-size:55px !important; text-align:center; width:100%; padding-botton:0px;">
@@ -785,6 +808,9 @@ class Sales extends CI_Model
 						</table>
 					</td>
 				</tr>
+			</table>
+			<table style="width:100%;  border-spacing: 10px;    border-collapse: separate; color: #72324a; page-break-inside: avoid;">
+			
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;">
 						<table style="width:100%;  border-collapse: collapse; border: 0px;">';
@@ -798,13 +824,13 @@ class Sales extends CI_Model
 								$html.= '</tr>';
 							}
 
-							for($i=($total_art);  $i<=12; $i++){
+							/*for($i=($total_art);  $i<=12; $i++){
 								$html.= '<tr style="border:1px solid #72324a !important;">';
 									$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
 									$html.= '<td style="width:75%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
 									$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 20px;"> </td>';
 									$html.= '</tr>';
-							}
+							}*/
 						$html .= '</table>
 					</td>
 				</tr>

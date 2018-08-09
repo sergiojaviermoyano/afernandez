@@ -2,3 +2,4 @@
 application/config/config.php
 assets/reports/*
 assets/plugin/HTMLtoPDF
+/assets/plugin/HTMLtoPDF/dompdf/lib/fonts/log.htm
