@@ -553,7 +553,7 @@ class Sales extends CI_Model
 	}
 
 	public function getSaleById($data){
-
+		
 		if($data['id']!=0){
 			$this->db->where(array('oId'=>$data['id']));
 			$query=$this->db->get('orden');
@@ -578,7 +578,7 @@ class Sales extends CI_Model
 
 			$query=$this->db->query($sql);
 			$result['orden_detalle'] = $query->result_array();
-
+		
 			//return $result;
 
 			//Armar el html------------------------
@@ -643,7 +643,7 @@ class Sales extends CI_Model
 
 									$from=$next_page;
 
-									$to=$next_page+20;
+									$to=($i==0)?$next_page+20:$next_page+40;
 									$next_page= $to;
 									
 									$row=0;
@@ -671,7 +671,7 @@ class Sales extends CI_Model
 										}
 									}
 									
-									for($j=$row+1;  $j<=20;$j++){
+									for($j=$row+1;  $j<=(($i==0)?20:40);$j++){
 										$html.= '<tr style="border:1px solid #72324a !important;">';
 											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"> </td>';
 											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
