@@ -553,7 +553,6 @@ class Sales extends CI_Model
 	}
 
 	public function getSaleById($data){
-		
 		if($data['id']!=0){
 			$this->db->where(array('oId'=>$data['id']));
 			$query=$this->db->get('orden');
