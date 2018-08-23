@@ -187,7 +187,6 @@ class Articles extends CI_Model
 				 	if($this->db->update('articles', $data, array('artId'=>$id)) == false) {
 				 		return false;
 				 	}
-				 	echo $this->db->last_query();
 				 	break;
 
 				 case 'Del':
