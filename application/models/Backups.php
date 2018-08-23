@@ -70,8 +70,8 @@ class Backups extends CI_Model
 							 	$rowItem = explode(',', $rowItem);
 							 	$data = array(
 											   	//'rubId'						=> $code,
-											   	'rubDescripcion' 				=> $rowItem[1],
-											   	'rubEstado'						=> $rowItem[2]
+											   	'rubDescripcion' 				=> str_replace('\'', '', $rowItem[1]),
+											   	'rubEstado'						=> str_replace(' ', '', (str_replace('\'', '', $rowItem[2])))
 											);
 							 	if($this->db->update('rubros', $data, array('rubId'=>$rowItem[0])) == false) {
 							 		$response['queryError'][] = 'Rubro: '.$rowItem[1].'('.$rowItem[0].')';
@@ -87,9 +87,9 @@ class Backups extends CI_Model
 							 	$rowItem = explode(',', $rowItem);
 							 	$data = array(
 											   	//'subrId'						=> $code,
-											   	'subrDescripcion' 				=> $rowItem[1],
-											   	'rubId'			 				=> $rowItem[2],
-											   	'subrEstado'					=> $rowItem[3]
+											   	'subrDescripcion' 				=> str_replace('\'', '', $rowItem[1]),
+											   	'rubId'			 				=> str_replace('\'', '', $rowItem[2]),
+											   	'subrEstado'					=> str_replace(' ', '', (str_replace('\'', '', $rowItem[3])))
 											);
 							 	if($this->db->update('subrubros', $data, array('subrId'=>$rowItem[0])) == false) {
 							 		$response['queryError'][] = 'SubRubro: '.$rowItem[1].'('.$rowItem[0].')';
@@ -121,23 +121,27 @@ class Backups extends CI_Model
 							 	$rowItem = explode(',', $rowItem);
 							 	$data = array(
 											   	//'artBarCode'					=> $code,
-											   	'artDescription' 				=> $rowItem[1],
-											   	'artCoste'						=> $rowItem[2],
-											   	'artMarginMinorista'			=> $rowItem[3],
-											   	'artMarginMinoristaIsPorcent' 	=> $rowItem[4],
-											   	'artEstado' 					=> $rowItem[5],
-												'artMinimo'						=> $rowItem[6],
-												'subrId'						=> $rowItem[8],
-												'artMarginMayorista'			=> $rowItem[9],
-												'artMarginMayoristaIsPorcent' 	=> $rowItem[10],
-												'artCosteIsDolar'				=> $rowItem[11],
-												'marcaId'						=> $rowItem[12]
+											   	'artDescription' 				=> str_replace('\'', '', $rowItem[1]),
+											   	'artCoste'						=> trim(str_replace('\'', '', $rowItem[2])),
+											   	'artMarginMinorista'			=> trim(str_replace('\'', '', $rowItem[3])),
+											   	'artMarginMinoristaIsPorcent' 	=> (int)trim(str_replace('\'', '', $rowItem[4])),
+											   	'artEstado' 					=> str_replace(' ', '', (str_replace('\'', '', $rowItem[5]))),
+												'artMinimo'						=> trim(str_replace('\'', '', $rowItem[6])),
+												'subrId'						=> trim(str_replace('\'', '', $rowItem[8])),
+												'artMarginMayorista'			=> trim(str_replace('\'', '', $rowItem[9])),
+												'artMarginMayoristaIsPorcent' 	=> (int)trim(str_replace('\'', '', $rowItem[10])),
+												'artCosteIsDolar'				=> (int)trim(str_replace('\'', '', $rowItem[11])),
+												'marcaId'						=> trim(str_replace('\'', '', $rowItem[12]))
 											);
-							 	if($this->db->update('articles', $data, array('artBarCode'=>$rowItem[0])) == false) {
+
+							 	//var_dump($data);
+
+							 	if($this->db->update('articles', $data, array('artBarCode'=>str_replace('\'', '', $rowItem[0]))) == false) {
 							 		$response['queryError'][] = 'Articulo: '.$rowItem[1].'('.$rowItem[0].')';
 							 	} else {
 							 		$response['rowUpdated']++;
 							 	}
+							 	//echo $this->db->last_query();
 							}
             			} else {
             				//Registro insertado

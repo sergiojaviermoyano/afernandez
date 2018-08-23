@@ -6,7 +6,7 @@
         <div class="box-header">
           <h3 class="box-title">BackUp</h3>
           <br><br>
-          <a href="<?php echo base_url()?>backup/create_fullbackup"  class="btn btn-block btn-success">Generar</a>
+          <a href="<?php echo base_url()?>index.php/backup/create_fullbackup"  class="btn btn-block btn-success">Generar</a>
         </div><!-- /.box-header -->
         <div class="box-body">
           <div class="alert alert-danger alert-dismissible">
