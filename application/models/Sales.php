@@ -679,7 +679,7 @@ class Sales extends CI_Model
 									if($i==0){
 										$tope=20;
 									}else{
-										$tope=28;
+										$tope=30;
 									}
 									for($k=$row+1; $k<=$tope;$k++){
 										$html.= '<tr style="border:1px solid #72324a !important;">';
