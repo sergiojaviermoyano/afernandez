@@ -584,10 +584,16 @@ class Sales extends CI_Model
 			$fecha= date('d-m-y',strtotime($result['orden']['oFecha']));
 			$fecha=explode('-',$fecha);
 			$importe_total=0;
-
-			$pages=count($result['orden_detalle'])/20;
+			$limit_page=20;
+			$pages=count($result['orden_detalle'])/$limit_page;
 			
-			$html = '
+			$html = '<!DOCTYPE html PUBLIC >
+			<html xmlns="http://www.w3.org/1999/xhtml">
+			<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<title></title>
+			</head>
+			<body>
 			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
@@ -669,13 +675,18 @@ class Sales extends CI_Model
 											break;
 										}
 									}
-									
-									for($j=$row+1;  $j<=(($i==0)?20:40);$j++){
+								
+									if($i==0){
+										$tope=20;
+									}else{
+										$tope=28;
+									}
+									for($k=$row+1; $k<=$tope;$k++){
 										$html.= '<tr style="border:1px solid #72324a !important;">';
-											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"> </td>';
-											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"> </td>';
+											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"></td>';
+											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
+											$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
+											$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
 											$html.= '</tr>';
 									}
 								$html .= '</table>
@@ -693,7 +704,7 @@ class Sales extends CI_Model
 					 '.number_format($importe_total, 2).'
 					</td>
 				</tr>
-			</table>';
+			</table></body></html>';
 			//-------------------------------------
 			//die($html);			
 			//se incluye la libreria de dompdf
@@ -703,17 +714,20 @@ class Sales extends CI_Model
 			//se carga el codigo html
 			$dompdf->load_html(utf8_decode($html));
 			//aumentamos memoria del servidor si es necesario
-			ini_set("memory_limit","300M");
+			set_time_limit(600);
+			ini_set("memory_limit","600M");
 			//Tamaño de la página y orientación
-			$dompdf->set_paper('A$','portrait');
+			$dompdf->set_paper('A4','portrait');
 			//$dompdf->set_option('isHtml5ParserEnabled', TRUE);
 
 			//lanzamos a render
 			$dompdf->render();
 			//guardamos a PDF
 			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$time = time();
+			$file_name=$data['id']."_".$time.".pdf";
 			$output = $dompdf->output();
-			file_put_contents('assets/reports/orders_minorista/'.$data['id'].'.pdf', $output);
+			file_put_contents('assets/reports/orders_minorista/'.$file_name, $output);
 
 			//Eliminar archivos viejos ---------------
 			$dir = opendir('assets/reports/');
@@ -724,7 +738,7 @@ class Sales extends CI_Model
 			}
 			closedir($dir);
 			//----------------------------------------
-			return $data['id'].'.pdf';
+			return $file_name;
 		}
 	}
 
