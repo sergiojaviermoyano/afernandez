@@ -346,6 +346,7 @@ function Calcular(){
 	var table = $('#detailSale > tbody> tr');
 	var total = 0;
 	table.each(function(r) {
+    debugger;
 	  total += parseFloat(this.children[5].textContent);
 	});
 
@@ -721,7 +722,7 @@ $('#btnServiceEfectivo').click(function(){
       WaitingOpen('Buscando Cliente');
       $.ajax({
             type: 'POST',
-            data: { id : <?php echo $order['order']['order']['cliId'];?> },
+            data: { id : <?php echo $order['order']['cliId'];?> },
         url: 'index.php/customer/findCustomerId',
         success: function(result){
                       WaitingClose();
@@ -864,7 +865,6 @@ function Cobrar_(esPresupuesto){
   var table = $('#detailSale > tbody> tr');
   var detalle = [];
   table.each(function(r) {
-    debugger;
     var object = {
       artId:          (this.children[6].textContent == '' ? '-' : parseInt(this.children[6].textContent)),
       cant:           parseFloat(this.children[3].textContent),
