@@ -28,10 +28,19 @@ class backup extends CI_Controller {
 
 	public function create_fullbackup(){
 		$this->load->dbutil();
-		$backup =$this->dbutil->backup();
+
+		$scrip_name='afernandez_'.date('Y_m_d_Hmi');
+		$prefs = array( 'newline' => "\n",
+		'add_drop' => TRUE,
+		'add_insert' => TRUE,
+		'format' => 'zip',
+		'filename' => $scrip_name.'.sql',
+		'foreign_key_checks' => FALSE,
+		);
+		$backup =$this->dbutil->backup($prefs);
 		
 		$this->load->helper('file');
-		$fileName = 'afernandez_'.date('Y_m_d_Hmi').'.sql.zip';
+		$fileName = $scrip_name.'.sql.zip';
 		write_file(BACKUPFOLDER.'/'.$fileName, $backup);
 		  
 		$this->load->helper('download');
