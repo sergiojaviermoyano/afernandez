@@ -585,7 +585,11 @@ class Sales extends CI_Model
 			$fecha=explode('-',$fecha);
 			$importe_total=0;
 			$limit_page=20;
-			$pages=count($result['orden_detalle'])/$limit_page;
+			if(count($result['orden_detalle']) > 22){
+				$pages=count($result['orden_detalle'])/$limit_page;
+			} else {
+				$pages=1;
+			}
 			
 			$html = '<!DOCTYPE html PUBLIC >
 			<html xmlns="http://www.w3.org/1999/xhtml">
@@ -648,12 +652,12 @@ class Sales extends CI_Model
 
 									$from=$next_page;
 
-									$to=($i==0)?$next_page+20:$next_page+40;
+									$to=($i==0)?$next_page+22:$next_page+40;
 									$next_page= $to;
 									
 									$row=0;
 									
-									for($j=$from;$j<=$to;$j++){
+									for($j=$from;$j<$to;$j++){
 										
 										if(!isset($result['orden_detalle'][$j])){
 											break;
@@ -677,11 +681,11 @@ class Sales extends CI_Model
 									}
 								
 									if($i==0){
-										$tope=20;
+										$tope=22;
 									}else{
 										$tope=30;
 									}
-									for($k=$row+1; $k<=$tope;$k++){
+									for($k=$row; $k<$tope;$k++){
 										$html.= '<tr style="border:1px solid #72324a !important;">';
 											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"></td>';
 											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
