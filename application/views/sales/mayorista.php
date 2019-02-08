@@ -315,7 +315,7 @@
 <script>
 $("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:','});
+$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $(".select2").select2();
 
 setTimeout("$('#venId').select2('open');",800);
