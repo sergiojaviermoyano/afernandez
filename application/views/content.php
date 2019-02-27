@@ -31,3 +31,22 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+var areYouReallySure = false;
+function areYouSure() {
+  debugger;
+    if(allowPrompt){
+        //if (!areYouReallySure && true) {
+            areYouReallySure = true;
+            var confMessage = "";
+            return confMessage;
+        //} 
+    }else{
+        allowPrompt = true;
+    }
+}
+
+var allowPrompt = true;
+window.onbeforeunload = areYouSure;
+</script>

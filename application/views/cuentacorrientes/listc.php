@@ -173,6 +173,7 @@ $('#btnSave22').click(function(){
         });
 });
 function LoadRec(id_,action){
+  debugger;
   LoadIconAction('modalActionX','View');
   WaitingOpen('Cargando Recepción');
   $.ajax({
@@ -180,7 +181,6 @@ function LoadRec(id_,action){
     data: { },
     url: 'index.php/sale/mayoristaGet/'+id_, 
     success: function(result){
-      console.debug("result: %o",result);
       WaitingClose();
       $("#modalDetail #modalBodyDetail").html(result);
       $("#modalDetail #modalBodyDetail").find("#btnServiceEfectivo").hide();
@@ -199,6 +199,29 @@ function LoadRec(id_,action){
         dataType: 'json'
     });
 }
+
+function PrintRecibo(id__){
+    WaitingOpen('Generando reporte...');
+    LoadIconAction('modalAction__p','Print');
+    $.ajax({
+            type: 'POST',
+            data: {
+                    id : id__
+                  },
+        url: 'index.php/cuentacorriente/printRecibo',
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/reports/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
+            },
+            dataType: 'json'
+        });
+  }
 </script>
 
 <!-- Modal -->
@@ -250,6 +273,24 @@ function LoadRec(id_,action){
 </div>
 
 <!-- Modal -->
+<div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 50%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel__"><span id="modalAction__p"> </span> Comprobante</h4>
+      </div>
+      <div class="modal-body" id="modalBodyPrint">
+        <div>
+          <iframe style="width: 100%; height: 600px;" id="printDoc" src=""></iframe>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!--
 <div class="modal fade" id="modalReception" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="width: 80%">

@@ -23,7 +23,16 @@
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepDebe'] , 2 , "," , "." ).'</td>';
 	      	echo '<td style="text-align:right">'.number_format ( $m['cctepHaber'] , 2 , "," , "." ).'</td>';
           echo '<td style="text-align:center">'.$m['usrNick'].'</td>';
-          echo '<td style="text-align:center"><i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$m['cctepRef'].',\'View\')"></i></td>';
+          echo '<td style="text-align:center">';
+          if($m['cctepRef'] != null){
+            echo '<i class="fa fa-fw fa-search" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$m['cctepRef'].')"></i>';
+            //echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$m['cctepRef'].',\'View\')"></i>';
+          } else {
+            //
+            echo '<i class="fa fa-fw fa-file-pdf-o" style="color: #3c8dbc ; cursor: pointer; margin-left: 15px;" onclick="PrintRecibo('.$m['cctepId'].')"></i>';
+          }
+          echo '</td>';
+          //<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadRec('.$m['cctepRef'].',\'View\')"></i></td>';
  
          echo '</tr>';
 	      	$debe+= $m['cctepDebe'];

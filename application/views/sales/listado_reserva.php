@@ -19,6 +19,7 @@
               <tr>
                 <th class="text-center" width="15%">Acciones</th>
                 <th>Nº Orden</th>
+                <th>Cliente</th>
                 <th>Pagos</th>
                 <th>Total</th>
                 <th>Fecha</th>
@@ -63,6 +64,7 @@
         'columns':[
             {className:'text-center'},
             null,
+            null, 
             {className:'text-right'},
             {className:'text-right'},
             {className:'text-center'},
@@ -78,7 +80,7 @@
                 var output = [];
                 var permission = $("#permission").val();
                 $.each(response.data,function(index,item){
-                    var col1,col2,colpago,coltotal,col3,col4, col5='';
+                    var col1,col2,colpago,coltotal,col3,col4, col5,colCli='';
                     col1='';
                     col1+='<i class="fa fa-fw fa-print"  style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
                     col1+='<i class="fa fa-fw fa-sticky-note-o" style="color: #00a65a; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
@@ -86,6 +88,7 @@
                     col1+='<i class="fa fa-fw fa-plus"   style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="pagando('+item.oId+', '+parseFloat(item.pago).toFixed(2)+', '+parseFloat(item.total).toFixed(2)+')"></i>';
 
                     col2=item.oId;
+                    colCli = item.cliApellido + ' ' + item.cliNombre;
                     colpago = '<a href="#" onclick="consultarPagos('+item.oId+', '+parseFloat(item.pago).toFixed(2)+', '+parseFloat(item.total).toFixed(2)+')">' + parseFloat(item.pago).toFixed(2) +'</a>';
                     coltotal = parseFloat(item.total).toFixed(2);
                     col3=item.fecha;
@@ -108,7 +111,7 @@
                         }
                     }
                     col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;" title="Presupuesto">P</small>':' ';
-                    output.push([col1,col2,colpago,coltotal,col3,col4,col5]);
+                    output.push([col1,col2,colCli,colpago,coltotal,col3,col4,col5]);
                 });
                 return output;
             },
@@ -141,7 +144,8 @@
                             html+= '<div class="row">';
                             html+=  '<div class="col-xs-2">Importe:</div><div class="col-xs-2"><b>$'+item.rcbImporte+'</b></div>';
                             html+=  '<div class="col-xs-1">Fecha:</div><div class="col-xs-3"><b>'+item.rcbFecha+'</b></div>';
-                            html+=  '<div class="col-xs-2">Medio:</div><div class="col-xs-2"><b>'+item.medDescripcion+'</b><br></div>';
+                            html+=  '<div class="col-xs-1">Medio:</div><div class="col-xs-2"><b>'+item.medDescripcion+'</b><br></div>';
+                            html+=  '<div class="col-xs-1"><i class="fa fa-file-pdf-o" style="color: #3c8dbc ; cursor: pointer;" onclick="PrintPago('+item.rcbId+')"></i></div>';
                             html+= '</div>';
                             $('#footerModal').append(html);
                       });
@@ -151,6 +155,29 @@
         error: function(result){
               WaitingClose();
               ProcesarError(result.responseText, 'modalHistorial');
+            },
+            dataType: 'json'
+        });
+  }
+
+  function PrintPago(id__){
+    WaitingOpen('Generando reporte...');
+    LoadIconAction('modalAction__p','Print');
+    $.ajax({
+            type: 'POST',
+            data: {
+                    id : id__
+                  },
+        url: 'index.php/box/printRecibo',
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/reports/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
             },
             dataType: 'json'
         });
@@ -412,6 +439,26 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnPago">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 50%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel__"><span id="modalAction__p"> </span> Comprobante</h4>
+      </div>
+      <div class="modal-body" id="modalBodyPrint">
+        <div>
+          <iframe style="width: 100%; height: 600px;" id="printDoc" src=""></iframe>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>

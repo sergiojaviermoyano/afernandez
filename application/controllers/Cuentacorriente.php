@@ -64,4 +64,8 @@ class cuentacorriente extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
+
+	public function printRecibo(){
+		echo json_encode($this->Cuentacorrientes->printRecibo($this->input->post()));
+	}
 }

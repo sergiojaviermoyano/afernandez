@@ -474,9 +474,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
-		$query = $this->db->get('orden');
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
@@ -488,9 +491,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
-		$query = $this->db->get('orden');
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->result_array();
 	}
 
@@ -502,9 +508,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
-		$query = $this->db->get('orden');
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
@@ -516,9 +525,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
-		$query = $this->db->get('orden');
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->result_array();
 	}
 
@@ -531,9 +543,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
-		$query = $this->db->get('orden');
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
@@ -545,10 +560,12 @@ class Sales extends CI_Model
 		if($data['search']['value']!=''){
 			$this->db->where('oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
-		$query = $this->db->get('orden');
-		//echo $this->db->last_query();
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
 		return $query->result_array();
 	}
 
