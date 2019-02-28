@@ -566,7 +566,7 @@ class Boxs extends CI_Model
 			where r.rcbId = 173
 			*/
 			$this->db->select('r.oId, r.rcbImporte, r.rcbFecha, o.cliId, c.cliNombre, c.cliApellido, 
-			(select sum(d.artVentaSD * d.artCant) from ordendetalle as d where d.oId = o.oId) as total,
+			(select sum(d.artVenta * d.artCant) from ordendetalle as d where d.oId = o.oId) as total,
 			(SELECT SUM( ra.rcbImporte ) FROM recibos as ra WHERE ra.rcbFecha <= r.rcbFecha	AND ra.oId = r.oId) as pagos');
 			$this->db->from('recibos as r');
 			$this->db->join('orden as o', 'o.oId = r.oId');
@@ -611,8 +611,10 @@ class Boxs extends CI_Model
 								$importe = number_format($move['rcbImporte'], 2, ',', '.');
 							
 							$html .= 'En concepto de <strong> Pago a cuenta orden N° '.$move['oId'].'.</strong><br>';
-							
-							$html .= 'Saldo <b>$'.number_format($move['total'] - $move['pagos'], 2, ',', '.').'</b>';
+							if($move['total'] - $move['pagos'] > 0)
+								$html .= 'Saldo <b>$ '.number_format($move['total'] - $move['pagos'], 2, ',', '.').'</b>';
+								else
+								$html .= 'Saldo <b>$ 0,00 (Cancelado)</b>';
 		
 			$html .= 		'</td>
 						</tr>';
@@ -666,7 +668,10 @@ class Boxs extends CI_Model
 							
 							$html .= 'En concepto de <strong> Pago a cuenta orden N° '.$move['oId'].'.</strong><br>';
 							
-							$html .= 'Saldo <b>$'.number_format($move['total'] - $move['pagos'], 2, ',', '.').'</b>';
+							if($move['total'] - $move['pagos'] > 0)
+								$html .= 'Saldo <b>$ '.number_format($move['total'] - $move['pagos'], 2, ',', '.').'</b>';
+								else
+								$html .= 'Saldo <b>$ 0,00 (Cancelado)</b>';
 			$html .= 		'</td>
 						</tr>';
 			$html .= 	'<tr>
