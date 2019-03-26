@@ -228,7 +228,7 @@ class Cuentacorrientes extends CI_Model
 			$html .= '</table>';
 
 			$html .= '<hr style="border:1px dotted gray;" >';
-
+			/*
 			$html .= '<table width="100%" style="font-family:courier; font-size: 14px;">';
 			$html .= '	<tr style="font-family: Open Sans; font-size: 25px; text-align: center;">
 							<td style="text-align: left; width:50%;">
@@ -285,7 +285,7 @@ class Cuentacorrientes extends CI_Model
 							</td>
 						</tr>';
 			$html .= '</table>';
-
+			*/
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF
@@ -633,6 +633,86 @@ class Cuentacorrientes extends CI_Model
     			return '-';
     			break;
     	}
-    }
+	}
+	
+	function saldos(){
+		$this->db->select('(SUM( IFNULL( cctepDebe, \'0\' ) ) - SUM( IFNULL( cctepHaber, \'0\' ) )) AS saldo, MAX( cctepFecha ) AS ultimo, cliNombre, cliApellido');
+		$this->db->from('cuentacorrientecliente as cl');
+		$this->db->join('clientes as c', 'c.cliId = cl.cliId');
+		$this->db->group_by('cl.cliId');
+		$this->db->order_by('saldo', 'desc');
+		$query = $this->db->get();
+
+		return $query->result_array();
+	}
+
+	function printSaldo(){
+		$data = $this->saldos();
+
+		$html = '';
+		$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+		$html .= '	<tr>
+						<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+						<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+							Fray Justo Santa Maria de Oro 489<br>
+							C.P. 5442 Caucete - San Juan - Tel. 496-3903 - Cel. 154514219
+						</td>
+						<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+							<center>Documento no válido como factura</center><br>
+							<b>SALDOS CUENTA CORRIENTE</b>
+						</td>
+					</tr>
+					</table>
+					<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">
+						<tr style="background-color: #A4A4A4">
+							<th style="text-align:center">Cliente</th>
+							<th style="text-align:center">Saldo</th>
+							<th style="text-align:center">Último Movimiento</th>
+						</tr>
+			        <tbody>';
+	      $debe = 0;
+	      $haber = 0;
+	      foreach ($data as $s) {
+			if($s['saldo'] > 0){
+				$html .= '<tr>';
+				//echo '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
+				$html .= '<td>'.$s['cliApellido'].' '.$s['cliNombre'].'</td>';
+				$html .= '<td style="text-align:right">'.number_format ( $s['saldo'] , 2 , "," , "." ).'</td>';
+				$html .= '<td style="text-align:center">'.date_format(date_create($s['ultimo']), 'd-m-Y H:i').'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="3" style="padding-top: 2px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+				$html .= '</tr>'; 
+			}
+	      }
+
+	    //se incluye la libreria de dompdf
+		require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+		//se crea una nueva instancia al DOMPDF
+		$dompdf = new DOMPDF();
+		//se carga el codigo html
+		$dompdf->load_html(utf8_decode($html));
+		//aumentamos memoria del servidor si es necesario
+		ini_set("memory_limit","300M");
+		//Tamaño de la página y orientación
+		$dompdf->set_paper('a4','portrait');
+		//lanzamos a render
+		$dompdf->render();
+		//guardamos a PDF
+		//$dompdf->stream("TrabajosPedndientes.pdf");
+		$output = $dompdf->output();
+		file_put_contents('assets/reports/saldos.pdf', $output);
+
+		//Eliminar archivos viejos ---------------
+		$dir = opendir('assets/reports/');
+		while($f = readdir($dir))
+		{
+			if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+			unlink('assets/reports/'.$f);
+		}
+		closedir($dir);
+		//----------------------------------------
+		return 'saldos.pdf';
+	}
 }
 ?>

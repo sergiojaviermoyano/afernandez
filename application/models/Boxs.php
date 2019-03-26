@@ -640,7 +640,7 @@ class Boxs extends CI_Model
 
 			$html .= '<hr style="border:1px dotted gray;" >';
 
-			
+			/*
 			$html .= '<table width="100%" style="font-family:courier; font-size: 14px;">';
 			$html .= '	<tr style="font-family: Open Sans; font-size: 25px; text-align: center;">
 							<td style="text-align: left; width:50%;">
@@ -694,7 +694,7 @@ class Boxs extends CI_Model
 							</td>
 						</tr>';
 			$html .= '</table>';
-			
+			*/
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

@@ -35,6 +35,9 @@
                   <div class="col-xs-1">
                     <i class="fa fa-fw fa-search text-teal" style="margin-top: 12px; cursor: pointer;" id="buscador"></i>
                   </div>
+                  <div class="col-xs-3">
+                    <label style="margin-top: 7px; color: red;" id="saldoCtaCte">$ 0.00</label>
+                  </div>
           			</div>
                 <div class="row">
           				<div class="col-xs-4">
@@ -548,7 +551,7 @@ $('.calcula').keyup(function() {
   });
 
   $('#buscador').click(function(){
-    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#cliId'));
+    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#cliId'), $('#saldoCtaCte'));
   });
 
   //Buscador de cliente
@@ -566,12 +569,18 @@ $('.calcula').keyup(function() {
                         $('#lblNombre').html('-');
                         $('#lblDocumento').html('-');
                         $('#cliId').val(-1);
+                        $('#saldoCtaCte').html('$ 0.00');
                         CargarModalNuevoCliente($('#cliSearch').val());
                       } else {
                         $('#lblNombre').html(result.cliente.cliApellido +  ' ' + result.cliente.cliNombre);
                         $('#lblDocumento').html(result.cliente.cliDocumento);
                         $('#cliId').val(result.cliente.cliId);
                         $('#cliSearch').val('');
+                        if(parseFloat(result.cliente.saldo) <0){
+                          $('#saldoCtaCte').html('$ 0.00');
+                        }else{
+                          $('#saldoCtaCte').html('$ '+ parseFloat(result.cliente.saldo).toFixed(2));
+                        }
                         setTimeout("$('#venId').select2('open');",800);
                       }
               },

@@ -35,15 +35,16 @@
 </div>
 
 <script>
-var idClientes, lblNombre, lblDocumento;
+var idClientes, lblNombre, lblDocumento, lblSaldo;
 var timerClientes, timeoutClientes = 1000;
 var rowClientes = 0, rowsClientes = 0;
 var moveClientes = 0;
 var minLenghtClientes = 0;
-function buscadorClientes(nombre, documento, id){
+function buscadorClientes(nombre, documento, id, saldo){
   idClientes = id;
   lblNombre = nombre;
   lblDocumento = documento;
+  lblSaldo = saldo;
   $('#txtClientes').val('');
   $('#tableClientesDetail > tbody').html('');
   setTimeout(function () { $('#txtClientes').focus(); BuscarClientes();}, 1000);
@@ -63,13 +64,20 @@ function BuscarClientes(){
           success: function(resultList){
                         if(resultList != false){
                             $.each(resultList, function(index, result){
+                              var saldo = '$ 0.00';
+                              if(parseFloat(result.saldo) >0 && result.saldo != null){
+                                saldo = '$ ' + parseFloat(result.saldo).toFixed(2);
+                              }
+
                                 var row__ = '<tr>';
                                 row__ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                                row__ += 'onClick="seleccionarClientes('+result.cliId+', \''+result.cliNombre+'\', \''+result.cliApellido+'\', \''+result.cliDocumento+'\')"></i></td>';
+                                row__ += 'onClick="seleccionarClientes('+result.cliId+', \''+result.cliNombre+'\', \''+result.cliApellido+'\', \''+result.cliDocumento+'\', \''+saldo+'\')"></i></td>';
                                 row__ += '<td width="15%">'+result.cliApellido+'</td>';
                                 row__ += '<td>'+result.cliNombre+'</td>';
                                 row__ += '<td>'+result.cliDocumento+'</td>';
                                 row__ += '<td style="display: none">'+result.cliId+'</td>';
+                                row__ += '<td>' + saldo + '</td>';
+                                
                                 row__ += '</tr>';
                                 $('#tableClientesDetail > tbody').prepend(row__);
                                 rows_++;
@@ -122,10 +130,11 @@ function BuscarClientes(){
     }
   });
 
-function seleccionarClientes(id, nombre, apellido, documento){
+function seleccionarClientes(id, nombre, apellido, documento, saldo){
     idClientes.val(id);
     lblNombre.html(apellido +' '+nombre);
     lblDocumento.html(documento);
+    lblSaldo.html(saldo);
     $('#buscadorClientes').modal('hide');
     setTimeout("$('#venId').select2('open');",800);
 }

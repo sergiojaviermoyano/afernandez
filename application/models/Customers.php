@@ -173,9 +173,11 @@ class Customers extends CI_Model
 	{
 			$dni = str_replace(' ', '', $data['dni']);
 
-			$this->db->select('clientes.cliNombre, clientes.cliApellido, clientes.cliDocumento, clientes.cliId');
-			$this->db->from('clientes');
-			$this->db->where(array('clientes.cliDocumento'=>$dni));
+			$this->db->select('c.cliNombre, c.cliApellido, c.cliDocumento, c.cliId, (SUM( IFNULL( cctepDebe, \'0\' ) ) - SUM( IFNULL( cctepHaber, \'0\' ) )) AS saldo');
+			$this->db->from('clientes as c');
+			$this->db->join('cuentacorrientecliente as cl', 'cl.cliId = c.cliId');
+			$this->db->where(array('c.cliDocumento'=>$dni));
+			$this->db->group_by('c.cliId');
 			$query= $this->db->get();
 			if ($query->num_rows() != 0)
 			{
@@ -222,12 +224,25 @@ class Customers extends CI_Model
 
 		$clientes = array();
 
-		$this->db->select('cliId, cliNombre, cliApellido, cliDocumento');
-		$this->db->from('clientes');
-		$this->db->like('cliNombre', $str, 'both');
-		$this->db->or_like('cliApellido', $str, 'both');
-		$this->db->or_like('cliDocumento', $str, 'both');
-		$this->db->where(array('cliEstado'=>'AC', 'cliDocumento !=' =>''));
+		$this->db->select('
+							c.cliId, 
+							cliNombre, 
+							c.cliApellido, 
+							c.cliDocumento, 
+							(select 
+									SUM( IFNULL( cl.cctepDebe, \'0\' ) )
+									 - 
+									SUM( IFNULL( cl.cctepHaber, \'0\' ) ) 
+							from 
+									cuentacorrientecliente  as cl
+							where 
+									cl.cliId = c.cliId) AS saldo');
+		$this->db->from('clientes as c');
+		$this->db->like('c.cliNombre', $str, 'both');
+		//$this->db->group_by('c.cliId');
+		$this->db->or_like('c.cliApellido', $str, 'both');
+		$this->db->or_like('c.cliDocumento', $str, 'both');
+		$this->db->where(array('c.cliEstado'=>'AC', 'c.cliDocumento !=' =>''));
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{

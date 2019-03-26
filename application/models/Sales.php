@@ -885,383 +885,236 @@ class Sales extends CI_Model
 		return false;
 	}
 
-
-}
-	/*
-	function getView($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$response = array();
-			//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
-			//para el usuario logueado
-			$userdata = $this->session->userdata('user_data');
-
-			//verificar si hay cajas abiertas
-			$this->db->select('*');
-			$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
-			$this->db->from('cajas');
-			$query = $this->db->get();
-			$result = $query->result_array();
-			if(count($result) > 0){
-				$result = $query->result_array();
-				$response['cajaId'] = $result[0]['cajaId'];
-				$caja = $result[0];
-			} else {
-				$response['cajaId'] = -1;
-				$response['caja'] = null;
-			}
-
-			switch ($data['id']) {
-				case '1':
-					$query = $this->db->get('configuracion');
-					if ($query->num_rows() != 0)
-					{
-						$configuration = $query->result_array();
-						$response['validez'] = $configuration[0];
-					}
-					$response['ordenes'] = array();
-
-					break;
-
-				case '2':
-					$response['ventas'] = array();
-					break;
-
-				case '3':
-					if($response['cajaId'] != -1){
-						$response['caja'] = $caja;
-						//calcular ventas
-						$this->db->select('sum(ventasdetalle.artFinal * ventasdetalle.venCant) as suma', false);
-						$this->db->from('ventasdetalle');
-						$this->db->join('ventas', 'ventas.venId = ventasdetalle.venId');
-						$this->db->where(array('ventas.cajaId'=>$response['cajaId'], 'ventas.venEstado' => 'AC'));
-						$query = $this->db->get();
-						$response['caja']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
-
-						$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r
-												  join ventas as v on v.venId = r.venId
-												  join mediosdepago as m on m.medId = r.medId
-												  where v.cajaId = '.$response['cajaId'].'
-												  GROUP BY r.medId');
-
-						$response['caja']['medios'] = $query->result_array();
-
-					}
-					$response['user'] = $userdata[0];
-					break;
-			}
-
-			return $response;
-		}
-	}
-
-	function getTotalVentas($data=null){
+		/*
+	public function getTotalSales($data = null){
 		$response = array();
-		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
-		//para el usuario logueado
-		$userdata = $this->session->userdata('user_data');
-
-		//verificar si hay cajas abiertas
-		$this->db->select('*');
-		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
-		$this->db->from('cajas');
+		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->order_by('oId','desc');
+		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
+		if(isset($data['search']) && $data['search']['value']!=''){
+			$this->db->where('oId',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
 		$query = $this->db->get();
-		$result = $query->result_array();
-		if(count($result) > 0){
-			$result = $query->result_array();
-			$response['cajaId'] = $result[0]['cajaId'];
-			$caja = $result[0];
-		} else {
-			$response['cajaId'] = -1;
-			$response['caja'] = null;
-		}
-
-
-		$this->db->order_by('venFecha', 'desc');
-		$this->db->limit($data['length'],$data['start']);
-		if($data['search']['value']!=''){
-			$this->db->like('venFecha', $data['search']['value']);
-		}
-		$query= $this->db->get_where('ventas', array('cajaId' => $response['cajaId']));
 		return $query->num_rows();
 	}
-
-	function Ventas_List_datatable($data=null){
-
-		$response = array();
-		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
-		//para el usuario logueado
-		$userdata = $this->session->userdata('user_data');
-
-		//verificar si hay cajas abiertas
-		$this->db->select('*');
-		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
-		$this->db->from('cajas');
-		$query = $this->db->get();
-		$result = $query->result_array();
-		if(count($result) > 0){
-			$result = $query->result_array();
-			$response['cajaId'] = $result[0]['cajaId'];
-			$caja = $result[0];
-		} else {
-			$response['cajaId'] = -1;
-			$response['caja'] = null;
-		}
-
-
-		$this->db->order_by('venFecha', 'desc');
-		$this->db->limit($data['length'],$data['start']);
-		if($data['search']['value']!=''){
-			$this->db->like('venFecha', $data['search']['value']);
-		}
-		$query= $this->db->get_where('ventas', array('cajaId' => $response['cajaId']));
-
-		if ($query->num_rows()!=0)
-		{
-
-			return $query->result_array();
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	function getOrder($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$idOrder = $data['id'];
-			$data = array();
-			$query = $this->db->get_where('ordendecompra',array('ocId'=>$idOrder));
-			if ($query->num_rows() != 0)
-			{
-				$order = $query->result_array();
-				$data['order'] = $order[0];
-
-				$query = $this->db->get_where('ordendecompradetalle',array('ocId'=>$idOrder));
-				if ($query->num_rows() != 0)
-				{
-					$orderD = $query->result_array();
-					$data['orderdetalle'] = array();
-					foreach ($orderD as $item) {
-						$query= $this->db->get_where('articles',array('artId' => $item['artId']));
-						if ($query->num_rows() != 0)
-						{
-							$art = $query->result_array();
-							$item['artBarCode'] = $art[0]['artBarCode'];
-						}
-
-						$data['orderdetalle'][] = $item;
-					}
-
-				}
-
-				//Get Lista de Precios
-				$query= $this->db->get_where('listadeprecios',array('lpId' => $data['order']['lpId']));
-				if ($query->num_rows() != 0)
-				{
-					$lista = $query->result_array();
-					$data['lista'] = $lista[0];
-				}
-
-				//Get Usuario
-				$query= $this->db->get_where('sisusers',array('usrId' => $data['order']['usrId']));
-				if ($query->num_rows() != 0)
-				{
-					$user = $query->result_array();
-					$data['user'] = $user[0];
-				}
-			}
-
-
-			return $data;
-		}
-	}
-
-	function getMPagos($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$id = $data['id'];
-			$total = $data['to'];
-
-			$data = array();
-			$data['idOrden'] = $id;
-			$data['total']	= $total;
-			$data['tmp']	= array();
-
-			$query = $this->db->get_where('tipomediopago',array('tmpEstado'=>'AC'));
-			if ($query->num_rows() != 0)
-				{
-					$tmp = $query->result_array();
-					//$data['tmp'] = $tmp;
-					$data['tmp'] = array();
-					foreach ($tmp as $item) {
-						$query = $this->db->get_where('mediosdepago',array('medEstado'=>'AC', 'tmpId' => $item['tmpId']));
-						if ($query->num_rows() != 0)
-						{
-							$tmpD = $query->result_array();
-							$item['tmpD'] = $tmpD;
-						} else {
-							$item['tmpD'] = array();
-						}
-
-						$data['tmp'][] = $item;
-					}
-				}
-			return $data;
-		}
-	}
-
-	function setSale($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$ocId = $data['id'];
-			$pago = $data['pa'];
-
-			//Datos del usuario
-			$userdata = $this->session->userdata('user_data');
-			$usrId = $userdata[0]['usrId'];
-
-			//Datos de la caja
-			$this->db->select('*');
-			$this->db->where(array('cajaCierre'=>null, 'usrId' => $usrId));
-			$this->db->from('cajas');
-			$query = $this->db->get();
-			$result = $query->result_array();
-			if(count($result) > 0){
-				$result = $query->result_array();
-				$cajaId = $result[0]['cajaId'];
-			} else {
-				return false;
-			}
-
-			//Datos de la orden
-			$orden = $this->getOrder($data);
-
-			$venta = array(
-				'usrId'			=> $usrId,
-				'cajaId'		=> $cajaId,
-				'cliId'			=> $orden['order']['cliId']
-				);
-
-			$this->db->trans_start();
-			if($this->db->insert('ventas', $venta) == false) {
-				return false;
-			} else {
-				$idVenta = $this->db->insert_id();
-
-				//Actualizar detalle
-				foreach ($orden['orderdetalle'] as $a) {
-					$insert = array(
-							'venId' 		=> $idVenta,
-							'artId' 		=> $a['artId'],
-							'artCode' 		=> '',
-							'artDescription'=> $a['artDescripcion'],
-							'artCoste'		=> $a['artPCosto'],
-							'artFinal'		=> $a['artPVenta'],
-							'venCant'		=> $a['ocdCantidad']
-						);
-
-					if($this->db->insert('ventasdetalle', $insert) == false) {
-						return false;
-					}
-
-					$insert = array(
-							'artId' 		=> $a['artId'],
-							'stkCant'		=> $a['ocdCantidad'] * -1,
-							'stkOrigen'		=> 'VN'
-						);
-
-					if($this->db->insert('stock', $insert) == false) {
-						return false;
-					}
-				}
-
-				//Insertar medios de pago
-				foreach ($pago as $item) {
-					$insert = array(
-							'venId'			=>	$idVenta,
-							'medId'			=>	$item['mId'],
-							'rcbImporte'	=>	$item['imp'],
-							'rcbDesc1'		=>	$item['de1'],
-							'rcbDesc2'		=>	$item['de2'],
-							'rcbDesc3'		=>	$item['de3']
-						);
-
-					if($this->db->insert('recibos', $insert) == false) {
-						return false;
-					}
-				}
-
-				//Actualizar orden de compra
-				$update = array('ocEstado' => 'FA', 'venId' => $idVenta);
-				if($this->db->update('ordendecompra', $update, array('ocId'=>$ocId)) == false) {
-					return false;
-				}
-			}
-			$this->db->trans_complete();
-		}
-
-		return true;
-	}
-
-	function getArticles($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$date = $data['day'];
-			$date = explode('-', $date);
-			$date = $date[2].'-'.$date[1].'-'.$date[0];
-
-			$query = $this->db->query(" select d.artCode, d.artDescription, sum(d.venCant) as ventas from ventas as v
-										join ventasdetalle as d on d.venId = v.venId
-										where DATE(venFecha) = '".$date."'
-										GROUP BY d.artCode");
-
-			//echo $this->db->last_query();
-			return $query->result_array();
-		}
-	}
-
-	function getSales__($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$date = $data['day'];
-			$date = explode('-', $date);
-			$date = $date[2].'-'.$date[1].'-'.$date[0];
-
-			$query = $this->db->query(" select v.venId, v.usrId, v.cliId, (select sum( d.venCant * d.artFinal) from ventasdetalle as d where d.venId = v.venId) as importe , o.ocId, o.ocObservacion, u.usrNick
-										from ventas as v
-										join ordendecompra as o on o.venId = v.venId
-										join sisusers as u on u.usrId = v.usrId
-										where DATE(venFecha) = '".$date."' and v.venEstado = 'AC'
-										GROUP BY v.venId");
-			return $query->result_array();
-		}
-	}
 	*/
-//}
+
+	public function getSales ( $data = null){
+
+		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha');
+		$this->db->order_by('oId','desc');
+		/*
+		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
+		if(isset($data['search']) && $data['search']['value']!=''){
+			$this->db->where('oId',$data['search']['value']);
+			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
+		}
+		*/
+		$this->db->limit(50,0);
+		$this->db->from('orden');
+		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function getSaleByIdPrint($data){
+		if($data['id']!=0){
+			$this->db->where(array('oId'=>$data['id']));
+			$query=$this->db->get('orden');
+			$result['orden'] = $query->row_array();
+
+			$this->db->where('cliId',$result['orden']['cliId']);
+			$query=$this->db->get('clientes');
+			$result['cliente'] = $query->row_array();
+
+			$this->db->where('id',$result['orden']['venId']);
+			$query=$this->db->get('vendedores');
+			$result['vendedor'] = $query->row_array();
+
+			$this->db->where('lpId',$result['orden']['lpId']);
+			$query=$this->db->get('listadeprecios');
+			$result['lista_de_precios'] = $query->row_array();
+
+			$sql="select od.*, a.*,
+			(SELECT r.rubDescripcion FROM rubros as r where r.rubId=a.subrId ) as rubro,
+			(SELECT m.descripcion FROM marcaart  as m where a.marcaId=m.id ) as marca
+			from ordendetalle as od LEFT OUTER JOIN articles as a ON od.artId=a.artId where oId='".$data['id']."';";
+
+			$query=$this->db->query($sql);
+			$result['orden_detalle'] = $query->result_array();
+		
+			//return $result;
+
+			//Armar el html------------------------
+			$fecha= date('d-m-y',strtotime($result['orden']['oFecha']));
+			$fecha=explode('-',$fecha);
+			$importe_total=0;
+			$limit_page=20;
+			if(count($result['orden_detalle']) > 22){
+				$pages=count($result['orden_detalle'])/$limit_page;
+			} else {
+				$pages=1;
+			}
+			
+			$html = '<!DOCTYPE html PUBLIC >
+			<html xmlns="http://www.w3.org/1999/xhtml">
+			<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<title></title>
+			</head>
+			<body>
+			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
+				<tr style="border:2px solid #72324a !important; margin:0px auto;">
+					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
+						<h1 style="font-size:30px !important; text-align:center; width:100%; padding-botton:0px;     margin: 0px auto;">
+							ADOLFO FERNANDEZ
+							<br><span style="width:100%; text-align:right; padding-top:0px; font-size:13px !important;">Soluciones Electronicas</span>
+						</h1>
+						<p style="text-align:center; width:100%;  margin: 0px auto;">Fray Justo Santa Maria de Oro 489</p>
+						<p style="text-align:center; width:100%; margin: 0px auto;">C.P. 5442 Caucete - San Juan - Tel. 496-3903 - Cel. 154514219</p>
+					</td>
+				</tr>
+				<tr style="border:2px solid #72324a !important; margin:0px auto;">
+					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
+						<table style="width:100%;">
+							<tr style="text-align:center; font-size:18px; font-weight:bold; color:#000000;">
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px;">'.$fecha[0].'</td>
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[1].'</td>
+								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[2].'</td>
+								<td style="width:70% !important; border:2px solid #72324a !important; padding-top:5px; height:10px; font-size:16px;">
+									<span style="width:100%; font-size:13px;">NO VALIDO COMO FACTURA</span> <br>
+									PRESUPUESTO VALIDO POR 15 DIAS
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+				<tr style="border:2px solid #72324a !important; margin:0px auto;">
+					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
+						<table style="width:100%;">
+							<tr>
+								<td style="width:10%; padding-top:0px;"> Señor: </td>
+								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:0px;font-size:14px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].'</td>
+							</tr>
+							<tr>
+								<td style="width:10%; padding-top:0px;"> Domicilio:  </td>
+								<td style="width:90%; border-bottom: 1px dotted #72324a; padding-top:0px;">'.$result['cliente']['cliDomicilio'].'</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				</table>';
+				$next_page=0;
+				for( $i=0; $i<ceil($pages);$i++){					
+					
+					$rows=count($result['orden_detalle']);
+					$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
+						<tr style="border:2px solid #72324a !important; margin:0px auto;">
+							<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;">
+								<table style="width:100%;  border-collapse: collapse; border: 0px;">';
+									$total_art=count($result['orden_detalle']);	
+
+									$from=$next_page;
+
+									$to=($i==0)?$next_page+22:$next_page+40;
+									$next_page= $to;
+									
+									$row=0;
+									
+									for($j=$from;$j<$to;$j++){
+										
+										if(!isset($result['orden_detalle'][$j])){
+											break;
+										}
+										
+										$item=$result['orden_detalle'][$j];
+
+										//var_dump($result['orden_detalle'][$j]);
+										//continue;
+										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
+										$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:15px;">';
+										$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
+										$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; text-align:left;border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.$item['artDescripcion'].'</td>';
+										$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
+										$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
+										$html.= '</tr>';
+										$row++;
+										if(!isset($result['orden_detalle'][$row])){											
+											break;
+										}
+									}
+								
+									if($i==0){
+										$tope=22;
+									}else{
+										$tope=30;
+									}
+									for($k=$row; $k<$tope;$k++){
+										$html.= '<tr style="border:1px solid #72324a !important;">';
+											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"></td>';
+											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
+											$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
+											$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
+											$html.= '</tr>';
+									}
+								$html .= '</table>
+							</td>
+						</tr>
+						</table><br>';
+				}
+				
+				$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">				
+				<tr style="border:2px solid #72324a !important; margin:0px auto;">
+					<td colspan="2" style="font-size:30px; text-align:right; padding: 0px;">
+						$
+					</td>
+					<td colspan="1" style="border:2px solid #72324a !important; margin:0px auto; padding: 0px;border-radius: 10px; text-align:right; font-size:20px; color:#000000;">
+					 '.number_format($importe_total, 2).'
+					</td>
+				</tr>
+			</table></body></html>';
+			//-------------------------------------
+			//die($html);			
+			//se incluye la libreria de dompdf
+			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+			//se crea una nueva instancia al DOMPDF
+			$dompdf = new DOMPDF();
+			//se carga el codigo html
+			$dompdf->load_html(utf8_decode($html));
+			//aumentamos memoria del servidor si es necesario
+			set_time_limit(600);
+			ini_set("memory_limit","600M");
+			//Tamaño de la página y orientación
+			$dompdf->set_paper('A4','portrait');
+			//$dompdf->set_option('isHtml5ParserEnabled', TRUE);
+
+			//lanzamos a render
+			$dompdf->render();
+			//guardamos a PDF
+			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$file_name=$data['id'].".pdf";
+			$output = $dompdf->output();
+			file_put_contents('assets/reports/orders_minorista/'.$file_name, $output);
+
+			//Eliminar archivos viejos ---------------
+			$dir = opendir('assets/reports/');
+			while($f = readdir($dir))
+			{
+				if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+				unlink('assets/reports/'.$f);
+			}
+			closedir($dir);
+			//----------------------------------------
+			return $file_name;
+		}
+	}
+}
+
 ?>
