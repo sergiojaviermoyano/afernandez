@@ -418,18 +418,27 @@ function AgregaraOrden(){
                 },
           url: 'index.php/article/getArticleJsonMayorista',
           success: function(result){
-                        pVenta = calcularPrecioInternoMayorista(result.article).toFixed(2);
+                        var pVenta = calcularPrecioInterno(result.article).toFixed(2);
+                        var selected = $('#lpId').find('option:selected');
+                        var margin = parseFloat(selected.data('porcent'));
+                        //calcular precio de venta
+                        pVenta = parseFloat(pVenta);
+                        var pVentaOriginal = pVenta;
+                        if(margin > 0){
+                          //console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
+                          pVenta += pVenta * (margin / 100);
+                        }
                         html = '<tr id="'+rowY+'">';
                         html+= '<td style="text-align: center; cursor: pointer;" onclick="delete_('+rowY+')"><i class="fa fa-fw fa-close" style="color: #dd4b39"></i></td>';
                         html+= '<td>'+result.article.artBarCode+'</td>';
                         html+= '<td>'+result.article.artDescription+'</td>';
                         html+= '<td style="text-align: right">'+parseFloat($('#prodCant').val()).toFixed(2)+'</td>';
-                        html+= '<td style="text-align: right">'+pVenta+'</td>';
+                        html+= '<td style="text-align: right">'+parseFloat(pVenta).toFixed(2)+'</td>';
                         html+= '<td style="text-align: right">'+parseFloat(pVenta * parseFloat($('#prodCant').val())).toFixed(2)+'</td>';
                         html+= '<td style="display: none">'+result.article.artId+'</td>';
                         html+= '<td style="display: none">'+(result.article.artCosteIsDolar == "1" ? result.article.artCoste * result.article.dolar : result.article.artCoste)+'</td>';
                         html+= '<td style="display: none">1</td>';
-                        html+= '<td style="display: none">'+pVenta+'</td>';
+                        html+= '<td style="display: none">'+pVentaOriginal+'</td>';
                         html+= '</tr>';
                         rowY++;
                         $('#detailSale > tbody').prepend(html);

@@ -84,7 +84,6 @@
     //$("#groups").DataTable();
 
     var _permission=$("#permission").val().split('-');
-    console.log(_permission);
     $('#datatabl1').DataTable({
         'processing':true,
         'serverSide':true,
@@ -124,7 +123,7 @@
                     }
 
                     if(item.cajaCierre!=null){
-                      col1 += '<i class="bt_print fa fa-fw fa-bookmark" style="color: gray; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" ></i>';
+                      col1 += '<i class="bt_print fa fa-fw fa-bookmark" style="color: gray; cursor: pointer; margin-left: 15px;"  onClick="imprimirCaja('+item.cajaId+')" ></i>';
                     }
 
                     if(_permission.indexOf("View")){
@@ -153,34 +152,17 @@
     });
 
 
-
+    
+    /*
     $(document).on('click','.fa-bookmark',function(){
       
       var data = $(this).data();
       id = data.id;
 
-      WaitingOpen('Generando Informe...');
-      LoadIconAction('modalAction__','Print');
-      $.ajax({
-              type: 'POST',
-              data: {
-                      id : id
-                    },
-          url: 'index.php/box/printBox',
-          success: function(result){
-                        WaitingClose();
-                        var url = "./assets/boxs/" + result;
-                        $('#printDoc').attr('src', url);
-                        setTimeout("$('#modalPrint').modal('show')",800);
-                },
-          error: function(result){
-                WaitingClose();
-                ProcesarError(result.responseText, 'modalPrint');
-              },
-              dataType: 'json'
-          });
+      
 
     });
+    */
 
 
 
@@ -423,4 +405,27 @@ function printBox(cajaId){
 }
 
   });
+
+  function imprimirCaja(id){
+      WaitingOpen('Generando Informe...');
+      LoadIconAction('modalAction__','Print');
+      $.ajax({
+              type: 'POST',
+              data: {
+                      id : id
+                    },
+          url: 'index.php/box/printBox',
+          success: function(result){
+                        WaitingClose();
+                        var url = "./assets/boxs/" + result;
+                        $('#printDoc').attr('src', url);
+                        setTimeout("$('#modalPrint').modal('show')",800);
+                },
+          error: function(result){
+                WaitingClose();
+                ProcesarError(result.responseText, 'modalPrint');
+              },
+              dataType: 'json'
+          });
+    }
 </script>

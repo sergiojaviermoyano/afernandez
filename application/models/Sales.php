@@ -468,16 +468,18 @@ class Sales extends CI_Model
 
 	public function getTotalSaleMinorista($data = null){
 		$response = array();
-		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
-		$this->db->order_by('oId','desc');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->order_by('orden.oId','desc');
+		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oId',$data['search']['value']);
+			$this->db->where('orden.oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
 		$this->db->from('orden');
+		$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
 		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
 		$query = $this->db->get();
 		return $query->num_rows();
@@ -485,33 +487,38 @@ class Sales extends CI_Model
 
 	public function getSaleMinorista ( $data = null){
 
-		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha');
-		$this->db->order_by('oId','desc');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha, sum(ordendetalle.artCant * ordendetalle.artVenta) as venta');
+		$this->db->order_by('orden.oId','desc');
+		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oId',$data['search']['value']);
+			$this->db->where('orden.oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
 		$this->db->from('orden');
+		$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
 		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
 		$query = $this->db->get();
+		//var_dump($this->db->last_query()); 
 		return $query->result_array();
 	}
 
 	public function getTotalSaleMayorista($data = null){
 		$response = array();
-		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
 		$this->db->order_by('oFecha','desc');
+		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>1,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oId',$data['search']['value']);
+			$this->db->where('orden.oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
 		$this->db->from('orden');
+		$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
 		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
 		$query = $this->db->get();
 		return $query->num_rows();
@@ -519,16 +526,18 @@ class Sales extends CI_Model
 
 	public function getSaleMayorista( $data = null){
 
-		$this->db->select('*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha, sum(ordendetalle.artCant * ordendetalle.artVenta) as venta');
 		$this->db->order_by('oFecha','desc');
+		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>1,'oEsPlanReserva'=>0));
 		if($data['search']['value']!=''){
-			$this->db->where('oId',$data['search']['value']);
+			$this->db->where('orden.oId',$data['search']['value']);
 			$this->db->or_like('DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i")',$data['search']['value']);
 			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
 		$this->db->limit($data['length'],$data['start']);
 		$this->db->from('orden');
+		$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
 		$this->db->join('clientes', 'clientes.cliId = orden.cliId');
 		$query = $this->db->get();
 		return $query->result_array();
