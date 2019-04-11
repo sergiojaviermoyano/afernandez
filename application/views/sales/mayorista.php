@@ -418,7 +418,7 @@ function AgregaraOrden(){
                 },
           url: 'index.php/article/getArticleJsonMayorista',
           success: function(result){
-                        var pVenta = calcularPrecioInterno(result.article).toFixed(2);
+                        var pVenta = calcularPrecioInternoMayorista(result.article).toFixed(2);
                         var selected = $('#lpId').find('option:selected');
                         var margin = parseFloat(selected.data('porcent'));
                         //calcular precio de venta
