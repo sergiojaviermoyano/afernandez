@@ -140,6 +140,7 @@
 				            			<th style="width: 5%; text-align: center;">Cantidad</th>
 				            			<th style="width: 10%; text-align: center;">Precio</th>
 				            			<th style="width: 15%; text-align: center;">Total</th>
+                          <th style="width: 5%; text-align: center;">-</th>
 				            		</tr>
 				            	</thead>
 				            	<tbody>
@@ -363,6 +364,10 @@ $('#btnAddManualArt').click(function(){
   html+= '<td style="display: none">'+pVenta+'</td>';
   html+= '<td style="display: none">0</td>';
   html+= '<td style="display: none">'+pVenta+'</td>';
+  html+= '<td >';
+  html+=     '<small style="cursor: pointer;" class="label pull-left bg-green" onclick="sumar('+rowY+')">+</small>';
+  html+=     '<small style="cursor: pointer;" class="label pull-right bg-red" onclick="restar('+rowY+')">-</small>';
+  html+= '</td>';
   html+= '</tr>';
   rowY++;
   $('#detailSale > tbody').prepend(html);
@@ -439,6 +444,10 @@ function AgregaraOrden(){
                         html+= '<td style="display: none">'+(result.article.artCosteIsDolar == "1" ? result.article.artCoste * result.article.dolar : result.article.artCoste)+'</td>';
                         html+= '<td style="display: none">1</td>';
                         html+= '<td style="display: none">'+pVentaOriginal+'</td>';
+                        html+= '<td >';
+                        html+=     '<small style="cursor: pointer;" class="label pull-left bg-green" onclick="sumar('+rowY+')">+</small>';
+                        html+=     '<small style="cursor: pointer;" class="label pull-right bg-red" onclick="restar('+rowY+')">-</small>';
+                        html+= '</td>';
                         html+= '</tr>';
                         rowY++;
                         $('#detailSale > tbody').prepend(html);
@@ -455,6 +464,22 @@ function AgregaraOrden(){
               },
               dataType: 'json'
           });
+  }
+}
+
+function sumar(row){
+  var row_ = $('#'+row);
+  row_[0].children[3].textContent = parseFloat(parseFloat(row_[0].children[3].textContent) + parseFloat(1)).toFixed(2);
+  row_[0].children[5].textContent = parseFloat(parseFloat(row_[0].children[4].textContent) * parseFloat(row_[0].children[3].textContent)).toFixed(2);
+  Calcular();
+}
+
+function restar(row){
+  var row_ = $('#'+row);
+  if(parseFloat(row_[0].children[3].textContent) > 1){
+    row_[0].children[3].textContent = parseFloat(parseFloat(row_[0].children[3].textContent) - parseFloat(1)).toFixed(2);
+    row_[0].children[5].textContent = parseFloat(parseFloat(row_[0].children[4].textContent) * parseFloat(row_[0].children[3].textContent)).toFixed(2);
+    Calcular();
   }
 }
 

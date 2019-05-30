@@ -175,7 +175,7 @@ class Customers extends CI_Model
 
 			$this->db->select('c.cliNombre, c.cliApellido, c.cliDocumento, c.cliId, (SUM( IFNULL( cctepDebe, \'0\' ) ) - SUM( IFNULL( cctepHaber, \'0\' ) )) AS saldo');
 			$this->db->from('clientes as c');
-			$this->db->join('cuentacorrientecliente as cl', 'cl.cliId = c.cliId');
+			$this->db->join('cuentacorrientecliente as cl', 'cl.cliId = c.cliId', 'left');
 			$this->db->where(array('c.cliDocumento'=>$dni));
 			$this->db->group_by('c.cliId');
 			$query= $this->db->get();
