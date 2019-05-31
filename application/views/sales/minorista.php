@@ -238,7 +238,7 @@
             </tr>
             <!-- Nevada -->
             <tr>
-              <td style="width:60%; text-align: right;">Nevada</td>
+              <td style="width:60%; text-align: right;">Naranja</td>
               <td style="width:1%; padding-left:5px; padding-right:5px;">$</td>
               <td><input type="text" class="form-control calcula" id="nevada" value="" ></td>
             </tr>
@@ -370,7 +370,7 @@ $('#btnAddManualArt').click(function(){
   html+= '</td>';
   html+= '</tr>';
   rowY++;
-  $('#detailSale > tbody').prepend(html);
+  $('#detailSale > tbody').append(html);
   setTimeout("$('#lblProducto').focus();",800);
   Calcular();
   $('#modalArtManual').modal('hide');
@@ -450,7 +450,7 @@ function AgregaraOrden(){
                         html+= '</td>';
                         html+= '</tr>';
                         rowY++;
-                        $('#detailSale > tbody').prepend(html);
+                        $('#detailSale > tbody').append(html);
                         $('#prodId').val('');
                         $('#prodCant').val('1');
                         $('#lblProducto').val('');
