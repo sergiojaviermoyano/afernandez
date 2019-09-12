@@ -316,6 +316,23 @@
   </div>
 </div>
 
+<!-- Modal Confirmar Impresion -->
+<div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span> <i class="fa fa-fw fa-warning"></i> Importante </span> !!</h4>
+      </div>
+      <div class="modal-body" style="text-align: center">
+          <p> ¿Desea imprimir el comprobante ? </p>
+          <button type="button" class="btn btn-default" onClick="btnNo()">No</button>
+          <button type="button" class="btn btn-primary" onClick="imprimirDirecto()">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 $("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
@@ -841,7 +858,9 @@ function Cobrar_(esPresupuesto){
       success: function(result){
                     WaitingClose();
                     $('#modalMedios').modal('hide');
-                    setTimeout("cargarView('sale', 'minorista', '');",800);
+                    $('#modalConfirm').modal('show');
+                    ImprimirDirectoVar = result;
+                    //setTimeout("cargarView('sale', 'minorista', '');",800);
             },
       error: function(result){
             WaitingClose();
@@ -850,4 +869,66 @@ function Cobrar_(esPresupuesto){
           dataType: 'json'
       });
 };
+
+function btnNo(){  
+  $('#modalConfirm').modal('hide');
+  $('#modalPrintDir').modal('hide');
+  setTimeout("cargarView('sale', 'minorista', '');",300);
+}
+
+var ImprimirDirectoVar = 0;
+function imprimirDirecto(){
+  if(ImprimirDirectoVar != null && ImprimirDirectoVar > 0)
+    {
+      imprimirMinorista(ImprimirDirectoVar);
+      $('#modalConfirm').modal('hide');
+    }
+}
+
+function imprimirMinorista(id){
+            WaitingOpen('Generando Comprobante');
+            $.ajax({
+                type: 'POST',
+                data: { id : id, act: 'Print' },
+                url: 'index.php/sale/printComprobante',
+                success: function(result){
+                    /*console.log(result);
+                        WaitingClose();
+                        $("#iframe_pdf").attr('src',result.filename_url);
+                        $('#print_order_modal').modal('show');
+                    */
+                    WaitingClose();
+                    var url = "./assets/reports/orders_minorista/" + result;
+                    $('#printDocDir').attr('src', url);
+                    setTimeout("$('#modalPrintDir').modal('show')",800);
+                },
+                error: function(result){
+                    WaitingClose();
+                    ProcesarError(result.responseText, 'modalRubroDir');
+                },
+                dataType: 'json'
+            });
+
+            //$("#print_order_modal").modal("show");
+            return false;
+        }
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPrintDir" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document" style="width: 50%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabelDir__"><span id="modalActionDir__"> </span> Comprobante</h4>
+      </div>
+      <div class="modal-body" id="modalBodyPrintDir">
+        <div>
+          <iframe style="width: 100%; height: 600px;" id="printDocDir" src=""></iframe>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onClick="btnNo()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

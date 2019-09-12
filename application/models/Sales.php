@@ -468,7 +468,7 @@ class Sales extends CI_Model
 
 	public function getTotalSaleMinorista($data = null){
 		$response = array();
-		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha ');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha,(SELECT medDescripcion FROM recibos as r join mediosdepago as m on m.medId = r.medId WHERE r.oId  = orden.oId Limit 1) as MP');
 		$this->db->order_by('orden.oId','desc');
 		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));
@@ -487,7 +487,7 @@ class Sales extends CI_Model
 
 	public function getSaleMinorista ( $data = null){
 
-		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha, sum(ordendetalle.artCant * ordendetalle.artVenta) as venta');
+		$this->db->select('orden.*, clientes.*,DATE_FORMAT(oFecha, "%d-%m-%Y %H:%i") as fecha, sum(ordendetalle.artCant * ordendetalle.artVenta) as venta,(SELECT medDescripcion FROM recibos as r join mediosdepago as m on m.medId = r.medId WHERE r.oId  = orden.oId Limit 1) as mp');
 		$this->db->order_by('orden.oId','desc');
 		$this->db->group_by('orden.oId');
 		$this->db->where(array('oEsMayorista'=>0,'oEsPlanReserva'=>0));

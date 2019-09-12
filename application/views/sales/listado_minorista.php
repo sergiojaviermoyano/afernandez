@@ -17,11 +17,12 @@
           <table id="customers" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th class="text-center">Acciones</th>
+                <th></th>
                 <th>Nº Orden</th>
                 <th>Cliente</th>
                 <th>Importe</th>
                 <th>Fecha</th>
+                <th>MP</th>
                 <th>Estado</th>
                 <th class="text-center">-</th>
               </tr>
@@ -67,6 +68,7 @@
             {className:'text-right'}, 
             null,
             null,
+            null,
             {className:'text-center'},
         ],
         ajax:{
@@ -79,7 +81,7 @@
                 var output = [];
                 var permission = $("#permission").val();
                 $.each(response.data,function(index,item){
-                    var col1,col2,col3,col4, col5, colCli='',colImp;
+                    var col1,col2,col3,col4, col5, colCli='',colImp,colMp;
                     col1='';
                    // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
                     col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
@@ -105,13 +107,42 @@
                             break;
                         }
                     }
-                    //col4=item.oEstado;
+                    
+                    switch(item.mp){
+                      case 'Efectivo': 
+                        colMp= '<small class="label pull-left bg-green" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">$</small>';
+                        break;
+
+                      case 'Visa': 
+                      case 'MasterCard': 
+                      case 'Data': 
+                        colMp= '<small class="label pull-left bg-primary" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">T</small>';
+                        break;
+
+                      case 'Nevada': 
+                        colMp= '<small class="label pull-left bg-primary" style="font-size:14px; margin-right:5px; cursor: pointer;" title="Naranja">T</small>';
+                        break;
+
+                      case 'Cuenta Corriente':
+                        colMp= '<small class="label pull-left bg-maroon" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">C</small>';
+                        break;
+
+                      case 'Credito Argentino': 
+                        colMp= '<small class="label pull-left bg-teal" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">A</small>';
+                        break;
+
+                      default:
+                        colMp= '';
+                        break;
+                    }
+                    
+                    //colMp= item.mp;
                     if(item.oEstado == 'AC'){
                         col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-orange" style="font-size:14px; margin-right:5px; cursor: pointer;" title="Cobrar" onClick="cobrar(' + item.oId + ')">P</small>':' ';
                     } else {
                         col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;">P</small>':' ';
                     }
-                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col4,col5]);
+                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,colMp,col4,col5]);
                 });
                 return output;
             },
@@ -120,7 +151,7 @@
             }
         },
         "createdRow": function ( row, data, index ) {
-            if(data[6].search("small")>0){
+            if(data[7].search("small")>0){
               $(row).addClass('info');
             }
         }

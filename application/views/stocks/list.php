@@ -133,7 +133,7 @@
     		success: function(result){
                 			WaitingClose();
                       $("#modalBodyStock").html(result.html);
-                			setTimeout("$('#modalStock').modal('show')",800);
+                			setTimeout("$('#modalStock').modal('show')",1000);
     					},
     		error: function(result){
     					WaitingClose();
@@ -189,7 +189,7 @@
 
 
 <!-- Modal -->
-<div class="modal hide fade" id="modalStock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modalStock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="dialog" style="width: 50%">
     <div class="modal-content">
       <div class="modal-header">
