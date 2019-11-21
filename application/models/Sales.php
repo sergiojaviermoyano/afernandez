@@ -655,8 +655,8 @@ class Sales extends CI_Model
 					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
 						<table style="width:100%;">
 							<tr>
-								<td style="width:10%; padding-top:0px;"> Señor: </td>
-								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:0px;font-size:14px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].'</td>
+								<td style="width:10%; padding-top:0px;">  Se&ntilde;or/a  :  </td>
+								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:0px;font-size:14px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].' - Ord.: '.$result['orden']['oId'].'</td>
 							</tr>
 							<tr>
 								<td style="width:10%; padding-top:0px;"> Domicilio:  </td>
@@ -727,11 +727,12 @@ class Sales extends CI_Model
 				
 				$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">				
 				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan="2" style="font-size:30px; text-align:right; padding: 0px;">
-						$
+					<td style="font-size:20px; text-align:left; padding: 0px;">
+						'.($result['orden']['oDescuento'] > 0 ? 'Descuento $ '.$result['orden']['oDescuento'] : '').'
 					</td>
+					<td style="font-size:30px; text-align:right; padding: 0px;"> Total $</td>
 					<td colspan="1" style="border:2px solid #72324a !important; margin:0px auto; padding: 0px;border-radius: 10px; text-align:right; font-size:20px; color:#000000;">
-					 '.number_format($importe_total, 2).'
+					 $ '.number_format($importe_total - $result['orden']['oDescuento'] , 2).'
 					</td>
 				</tr>
 			</table></body></html>';

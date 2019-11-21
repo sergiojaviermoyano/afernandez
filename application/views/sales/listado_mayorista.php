@@ -22,6 +22,7 @@
                 <th>Cliente</th>
                 <th>Importe</th>
                 <th>Fecha</th>
+                <th>Descuento</th>
                 <th>Estado</th>
                 <th class="text-center">-</th>
               </tr>
@@ -67,6 +68,7 @@
             {className:'text-right'}, 
             null,
             null,
+            null,
             {className:'text-center'},
         ],
         ajax:{
@@ -79,7 +81,7 @@
                 var output = [];
                 var permission = $("#permission").val();
                 $.each(response.data,function(index,item){
-                    var col1,col2,col3,col4, col5,colCli='',colImp;
+                    var col1,col2,col3,col3_1,col4, col5,colCli='',colImp;
                     col1='';
                    // col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
                     col1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" data-id="'+item.oId+'"></i>';
@@ -87,6 +89,7 @@
                     colCli = item.cliApellido + ' ' + item.cliNombre;
                     colImp = item.venta;
                     col3=item.fecha;
+                    col3_1=item.oDescuento > 0 ? item.oDescuento : '';
                     switch(item.oEstado){
                         case 'AC':{
                             col4='<small class="label pull-left bg-green">Activa</small>';
@@ -111,7 +114,7 @@
                     } else {
                         col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;">P</small>':' ';
                     }
-                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col4,col5]);
+                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col3_1,col4,col5]);
                 });
                 return output;
             },
@@ -120,7 +123,7 @@
             }
         },
         "createdRow": function ( row, data, index ) {
-            if(data[6].search("small")>0){
+            if(data[7].search("small")>0){
               $(row).addClass('info');
             }
         }

@@ -134,6 +134,13 @@ class Boxs extends CI_Model
 				//$query = $this->db->get();
 				$data['box']['servicios'] = 0; //$query->row()->suma == null ? '0' : $query->row()->suma;
 
+				//Calcular Descuentps
+				$this->db->select('sum(oDescuento) as descuento', false);
+				$this->db->from('orden');
+				$this->db->where(array('cajaId'=>$idBox));
+				$query = $this->db->get();
+				$data['box']['descuentos'] = $query->row()->descuento == null ? '0' : $query->row()->descuento;
+
 			} else {
 				$userdata = $this->session->userdata('user_data');
 
@@ -155,6 +162,7 @@ class Boxs extends CI_Model
 				$data['box']['proveedor'] = '0.00';
 				$data['box']['ventas'] = 0;
 				$data['box']['servicios'] = 0;
+				$data['box']['descuentos'] = 0;
 			}
 
 			$data['action'] = $action;
@@ -380,7 +388,22 @@ class Boxs extends CI_Model
 										<td width="35%">
 
 										</td>
+									</tr>
+									<tr>
+										<td width="23%">
+											Descuentos (-):
+										</td>
+										<td width="27%">
+											<strong>$ '.$result['box']['descuentos'].'</strong>
+										</td>
+										<td width="15%">
+
+										</td>
+										<td width="35%">
+
+										</td>
 									</tr>';
+									//$importe -= $result['box']['descuentos'];
 			$html .=			'	<tr>
 										<td colspan="4">
 										<hr>

@@ -57,6 +57,16 @@
         <strong>'.$data['box']['proveedor'].'</strong>
       </div>
     </div><br>';
+    echo '
+    <div class="row">
+      <div class="col-xs-4"></div>
+      <div class="col-xs-2">
+        Descuentos
+      </div>
+      <div class="col-xs-5">
+        <strong>'.$data['box']['descuentos'].'</strong>
+      </div>
+    </div><br>';
   }
 ?>
 <div class="row">
