@@ -204,6 +204,7 @@ class Boxs extends CI_Model
 					break;
 
 				case 'Close':
+				case 'CloseU':
 					//Cerrar caja
 					$data = array(
 					   'cajaCierre'		=> date('Y-m-d H:i:s'),

@@ -45,6 +45,13 @@ class box extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function getBoxUser(){
+		$data['data'] = $this->Boxs->getBox($this->input->post());
+		$response['html'] = $this->load->view('boxs/viewuser_', $data, true);
+		echo json_encode($response);
+	}
+
+
 	public function setBox(){
 		$data = $this->Boxs->setBox($this->input->post());
 		if($data  == false)

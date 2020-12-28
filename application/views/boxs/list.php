@@ -122,6 +122,10 @@
                       col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="Close"></i>';
                     }
 
+                    if(_permission.indexOf("CloseU") && item.cajaCierre==null){
+                      col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="CloseU"></i>';
+                    }
+
                     if(item.cajaCierre!=null){
                       col1 += '<i class="bt_print fa fa-fw fa-bookmark" style="color: gray; cursor: pointer; margin-left: 15px;"  onClick="imprimirCaja('+item.cajaId+')" ></i>';
                     }
@@ -174,12 +178,13 @@
       console.log(data);
       id = data.id;
       action = data.action;
-      LoadIconAction('modalAction',action);
+      var uRL = data.action == 'CloseU' ? 'index.php/box/getBoxUser' : 'index.php/box/getBox';
+      LoadIconAction('modalAction',(action == 'CloseU' ? 'Close': action));
       WaitingOpen('Cargando Caja');
         $.ajax({
               type: 'POST',
               data: { id : id, act: action },
-          url: 'index.php/box/getBox',
+              url: uRL,
           success: function(result){
                         WaitingClose();
                         $("#modalBodyBox").html(result.html);
@@ -206,7 +211,7 @@
     function LoadBox(id_, action_){
       id = id_;
       action = action_;
-      LoadIconAction('modalAction',action);
+      LoadIconAction('modalAction',(action == 'CloseU' ? 'Close': action));
       WaitingOpen('Cargando Caja');
         $.ajax({
               type: 'POST',
@@ -246,6 +251,7 @@
           break;
 
         case 'Close':
+        case 'CloseU':
           if($('#cajaImpRendicion').val() == '')
           {
             hayError = true;
