@@ -78,7 +78,7 @@
                   </div>
                   <div style="text-align: right; padding: 5px;">
                     <!--<button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>-->
-                    <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
+                    <!-- <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button> -->
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
               </div>
@@ -468,18 +468,19 @@ $('#btnServiceBuy').click(function(){
   var importeVenta = parseFloat($('#totalSale').html());
   if(importeVenta > 0){
     //Clean medios
-    $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#totalSaleMedios').html(importeVenta.toFixed(2));
-    $('#modalMedios').modal('show');
-    CalcularMediosDePago();
-	  setTimeout("$('#efectivo').focus()",1000);
+    // $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#totalSaleMedios').html(importeVenta.toFixed(2));
+    // $('#modalMedios').modal('show');
+    // CalcularMediosDePago();
+	  // setTimeout("$('#efectivo').focus()",1000);
+    cobrarMedios($('#oId').val(), importeVenta, 3);
   }
 });
 
@@ -827,20 +828,20 @@ $('#btnSaveCustomer').click(function(){
       });
 });
 
-$('#btnServicePresupuesto').click(function(){
-  Cobrar_(1);
-});
+// $('#btnServicePresupuesto').click(function(){
+//   Cobrar_(1);
+// });
 
-$('#btnPago').click(function(){
-  Cobrar_(0);
-});
+// $('#btnPago').click(function(){
+//   Cobrar_(0);
+// });
 
-$('#btnServiceEfectivo').click(function(){
-  $('#efectivo').val($('#totalSale').html().replace('.',','));
-  Cobrar_(0);
-});
+// $('#btnServiceEfectivo').click(function(){
+//   $('#efectivo').val($('#totalSale').html().replace('.',','));
+//   Cobrar_(0);
+// });
 
-function Cobrar_(esPresupuesto){
+function Cobrarxxxx_(esPresupuesto){
   //Barrer Informacion
   //Id de la operación
   var opId = $('#oId').val();

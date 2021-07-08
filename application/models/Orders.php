@@ -277,7 +277,8 @@ class Orders extends CI_Model
 				}
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
-			$html = '<table width="100%" style="font-family:courier; font-size: 12px;">';
+			$html = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
+			$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">';
 			$html .= '	<tr>
 							<td colspan="2" style="text-align: center">
 								Documento no válido como factura.<br>

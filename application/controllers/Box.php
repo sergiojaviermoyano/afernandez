@@ -10,6 +10,11 @@ class box extends CI_Controller {
 		$this->Users->updateSession(true);
 	}
 
+	/*Utilizado para cobranza y/o Pagos*/
+	public function getMedios(){
+		echo json_encode( $this->Boxs->getMedios() );
+	}
+
 	public function index($permission)
 	{
 		$data['list'] = $this->Boxs->Box_List();

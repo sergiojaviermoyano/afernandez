@@ -39,7 +39,7 @@ var id____, detail____, nextFocus____, price____;
 var timer___, timeout___ = 1000;
 var row___ = 0, rows___ = 0;
 var move___ = 0;
-var minLenght___ = 0;
+var minLenght___ = 2;
 function buscadorArticlesPriceMayorista(string, id, detail, nextFocus, price){
   id____ = id;
   detail____ = detail;

@@ -24,6 +24,7 @@
                 <th>Fecha</th>
                 <th>Descuento</th>
                 <th>Estado</th>
+                <th>Vendedor</th>
                 <th class="text-center">-</th>
               </tr>
             </thead>
@@ -66,6 +67,7 @@
             null,
             null,
             {className:'text-right'}, 
+            null,
             null,
             null,
             null,
@@ -114,7 +116,7 @@
                     } else {
                         col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;">P</small>':' ';
                     }
-                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col3_1,col4,col5]);
+                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col3_1,col4,item.vendedor,col5]);
                 });
                 return output;
             },

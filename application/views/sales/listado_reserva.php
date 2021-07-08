@@ -24,6 +24,7 @@
                 <th>Total</th>
                 <th>Fecha</th>
                 <th>Estado</th>
+                <th>Vendedor</th>
               </tr>
             </thead>
             <tbody>
@@ -69,6 +70,7 @@
             {className:'text-right'},
             {className:'text-center'},
             {className:'text-center'},
+            null
         ],
         ajax:{
             'dataType': 'json',
@@ -110,8 +112,8 @@
                             break;
                         }
                     }
-                    col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;" title="Presupuesto">P</small>':' ';
-                    output.push([col1,col2,colCli,colpago,coltotal,col3,col4,col5]);
+                    //col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;" title="Presupuesto">P</small>':' ';
+                    output.push([col1,col2,colCli,colpago,coltotal,col3,col4,item.vendedor]);
                 });
                 return output;
             },
@@ -186,19 +188,20 @@
   var oId = 0;
   function pagando(id, pagos, total){
     oId = id;
-    //Clean medios
-    $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    //$('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    //$('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#totalSaleMedios').html(parseFloat(total - pagos).toFixed(2));
-    $('#modalMedios').modal('show');
-    CalcularMediosDePago();
-	  setTimeout("$('#efectivo').focus()",1000);
+    // //Clean medios
+    // $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // //$('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // //$('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#totalSaleMedios').html(parseFloat(total - pagos).toFixed(2));
+    // $('#modalMedios').modal('show');
+    // CalcularMediosDePago();
+	  // setTimeout("$('#efectivo').focus()",1000);
+    cobrarMedios(oId, total - pagos, 5);
   }
 
   function SumarPagos(){

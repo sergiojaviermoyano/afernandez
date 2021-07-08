@@ -89,6 +89,10 @@ class sale extends CI_Controller {
 
 	}
 
+	public function setPagoReserva(){
+		echo json_encode($this->Sales->setPagoReserva($this->input->post()));
+	}
+
 
 	public function listado_mayorista($permission){
 		$data=array();

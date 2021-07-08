@@ -80,7 +80,7 @@
                   </div>
                   <div style="text-align: right; padding: 5px;">
                     <button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>
-                    <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
+                    <button type="button" class="btn btn-primary" style="display:none" id="btnServiceEfectivo">Efectivo</button>
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
               </div>
@@ -108,7 +108,7 @@
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
 				                <div class="col-xs-2">
-				                    <input type="text" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
+				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
                         <div class="col-xs-2">
 				                    <label style="margin-top: 7px" id="prodPrecio" class="pull-right">$0,00 </label>
@@ -196,7 +196,7 @@
               <label style="margin-top: 7px;">Cantidad <strong style="color: #dd4b39">*</strong>: </label>
             </div>
             <div class="col-xs-8">
-              <input type="text" class="form-control" id="artMcantidad" value="" >
+              <input type="number" class="form-control" id="artMcantidad" value="" >
             </div>
           </div><br>
         </div>
@@ -335,8 +335,8 @@
 
 <script>
 $("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+//$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+//$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $(".select2").select2();
 
 setTimeout("$('#venId').select2('open');",800);
@@ -403,7 +403,7 @@ $('#lblProducto').keyup(function(e){
   var code = e.which;
   if(code==13){
     e.preventDefault();
-    if($('#lblProducto').val() != ''){
+    if($('#lblProducto').val() != '' && $('#lblProducto').val().length >= 3){
       $('#lblProducto').prop('disabled', true);
       BuscarCompleto();
     }
@@ -513,50 +513,39 @@ $('#btnServiceBuy').click(function(){
     } else {
       $('#cuentacorriente').prop("disabled", false);
     }
-    $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#totalSaleMedios').html(importeVenta.toFixed(2));
-    $('#modalMedios').modal('show');
-    CalcularMediosDePago();
-	  setTimeout("$('#efectivo').focus()",1000);
+    cobrarMedios(null, importeVenta, 1);
   }
 });
 
-function SumarPagos(){
-  var efectivo = parseFloat($('#efectivo').val() == '' ? 0 : ($('#efectivo').val().replace('.','')).replace(',','.'));
-  var visa = parseFloat($('#visa').val() == '' ? 0 : ($('#visa').val().replace('.','')).replace(',','.'));
-  var mastercard = parseFloat($('#mastercard').val() == '' ? 0 : ($('#mastercard').val().replace('.','')).replace(',','.'));
-  var nevada = parseFloat($('#nevada').val() == '' ? 0 : ($('#nevada').val().replace('.','')).replace(',','.'));
-  var data = parseFloat($('#data').val() == '' ? 0 : ($('#data').val().replace('.','')).replace(',','.'));
-  var cuentacorriente = parseFloat($('#cuentacorriente').val() == '' ? 0 : ($('#cuentacorriente').val().replace('.','')).replace(',','.'));
-  var creditoargentino = parseFloat($('#creditoargentino').val() == '' ? 0 : ($('#creditoargentino').val().replace('.','')).replace(',','.'));
+// function SumarPagos(){
+//   var efectivo = parseFloat($('#efectivo').val() == '' ? 0 : ($('#efectivo').val().replace('.','')).replace(',','.'));
+//   var visa = parseFloat($('#visa').val() == '' ? 0 : ($('#visa').val().replace('.','')).replace(',','.'));
+//   var mastercard = parseFloat($('#mastercard').val() == '' ? 0 : ($('#mastercard').val().replace('.','')).replace(',','.'));
+//   var nevada = parseFloat($('#nevada').val() == '' ? 0 : ($('#nevada').val().replace('.','')).replace(',','.'));
+//   var data = parseFloat($('#data').val() == '' ? 0 : ($('#data').val().replace('.','')).replace(',','.'));
+//   var cuentacorriente = parseFloat($('#cuentacorriente').val() == '' ? 0 : ($('#cuentacorriente').val().replace('.','')).replace(',','.'));
+//   var creditoargentino = parseFloat($('#creditoargentino').val() == '' ? 0 : ($('#creditoargentino').val().replace('.','')).replace(',','.'));
 
-  $('#totalPagosMedios').html(parseFloat(efectivo + visa + mastercard + nevada + data + cuentacorriente + creditoargentino).toFixed(2));
-}
+//   $('#totalPagosMedios').html(parseFloat(efectivo + visa + mastercard + nevada + data + cuentacorriente + creditoargentino).toFixed(2));
+// }
 
-function CalcularMediosDePago(){
-  SumarPagos();
-  var total = parseFloat($('#totalSaleMedios').html());
-  var pagos = parseFloat($('#totalPagosMedios').html());
-  var descuento = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
+// function CalcularMediosDePago(){
+//   SumarPagos();
+//   var total = parseFloat($('#totalSaleMedios').html());
+//   var pagos = parseFloat($('#totalPagosMedios').html());
+//   var descuento = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
 
-  $('#totalSaldoMedios').html(parseFloat(parseFloat(total) - parseFloat(pagos) - parseFloat(descuento)).toFixed(2));
-  if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
-    $('#btnPago').prop("disabled", true);
-  } else {
-    $('#btnPago').prop("disabled", false);
-  }
-}
+//   $('#totalSaldoMedios').html(parseFloat(parseFloat(total) - parseFloat(pagos) - parseFloat(descuento)).toFixed(2));
+//   if(parseFloat(parseFloat(total - pagos).toFixed(2) - descuento) != 0){
+//     $('#btnPago').prop("disabled", true);
+//   } else {
+//     $('#btnPago').prop("disabled", false);
+//   }
+// }
 
-$('.calcula').keyup(function() {
-  CalcularMediosDePago();
-});
+// $('.calcula').keyup(function() {
+//   CalcularMediosDePago();
+// });
 /****************************** Fin Cobrar Venta ******************************/
 
   $(function(){
@@ -727,148 +716,152 @@ $('#btnSaveCustomer').click(function(){
 });
 
 $('#btnServicePresupuesto').click(function(){
-  Cobrar_(1);
+  if(parseFloat($('#totalSale').html()) > 0){
+    Cobrar_(0);
+  }
 });
 
 $('#btnPago').click(function(){
-  Cobrar_(0);
-});
-
-$('#btnServiceEfectivo').click(function(){
-  $('#efectivo').val($('#totalSale').html().replace('.',','));
-  Cobrar_(0);
-});
-
-function Cobrar_(esPresupuesto){
-  if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
-    return false;
-  //Barrer Informacion
-  //Id de la operación
-  var opId = -1;
-  //Lista de Precio y su porcentaje-----------------------
-  var selected = $('#lpId').find('option:selected');
-  var lp = {
-            id:   $('#lpId').val(),
-            por:  parseFloat(selected.data('porcent'))
-          };
-  //Cliente-----------------------------------------------
-  var cli = {
-              id: $('#cliId').val()
-          };
-  //Vendedor----------------------------------------------
-  var ven = {
-              id:  $('#venId').val()
-            };
-  //Detalle de la compra-----------------------------------
-  var table = $('#detailSale > tbody> tr');
-  var detalle = [];
-  table.each(function(r) {
-    var object = {
-      artId:          (this.children[6].textContent == '-' ? '-' : parseInt(this.children[6].textContent)),
-      cant:           parseFloat(this.children[3].textContent),
-      artDescripcion: this.children[2].textContent,
-      artCosto:       parseFloat(this.children[7].textContent),
-      artventa:       parseFloat(this.children[4].textContent),
-      artventaSD:     parseFloat(this.children[9].textContent), //Venta sin descuentos
-      artCode:        this.children[1].textContent,
-      actualizaStock: parseInt(this.children[8].textContent)
-    };
-    detalle.push(object);
-  });
-  //Medios de Pago-----------------------------------------
-  var medios = [];
-  if(esPresupuesto == 0){
-    var med;
-    //Efectivo
-    if($('#efectivo').val() != ''){
-      med = {
-        id: 1,
-        imp: parseFloat(($('#efectivo').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //Visa
-    if($('#visa').val() != ''){
-      med = {
-        id: 2,
-        imp: parseFloat(($('#visa').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //MasterCard
-    if($('#mastercard').val() != ''){
-      med = {
-        id: 3,
-        imp: parseFloat(($('#mastercard').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //Nevada
-    if($('#nevada').val() != ''){
-      med = {
-        id: 4,
-        imp: parseFloat(($('#nevada').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //Data
-    if($('#data').val() != ''){
-      med = {
-        id: 5,
-        imp: parseFloat(($('#data').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //CuentaCorriente
-    if($('#cuentacorriente').val() != ''){
-      med = {
-        id: 7,
-        imp: parseFloat(($('#cuentacorriente').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //CreditoArgentino
-    if($('#creditoargentino').val() != ''){
-      med = {
-        id: 6,
-        imp: parseFloat(($('#creditoargentino').val().replace('.','')).replace(',','.'))
-      };
-      medios.push(med);
-    }
-    //Descuento--------------------------------------------
-    var desc = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
-  } else {
-    var desc = 0;
+  if(parseFloat($('#totalSale').html()) > 0){
+    Cobrar_(1);
   }
+});
 
-  WaitingOpen('Guardando venta');
-    $.ajax({
-          type: 'POST',
-          data: {
-                  lpr:      lp,
-                  clie:     cli,
-                  vend:     ven,
-                  medi:     medios,
-                  des:      desc,
-                  det:      detalle,
-                  esPre:    esPresupuesto,
-                  oId:      opId
-                },
-      url: 'index.php/sale/setSaleMinorista',
-      success: function(result){
-                    WaitingClose();
-                    $('#modalMedios').modal('hide');
-                    $('#modalConfirm').modal('show');
-                    ImprimirDirectoVar = result;
-                    //setTimeout("cargarView('sale', 'minorista', '');",800);
-            },
-      error: function(result){
-            WaitingClose();
-            ProcesarError(result.responseText, 'modalNo');
-          },
-          dataType: 'json'
-      });
-};
+// $('#btnServiceEfectivo').click(function(){
+//   $('#efectivo').val($('#totalSale').html().replace('.',','));
+//   Cobrar_(0);
+// });
+
+// function Cobrar_xx(esPresupuesto){
+//   if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
+//     return false;
+//   //Barrer Informacion
+//   //Id de la operación
+//   var opId = -1;
+//   //Lista de Precio y su porcentaje-----------------------
+//   var selected = $('#lpId').find('option:selected');
+//   var lp = {
+//             id:   $('#lpId').val(),
+//             por:  parseFloat(selected.data('porcent'))
+//           };
+//   //Cliente-----------------------------------------------
+//   var cli = {
+//               id: $('#cliId').val()
+//           };
+//   //Vendedor----------------------------------------------
+//   var ven = {
+//               id:  $('#venId').val()
+//             };
+//   //Detalle de la compra-----------------------------------
+//   var table = $('#detailSale > tbody> tr');
+//   var detalle = [];
+//   table.each(function(r) {
+//     var object = {
+//       artId:          (this.children[6].textContent == '-' ? '-' : parseInt(this.children[6].textContent)),
+//       cant:           parseFloat(this.children[3].textContent),
+//       artDescripcion: this.children[2].textContent,
+//       artCosto:       parseFloat(this.children[7].textContent),
+//       artventa:       parseFloat(this.children[4].textContent),
+//       artventaSD:     parseFloat(this.children[9].textContent), //Venta sin descuentos
+//       artCode:        this.children[1].textContent,
+//       actualizaStock: parseInt(this.children[8].textContent)
+//     };
+//     detalle.push(object);
+//   });
+//   //Medios de Pago-----------------------------------------
+//   var medios = [];
+//   if(esPresupuesto == 0){
+//     var med;
+//     //Efectivo
+//     if($('#efectivo').val() != ''){
+//       med = {
+//         id: 1,
+//         imp: parseFloat(($('#efectivo').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //Visa
+//     if($('#visa').val() != ''){
+//       med = {
+//         id: 2,
+//         imp: parseFloat(($('#visa').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //MasterCard
+//     if($('#mastercard').val() != ''){
+//       med = {
+//         id: 3,
+//         imp: parseFloat(($('#mastercard').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //Nevada
+//     if($('#nevada').val() != ''){
+//       med = {
+//         id: 4,
+//         imp: parseFloat(($('#nevada').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //Data
+//     if($('#data').val() != ''){
+//       med = {
+//         id: 5,
+//         imp: parseFloat(($('#data').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //CuentaCorriente
+//     if($('#cuentacorriente').val() != ''){
+//       med = {
+//         id: 7,
+//         imp: parseFloat(($('#cuentacorriente').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //CreditoArgentino
+//     if($('#creditoargentino').val() != ''){
+//       med = {
+//         id: 6,
+//         imp: parseFloat(($('#creditoargentino').val().replace('.','')).replace(',','.'))
+//       };
+//       medios.push(med);
+//     }
+//     //Descuento--------------------------------------------
+//     var desc = parseFloat($('#descuento').val() == '' ? 0 : ($('#descuento').val().replace('.','')).replace(',','.'));
+//   } else {
+//     var desc = 0;
+//   }
+
+//   WaitingOpen('Guardando venta');
+//     $.ajax({
+//           type: 'POST',
+//           data: {
+//                   lpr:      lp,
+//                   clie:     cli,
+//                   vend:     ven,
+//                   medi:     medios,
+//                   des:      desc,
+//                   det:      detalle,
+//                   esPre:    esPresupuesto,
+//                   oId:      opId
+//                 },
+//       url: 'index.php/sale/setSaleMinorista',
+//       success: function(result){
+//                     WaitingClose();
+//                     $('#modalMedios').modal('hide');
+//                     $('#modalConfirm').modal('show');
+//                     ImprimirDirectoVar = result;
+//                     //setTimeout("cargarView('sale', 'minorista', '');",800);
+//             },
+//       error: function(result){
+//             WaitingClose();
+//             ProcesarError(result.responseText, 'modalNo');
+//           },
+//           dataType: 'json'
+//       });
+// };
 
 function btnNo(){  
   $('#modalConfirm').modal('hide');
@@ -892,11 +885,6 @@ function imprimirMinorista(id){
                 data: { id : id, act: 'Print' },
                 url: 'index.php/sale/printComprobante',
                 success: function(result){
-                    /*console.log(result);
-                        WaitingClose();
-                        $("#iframe_pdf").attr('src',result.filename_url);
-                        $('#print_order_modal').modal('show');
-                    */
                     WaitingClose();
                     var url = "./assets/reports/orders_minorista/" + result;
                     $('#printDocDir').attr('src', url);
@@ -908,8 +896,6 @@ function imprimirMinorista(id){
                 },
                 dataType: 'json'
             });
-
-            //$("#print_order_modal").modal("show");
             return false;
         }
 </script>

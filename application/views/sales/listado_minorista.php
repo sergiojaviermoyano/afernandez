@@ -26,6 +26,7 @@
                 <th>MP</th>
                 <th>Estado</th>
                 <th class="text-center">-</th>
+                <th>Vendedor</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +73,7 @@
             null,
             null,
             {className:'text-center'},
+            null
         ],
         ajax:{
             'dataType': 'json',
@@ -111,33 +113,10 @@
                         }
                     }
                     
-                    switch(item.mp){
-                      case 'Efectivo': 
-                        colMp= '<small class="label pull-left bg-green" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">$</small>';
-                        break;
-
-                      case 'Visa': 
-                      case 'MasterCard': 
-                      case 'Data': 
-                        colMp= '<small class="label pull-left bg-primary" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">T</small>';
-                        break;
-
-                      case 'Nevada': 
-                        colMp= '<small class="label pull-left bg-primary" style="font-size:14px; margin-right:5px; cursor: pointer;" title="Naranja">T</small>';
-                        break;
-
-                      case 'Cuenta Corriente':
-                        colMp= '<small class="label pull-left bg-maroon" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">C</small>';
-                        break;
-
-                      case 'Credito Argentino': 
-                        colMp= '<small class="label pull-left bg-teal" style="font-size:14px; margin-right:5px; cursor: pointer;" title="'+item.mp+'">A</small>';
-                        break;
-
-                      default:
-                        colMp= '';
-                        break;
-                    }
+                    colMp = '';
+                    $.each(item.MP,function(index,item2){
+                      colMp+= '<small class="label bg-blue" style="margin-right:5px;">'+item2.medDescripcion+'</small>';
+                    });
                     
                     //colMp= item.mp;
                     if(item.oEstado == 'AC'){
@@ -145,7 +124,7 @@
                     } else {
                         col5= (item.oEsPresupuesto==1)?'<small class="label pull-left bg-navy" style="font-size:14px; margin-right:5px;">P</small>':' ';
                     }
-                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col3_1,colMp,col4,col5]);
+                    output.push([col1,col2,colCli,parseFloat(colImp).toFixed(2),col3,col3_1,colMp,col4,col5,item.vendedor]);
                 });
                 return output;
             },

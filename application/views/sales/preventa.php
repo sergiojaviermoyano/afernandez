@@ -108,7 +108,7 @@
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
 				                <div class="col-xs-2">
-				                    <input type="text" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
+				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
                         <div class="col-xs-2">
 				                    <label style="margin-top: 7px" id="prodPrecio" class="pull-right">$0,00 </label>
@@ -196,7 +196,7 @@
               <label style="margin-top: 7px;">Cantidad <strong style="color: #dd4b39">*</strong>: </label>
             </div>
             <div class="col-xs-8">
-              <input type="text" class="form-control" id="artMcantidad" value="" >
+              <input type="number" class="form-control" id="artMcantidad" value="" >
             </div>
           </div><br>
         </div>
@@ -321,8 +321,8 @@
 
 <script>
 $("#artMprecio").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
-$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+//$("#artMcantidad").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
+//$("#prodCant").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
 $(".select2").select2();
 
 setTimeout("$('#venId').select2('open');",800);
@@ -389,7 +389,7 @@ $('#lblProducto').keyup(function(e){
   var code = e.which;
   if(code==13){
     e.preventDefault();
-    if($('#lblProducto').val() != ''){
+    if($('#lblProducto').val() != '' && $('#lblProducto').val().length >= 3){
       $('#lblProducto').prop('disabled', true);
       BuscarCompleto();
     }
@@ -494,19 +494,20 @@ $('#btnServiceBuy').click(function(){
     return false;
   var importeVenta = parseFloat($('#totalSale').html());
   if(importeVenta > 0){
+    cobrarMedios(null, importeVenta, 2);
     //Clean medios
-    $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    //$('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    //$('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    //$('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
-    $('#totalSaleMedios').html(importeVenta.toFixed(2));
-    $('#modalMedios').modal('show');
-    CalcularMediosDePago();
-	  setTimeout("$('#efectivo').focus()",1000);
+    // $('#efectivo').val('');$('#efectivo').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#visa').val('');$('#visa').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#mastercard').val('');$('#mastercard').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#nevada').val('');$('#nevada').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#data').val('');$('#data').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // //$('#cuentacorriente').val('');$('#cuentacorriente').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // //$('#creditoargentino').val('');$('#creditoargentino').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // //$('#descuento').val('');$('#descuento').maskMoney({allowNegative: false, thousands:'.', decimal:','});
+    // $('#totalSaleMedios').html(importeVenta.toFixed(2));
+    // $('#modalMedios').modal('show');
+    // CalcularMediosDePago();
+	  // setTimeout("$('#efectivo').focus()",1000);
   }
 });
 
@@ -721,7 +722,7 @@ $('#btnServiceEfectivo').click(function(){
   Cobrar_(0);
 });
 
-function Cobrar_(esPresupuesto){
+function Cobrar_XXXX(esPresupuesto){
   if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
     return false;
   //Barrer Informacion

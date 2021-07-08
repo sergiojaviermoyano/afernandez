@@ -36,7 +36,7 @@ var id___Main, detail___Main, nextFocus___Main, price___Main;
 var timer__Main, timeout__Main = 1000;
 var row__Main = 0, rows__Main = 0;
 var move__Main = 0;
-var minLenght__Main = 0;
+var minLenght__Main = 2;
 /*
 function buscadorArticlesPrice(string, id, detail, nextFocus, price){
   id___ = id;

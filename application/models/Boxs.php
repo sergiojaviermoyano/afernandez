@@ -8,6 +8,18 @@ class Boxs extends CI_Model
 		parent::__construct();
 	}
 
+	/*Utilizado para cobranza y/o Pagos*/
+	function getMedios(){
+		$query = $this->db->get_where('tipomediopago', array('tmpEstado' => 'AC'));
+		$items = $query->result_array();
+		for($i=0; $i<$query->num_rows(); $i++){
+			$query_2 = $this->db->get_where('mediosdepago', array('medEstado' => 'AC', 'tmpId' => $items[$i]['tmpId']));
+			$items[$i]['medios'] = $query_2->result_array();
+		}
+		return $items;
+	}
+	
+
 	function Box_List($data_ = null){
 		$data = array();
 		if($data_ == null){

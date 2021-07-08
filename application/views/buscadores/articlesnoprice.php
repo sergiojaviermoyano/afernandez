@@ -39,7 +39,7 @@ var id__, detail__, nextFocus__;
 var timer_, timeout_ = 1000;
 var row_ = 0, rows_ = 0;
 var move_ = 0;
-var minLenght_ = 0;
+var minLenght_ = 2;
 function buscadorArticlesNoPrice(string, id, detail, nextFocus){
   id__ = id;
   detail__ = detail;
