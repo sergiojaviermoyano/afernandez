@@ -19,6 +19,121 @@ class Boxs extends CI_Model
 		return $items;
 	}
 	
+	function Medios_List($data_ = null){
+		$this->db->select('mediosdepago.*, tipomediopago.tmpDescripción');
+		$this->db->from('mediosdepago');
+		$this->db->join('tipomediopago', ' tipomediopago.tmpId = mediosdepago.tmpId');
+		$this->db->order_by('mediosdepago.medDescripcion', 'desc');
+		$this->db->limit(10);
+		$query= $this->db->get();
+
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return array();
+		}
+	}
+
+	function getMedio($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$action = $data['act'];
+			$medId = $data['id'];
+
+			$data = array();
+
+			//Datos del medio de pago
+			$query= $this->db->get_where('mediosdepago',array('medId'=>$medId));
+			if ($query->num_rows() != 0)
+			{
+				$u = $query->result_array();
+				$data['medio'] = $u[0];
+			} else {
+				$medio = array();
+				$medio['medId'] = '';
+				$medio['medCodigo'] = '';
+				$medio['medDescripcion'] = '';
+				$medio['tmpId'] = '';
+				$medio['medEstado'] = 'AC';
+
+				$data['medio'] = $medio;
+			}
+
+			//Readonly
+			$readonly = false;
+			if($action == 'Del' || $action == 'View'){
+				$readonly = true;
+			}
+			$data['read'] = $readonly;
+
+			//tipos medios de pago
+			$query= $this->db->get('tipomediopago');
+			if ($query->num_rows() != 0)
+			{
+				$data['tipos'] = $query->result_array();	
+			}
+			
+			return $data;
+		}
+	}
+
+	function setMedio($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$id = $data['id'];
+			$act = $data['act'];
+			$code = $data['code'];
+			$desc = $data['desc'];
+			$tmpI = $data['tmpI'];
+			$esta = $data['esta'];
+			
+			$data = array(
+					'medCodigo' => $code,
+					'medDescripcion' => $desc,
+					'tmpId' => $tmpI,
+					'medEstado' => $esta
+				);
+
+			switch($act){
+				case 'Add':
+					//Agregar Usuario 
+					if($this->db->insert('mediosdepago', $data) == false) {
+						return false;
+					}else{
+						return true;
+					}
+					break;
+
+				 case 'Edit':
+				 	//Actualizar usuario
+				 	if($this->db->update('mediosdepago', $data, array('medId'=>$id)) == false) {
+				 		return false;
+				 	}
+				 	break;
+
+				 case 'Del':
+				 	//Eliminar usuario
+				 	if($this->db->delete('mediosdepago', array('medId'=>$id)) == false) {
+				 		return false;
+				 	}
+				 	break;
+			}
+
+			return true;
+
+		}
+	}
 
 	function Box_List($data_ = null){
 		$data = array();
@@ -216,7 +331,7 @@ class Boxs extends CI_Model
 					break;
 
 				case 'Close':
-				case 'CloseU':
+				case 'Cierra':
 					//Cerrar caja
 					$data = array(
 					   'cajaCierre'		=> date('Y-m-d H:i:s'),

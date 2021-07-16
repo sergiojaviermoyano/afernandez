@@ -65,13 +65,13 @@ function BuscarArticlePrice(){
           success: function(resultList){
                         if(resultList != false){
                           if(resultList.length == 1){
-                              seleccionarArticlePrice(resultList[0].artId, resultList[0].artDescription, calcularPrecioInterno(resultList[0]));
+                              seleccionarArticlePrice(resultList[0].artId, resultList[0].artDescription, calcularPrecioInterno(resultList[0]), resultList[0].stock);
                           } else {
 
                             $.each(resultList, function(index, result){
                                 var row___ = '<tr>';
                                 row___ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                                row___ += 'onClick="seleccionarArticlePrice(' + result.artId + ', \'' + result.artDescription + '\', ' + calcularPrecioInterno(result) + ')"></i></td>';
+                                row___ += 'onClick="seleccionarArticlePrice(' + result.artId + ', \'' + result.artDescription + '\', ' + calcularPrecioInterno(result) + ',' + result.stock +')"></i></td>';
                                 row___ += '<td>'+result.artBarcode+'</td>';
                                 row___ += '<td>'+result.artDescription+'</td>';
                                 row___ += '<td style="text-align: right"> $ ' + calcularPrecioInterno(result).toFixed(2) + '</td>';
@@ -140,7 +140,8 @@ $('#buscadorArticlesPrice').on('hidden.bs.modal', function() {
         seleccionarArticlePrice(
                           $('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(5)')[0].innerHTML,
                           $('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(3)')[0].innerHTML,
-                          ($('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(4)')[0].innerHTML).replace('$', '').trim()
+                          ($('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(4)')[0].innerHTML).replace('$', '').trim(),
+                          parseFloat(($('#tableArtPriceDetail tbody tr:nth-child('+row__+') td:nth-child(6)')[0].innerHTML).trim())
                         );
       }
 
@@ -167,12 +168,20 @@ $('#buscadorArticlesPrice').on('hidden.bs.modal', function() {
     }
   });
 
-function seleccionarArticlePrice(id, desc, price){
+function seleccionarArticlePrice(id, desc, price, stock){
     id___.val(id);
     detail___.val(desc);
     price___.html('$'+parseFloat(price).toFixed(2));
     $('#buscadorArticlesPrice').modal('hide');
     $('#lblProducto').prop('disabled', false);
+    if(stock == null || stock <= 0){
+      if(stock == null) stock = 0;
+      $('#stockLbl').css('color', 'red');
+      $('#stockReal').html(parseFloat(stock).toFixed(2));
+    }else{
+      $('#stockLbl').css('color', 'green');
+      $('#stockReal').html(parseFloat(stock).toFixed(2));
+    }
     setTimeout(function () { nextFocus___.focus(); nextFocus___.select()}, 800);
 }
 

@@ -118,19 +118,19 @@
                     var col1,col2,col3,col4, col5 , col6='';
                     col1='';
 
-                    if(_permission.indexOf("Close") && item.cajaCierre==null){
+                    if(_permission.indexOf("Close") >= 0 && item.cajaCierre==null){
                       col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="Close"></i>';
                     }
 
-                    if(_permission.indexOf("CloseU") && item.cajaCierre==null){
-                      col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="CloseU"></i>';
+                    if(_permission.indexOf("Cierra") >= 0 && item.cajaCierre==null){
+                      col1 += '<i class="bt_close fa fa-fw fa-lock" style="color: #00a65a; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="Cierra"></i>';
                     }
 
                     if(item.cajaCierre!=null){
                       col1 += '<i class="bt_print fa fa-fw fa-bookmark" style="color: gray; cursor: pointer; margin-left: 15px;"  onClick="imprimirCaja('+item.cajaId+')" ></i>';
                     }
 
-                    if(_permission.indexOf("View")){
+                    if(_permission.indexOf("View") >= 0){
                       col1 += '<i class="bt_view fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"  data-id="'+item.cajaId+'" data-action="View" ></i>';
                     }
 
@@ -251,7 +251,7 @@
           break;
 
         case 'Close':
-        case 'CloseU':
+        case 'Cierra':
           if($('#cajaImpRendicion').val() == '')
           {
             hayError = true;

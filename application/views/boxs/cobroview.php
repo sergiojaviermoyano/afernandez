@@ -71,7 +71,7 @@
             </div>
             <hr>
             <h1 class="text-blue" id="importeTotalPagado" style="margin-top: -10px;">0.00</h1> -->
-            <div class="box box-warning bg-gray" style="display: none">
+            <div class="box box-warning bg-gray" style="display: block">
               <div class="box-header with-border">
                 <h3 class="box-title text-yellow">Descuento $:</h3>
               </div>
@@ -169,19 +169,40 @@ function cobrarMedios(ordId, importe, comprobanteTipo_){
                           var html = '';
                           orden = 0;
                           result.forEach(function (e){
-                            html += '<button ';
-                            html += '       type="button" ';
-                            html += '       class="btn btn-default btn-lg form-control input-block-level classType" ';
-                            html += '       id="'+e.tmpCodigo+'" ';
-                            html += '       style="padding: 6px; margin-bottom: 5px;" ';
-                            html += '       value="'+orden+'">';
-                            html += ' <span class="pull-left">'+e.tmpDescripción+'</span> <i class="fa fa-chevron-right pull-right"></i>';
-                            html += '</button>';
-                            if(orden == 0){
-                              focoEnTipo = e.tmpCodigo;
-                              idTipoSeleccionado = e.tmpCodigo;
+                            if($('#cliId').val() == 1) {
+                              if(e.tmpCodigo != 'TM4'){
+                                html += '<button ';
+                                html += '       type="button" ';
+                                html += '       class="btn btn-default btn-lg form-control input-block-level classType" ';
+                                html += '       id="'+e.tmpCodigo+'" ';
+                                html += '       style="padding: 6px; margin-bottom: 5px;" ';
+                                html += '       value="'+orden+'">';
+                                html += ' <span class="pull-left">'+e.tmpDescripción+'</span> <i class="fa fa-chevron-right pull-right"></i>';
+                                html += '</button>';
+
+                                if(orden == 0){
+                                  focoEnTipo = e.tmpCodigo;
+                                  idTipoSeleccionado = e.tmpCodigo;
+                                }
+                                orden++;
+                              }
+                            } else {
+                              html += '<button ';
+                              html += '       type="button" ';
+                              html += '       class="btn btn-default btn-lg form-control input-block-level classType" ';
+                              html += '       id="'+e.tmpCodigo+'" ';
+                              html += '       style="padding: 6px; margin-bottom: 5px;" ';
+                              html += '       value="'+orden+'">';
+                              html += ' <span class="pull-left">'+e.tmpDescripción+'</span> <i class="fa fa-chevron-right pull-right"></i>';
+                              html += '</button>';
+                              if(orden == 0){
+                                focoEnTipo = e.tmpCodigo;
+                                idTipoSeleccionado = e.tmpCodigo;
+                              }
+                              orden++;
                             }
-                            orden++;
+                            
+                            
                           });
                           $('#divTiposMediosDePago').html(html);
                         }
@@ -376,17 +397,17 @@ function TipoMedioDePago(code){
     t.medios.forEach(function (m){
         if(m.medCodigo == code){
           $('#tmpDescripcion1').val('');
-          if(t.tmpDescripcion1 != null){
+          if(t.tmpDescripcion1 != null || t.tmpDescripcion1 != ''){
             $('#tmpDato1').show();
             $('#tmpDescripcion1').attr('placeholder', t.tmpDescripcion1);
           } else { $('#tmpDato1').hide(); }
           $('#tmpDescripcion2').val('');
-          if(t.tmpDescripcion2 != null){
+          if(t.tmpDescripcion2 != null || t.tmpDescripcion2 != ''){
             $('#tmpDato2').show();
             $('#tmpDescripcion2').attr('placeholder', t.tmpDescripcion2);
           } else { $('#tmpDato2').hide(); }
           $('#tmpDescripcion3').val('');
-          if(t.tmpDescripcion3 != null){
+          if(t.tmpDescripcion3 != null || t.tmpDescripcion3 != ''){
             $('#tmpDato3').show();
             $('#tmpDescripcion3').attr('placeholder', t.tmpDescripcion3);
           } else { $('#tmpDato3').hide(); }
@@ -475,9 +496,10 @@ function CalcularPagos(){
     descuento = parseFloat($('#medDescuento').val());
   }
 
+  debugger;
   importeSaldoAPagar = importeAPagar - (totalPagos + descuento);
   if(comprobanteTipo != 2){  
-    if(importeSaldoAPagar <= 0 && importeAPagar > 0){
+    if(importeSaldoAPagar == 0 && importeAPagar > 0){
       $('#btnSaveCobroModal').removeAttr("disabled");
       $('#btnSaveCobroModal').focus();
     } else {
@@ -495,10 +517,13 @@ function CalcularPagos(){
   }
 
   $('#importeTotalPagado').html(totalPagos.toFixed(2));
-  if(importeSaldoAPagar == (importeAPagar - descuento) || totalPagos < (importeAPagar - descuento))
+  if(importeSaldoAPagar == (importeAPagar - descuento) || totalPagos < (importeAPagar - descuento)){
     $('#importeVuelto').html('0.00');
-    else
+    //$('#btnSaveCobroModal').removeAttr("disabled");
+  } else{
     $('#importeVuelto').html(Math.abs(importeSaldoAPagar).toFixed(2));
+    //$('#btnSaveCobroModal').attr('disabled', 'disabled');
+  }
 }
 
 function eliminarDiv(id, idMedio){
@@ -526,9 +551,9 @@ $(document).on('keyup','.cuerpo',function(event){
 
 $(document).on('keyup','.descuento',function(event){
   var keycode = (event.keyCode ? event.keyCode : event.which);
-  if(keycode == '13'){
+  //if(keycode == '13'){
     CalcularPagos();
-  }
+  //}
 });
 
 $('#btnSaveCobroModal').click(function(){
@@ -609,10 +634,11 @@ function Cobrar_(comprobanteTipo){
   }
   //Medios de Pago-----------------------------------------
   var medios = [];
-  if(comprobanteTipo == 0){
+  debugger;
+  if(comprobanteTipo != 0 && comprobanteTipo != 4){
     medios = pagos;
     //Descuento--------------------------------------------
-    var desc = parseFloat($('#medDescuento').val() == '' ? 0 : ($('#medDescuento').val().replace('.','')).replace(',','.'));
+    var desc = parseFloat($('#medDescuento').val() == '' ? 0 : $('#medDescuento').val());
   } else {
     var desc = 0;
   }
@@ -623,6 +649,7 @@ function Cobrar_(comprobanteTipo){
      comprobanteTipo == 4){
       WaitingOpen('Guardando venta'); 
       var url_; 
+      debugger;
       if(comprobanteTipo == 2){
         url_ = 'index.php/sale/setSalePreventa';
       }
@@ -692,5 +719,106 @@ function Cobrar_(comprobanteTipo){
             dataType: 'json'
         });
   }
+}
+
+function CobrarEfectivo(){
+  //Acciones
+  //0: Presupuesto            (No tiene reserva, venta mayorista, ni venta minorista)
+  //1: Venta Minorista        (No tiene reserva)
+  //2: Reserva                (No tiene presupuesto)
+  //3: Venta Mayorista        (No tiene reserva ni presupuesto)
+  //4: Presupuesto Mayorista  (No tiene reserva, venta mayorista, ni venta minorista)
+  //5: Pago a cuenta de reserva
+  
+  //Valido que los datos esten completos
+    if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1){
+      return false;
+    }
+
+  //Barrer Informacion
+  //Id de la operación
+  idOrdenSeleccionada = -1;
+  var opId = idOrdenSeleccionada;
+  //Lista de Precio y su porcentaje-----------------------
+  var selected = $('#lpId').find('option:selected');
+  var lp = {
+            id:   $('#lpId').val(),
+            por:  parseFloat(selected.data('porcent'))
+          };
+  //Cliente-----------------------------------------------
+  var cli = {
+              id: $('#cliId').val()
+          };
+  //Vendedor----------------------------------------------
+  var ven = {
+              id:  $('#venId').val()
+            };
+  //Detalle de la compra-----------------------------------
+  var table = $('#detailSale > tbody> tr');
+  var detalle = [];
+  table.each(function(r) {
+    var object = {
+      artId:          (this.children[6].textContent == '-' ? '-' : parseInt(this.children[6].textContent)),
+      cant:           parseFloat(this.children[3].textContent),
+      artDescripcion: this.children[2].textContent,
+      artCosto:       parseFloat(this.children[7].textContent),
+      artventa:       parseFloat(this.children[4].textContent),
+      artventaSD:     parseFloat(this.children[9].textContent), //Venta sin descuentos
+      artCode:        this.children[1].textContent,
+      actualizaStock: parseInt(this.children[8].textContent)
+    };
+    detalle.push(object);
+  });
+
+  //Medios de Pago-----------------------------------------
+  var medios = [];
+  var object = {
+    medioCode:          'EFE',
+    medioImport:        parseFloat($('#totalSale').html()).toFixed(2),
+    medioDesc1:         '',
+    medioDesc2:         '',
+    medioDesc3:         ''
+  };
+  medios.push(object);
+  //medios = pagos;
+
+  //Descuento--------------------------------------------
+  var desc = 0;
+  
+      WaitingOpen('Guardando venta'); 
+      var url_; 
+      url_ = 'index.php/sale/setSaleMinorista';
+      debugger;
+      $.ajax({
+            type: 'POST',
+            data: {
+                    lpr:      lp,
+                    clie:     cli,
+                    vend:     ven,
+                    medi:     medios,
+                    des:      desc,
+                    det:      detalle,
+                    esPre:    comprobanteTipo == 0 || comprobanteTipo == 4 ? 1: 0,
+                    oId:      opId,
+                    res:      comprobanteTipo == 2 ? 1: 0,
+                    obs:      $('#oObservacion').val()
+                  },
+        url: url_,
+        success: function(result){
+                      WaitingClose();
+                      $('#modalCobro').modal('hide');
+                      $('#btnSaveCobroModal').removeAttr("disabled");
+
+                        $('#modalConfirm').modal('show');
+                        ImprimirDirectoVar = result;
+                       
+              },
+        error: function(result){
+              WaitingClose();
+              $('#btnSaveCobroModal').removeAttr("disabled");
+              ProcesarError(result.responseText, 'modalCobro');
+            },
+            dataType: 'json'
+        });
 }
 </script>

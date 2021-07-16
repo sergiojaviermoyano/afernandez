@@ -32,6 +32,7 @@ class Articles extends CI_Model
 						');
 		$this->db->order_by('ordenN', 'asc');
 		$this->db->from('articles');
+		$this->db->where(array('artEstado' => 'AC'));
 		$query= $this->db->get();
 
 		if ($query->num_rows()!=0)

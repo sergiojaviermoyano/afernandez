@@ -44,13 +44,13 @@
   	        				<label style="margin-top: 7px">Nombre y DNI: </label>
   		        		</div>
   		        		<div class="col-xs-6">
-  						      <label style="margin-top: 7px;" class="text-maroon" id="lblNombre"><?php echo $final['cliNombre'].' '.$final['cliApellido'];?> </label>
+  						      <label style="margin-top: 7px;" class="text-maroon" id="lblNombre">- </label>
   		        		</div>
                   <div class="col-xs-2">
-  	        				<label style="margin-top: 7px" id="lblDocumento"><?php echo $final['cliDocumento'];?> </label>
+  	        				<label style="margin-top: 7px" id="lblDocumento">- </label>
   		        		</div>
           			</div>
-                <input type="hidden" id="cliId" value="<?php echo $final['cliId'];?>">
+                <input type="hidden" id="cliId" value="-1">
               </div>
               <!-- Vendedor -->
               <div class="row">
@@ -107,9 +107,14 @@
 				                    <input type="hidden" class="form-control" id="prodId">
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
-				                <div class="col-xs-2">
+				                <div class="col-xs-1">
 				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
+                        <div class="col-xs-1 text-center">
+                          <small id="stockLbl" style="display:block">Stock <br>
+                            <b id="stockReal">-</b>
+                          </small>
+                        </div>
                         <div class="col-xs-2">
 				                    <label style="margin-top: 7px" id="prodPrecio" class="pull-right">$0,00 </label>
 				                </div>
@@ -490,7 +495,7 @@ function restar(row){
 
 /********************************* Cobrar Venta *******************************/
 $('#btnServiceBuy').click(function(){
-  if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)
+  if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1 || $('#cliId').val() == -1 )
     return false;
   var importeVenta = parseFloat($('#totalSale').html());
   if(importeVenta > 0){

@@ -15,6 +15,32 @@ class box extends CI_Controller {
 		echo json_encode( $this->Boxs->getMedios() );
 	}
 
+	public function medios($permission){
+		//$data['tipos'] = $this->Boxs->Tipos_List();
+		$data['list'] = $this->Boxs->Medios_List();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('boxs/medios', $data, true));
+	}
+
+	public function getMedio(){
+		$data['data'] = $this->Boxs->getMedio($this->input->post());
+		$response['html'] = $this->load->view('boxs/mediosview', $data, true);
+
+		echo json_encode($response);
+	}
+	
+	public function setMedio(){
+		$data = $this->Boxs->setMedio($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode(true);	
+		}
+	}
+
 	public function index($permission)
 	{
 		$data['list'] = $this->Boxs->Box_List();

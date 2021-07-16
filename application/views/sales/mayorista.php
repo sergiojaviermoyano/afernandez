@@ -107,9 +107,14 @@
 				                    <input type="hidden" class="form-control" id="prodId">
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
-				                <div class="col-xs-2">
+				                <div class="col-xs-1">
 				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
+                        <div class="col-xs-1 text-center">
+                          <small id="stockLbl" style="display:block">Stock <br>
+                            <b id="stockReal">-</b>
+                          </small>
+                        </div>
                         <div class="col-xs-2">
 				                    <label style="margin-top: 7px" id="prodPrecio" class="pull-right">$0,00 </label>
 				                </div>

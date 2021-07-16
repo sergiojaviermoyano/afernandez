@@ -82,7 +82,7 @@
       <label style="margin-top: 7px;">Redición <strong style="color: #dd4b39">*</strong>: </label>
     </div>
 	<div class="col-xs-5">
-      <input type="text" class="form-control" id="cajaImpRendicion" value="<?php echo $data['box']['cajaImpRendicion'];?>" <?php echo ($data['action'] != 'Close' ? 'disabled="disabled"' : '');?>  >
+      <input type="text" class="form-control" id="cajaImpRendicion" value="<?php echo $data['box']['cajaImpRendicion'];?>" <?php echo ($data['action'] != 'Close' &&  $data['action'] != 'Cierra'? 'disabled="disabled"' : '');?>  >
     </div>
 </div><br>
 

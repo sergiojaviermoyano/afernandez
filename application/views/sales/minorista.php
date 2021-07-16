@@ -80,7 +80,7 @@
                   </div>
                   <div style="text-align: right; padding: 5px;">
                     <button type="button" class="btn btn-warning" style="float: left" id="btnServicePresupuesto">Presupuesto</button>
-                    <button type="button" class="btn btn-primary" style="display:none" id="btnServiceEfectivo">Efectivo</button>
+                    <button type="button" class="btn btn-primary" id="btnServiceEfectivo">Efectivo</button>
                     <button type="button" class="btn btn-success" id="btnServiceBuy">Cobrar</button>
                   </div>
               </div>
@@ -107,9 +107,14 @@
 				                    <input type="hidden" class="form-control" id="prodId">
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
-				                <div class="col-xs-2">
+				                <div class="col-xs-1">
 				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
+                        <div class="col-xs-1 text-center">
+                          <small id="stockLbl" style="display:block">Stock <br>
+                            <b id="stockReal">-</b>
+                          </small>
+                        </div>
                         <div class="col-xs-2">
 				                    <label style="margin-top: 7px" id="prodPrecio" class="pull-right">$0,00 </label>
 				                </div>
@@ -727,10 +732,10 @@ $('#btnPago').click(function(){
   }
 });
 
-// $('#btnServiceEfectivo').click(function(){
+$('#btnServiceEfectivo').click(function(){
 //   $('#efectivo').val($('#totalSale').html().replace('.',','));
-//   Cobrar_(0);
-// });
+  CobrarEfectivo();
+ });
 
 // function Cobrar_xx(esPresupuesto){
 //   if($('#venId').val() == 0 || $('#venId').val() == undefined || $('#venId').val() == -1)

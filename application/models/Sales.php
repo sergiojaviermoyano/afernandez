@@ -183,7 +183,7 @@ class Sales extends CI_Model
 			//-----------------------------------------------
 
 			$this->db->trans_start();
-			if($oId < 0){ // Es una venta o un nuevo presupuesto
+			if($oId <= 0){ // Es una venta o un nuevo presupuesto
 				if($this->db->insert('orden', $venta) == false) {
 					$this->db->trans_complete();
 					return false;
@@ -200,7 +200,7 @@ class Sales extends CI_Model
 
 			//Registrar Detalle
 			foreach ($data['det'] as $o) {
-				if($oId < 0){
+				if($oId <= 0){
 					$insert = array(
 							'oId' 					=> $idOrden,
 							'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
@@ -756,7 +756,7 @@ class Sales extends CI_Model
 						</center>
 						
 						<p style="text-align:center; width:100%;  margin: 0px auto;">Fray Justo Santa Maria de Oro 489 </p>
-						<p style="text-align:center; width:100%;  margin: 0px auto;">Tel. 496-3903 - Cel. 154514219 </p>
+						<p style="text-align:center; width:100%;  margin: 0px auto;">Tel. 496-3903 - Cel. 2644514219 </p>
 					</td>
 					<td style="text-align: right" width="50%">
 							<center><b style="font-size:25px;"> Remito Interno</b><br>
@@ -818,9 +818,9 @@ class Sales extends CI_Model
 										//var_dump($result['orden_detalle'][$j]);
 										//continue;
 										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
-										$html.= '<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:15px;">';
+										$html.= '<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:17px;">';
 										$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
-										$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.$item['artDescripcion'].'</td>';
+										$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.substr($item['artDescripcion'], 0, 45).'</td>';
 										$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
 										$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
 										$html.= '</tr>';
@@ -832,7 +832,7 @@ class Sales extends CI_Model
 
 									for($j=$row+1;  $j<=(($i==0)?19:40);$j++){
 										$html.= '<tr style="border:1px solid #3c3c3c !important;">';
-											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 15px;"> </td>';
+											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 17px;"> </td>';
 											$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
 											$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
 											$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
@@ -840,13 +840,7 @@ class Sales extends CI_Model
 									}
 									$descuento = 0;
 									if( $result['orden']['oDescuento'] > 0){
-											$html.= '<tr style="border:1px solid #3c3c3c !important;">';
-											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 15px;"> </td>';
-											$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px;"> Descuento</td>';
-											$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px;"> - '.number_format($result['orden']['oDescuento'],2).'</td>';
-											$html.= '</tr>';
-											$descuento = $result['orden']['oDescuento'];
+										$descuento = $result['orden']['oDescuento'];
 									}
 								$html .= '</table>
 							</td>
@@ -855,19 +849,15 @@ class Sales extends CI_Model
 				}
 				
 				$html.='<table style="width:100%;  border-spacing: 5px; border-collapse: separate; color: #3c3c3c; page-break-after: avoid; border:2px solid #3c3c3c !important; margin:0px auto; border-radius: 10px; font-family: Source Sans Pro ,sans-serif;">
-					<tr>
-						<td style="text-align:left; padding: 0px;">
-							<b>Observación:</b> 
-						</td>
-					</tr>
-				</table><br>';
-
-				$html.='<table style="width:100%;  border-spacing: 5px; border-collapse: separate; color: #3c3c3c; page-break-after: avoid; border:2px solid #3c3c3c !important; margin:0px auto; border-radius: 10px; font-family: Source Sans Pro ,sans-serif;">
 				<tr>
+					<td style="text-align:right; padding: 0px;">
+						<b>Descuento:</b>
+					</td>
+					<td><b>$'.number_format($descuento, 2).'</b></td>
 					<td style="font-size:30px; text-align:right; padding: 0px;">
 						Total $
 					</td>
-					<td style="border:2px solid #3c3c3c !important; margin:0px auto; padding: 0px; text-align:right; font-size:20px; background-color: #D1CECD;">
+					<td style="border:2px solid #3c3c3c !important; margin:0px auto; padding: 0px; text-align:right; font-size:20px; background-color: #F4F6F6;">
 					 '.number_format($importe_total -  $descuento, 2).'
 					</td>
 				</tr>

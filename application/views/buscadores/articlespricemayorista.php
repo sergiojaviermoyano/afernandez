@@ -40,7 +40,7 @@ var timer___, timeout___ = 1000;
 var row___ = 0, rows___ = 0;
 var move___ = 0;
 var minLenght___ = 2;
-function buscadorArticlesPriceMayorista(string, id, detail, nextFocus, price){
+function buscadorArticlesPriceMayorista(string, id, detail, nextFocus, price, stock){
   id____ = id;
   detail____ = detail;
   nextFocus____ = nextFocus;
@@ -48,6 +48,7 @@ function buscadorArticlesPriceMayorista(string, id, detail, nextFocus, price){
   $('#txtArtPriceMayorista').val(string);
   $('#tableArtPriceDetail > tbody').html('');
   //$('#buscadorArticlesPrice').modal('show');
+  
   setTimeout(function () { $('#txtArtPriceMayorista').focus(); BuscarArticlePriceMayorista();}, 1000);
 }
 
@@ -65,12 +66,12 @@ function BuscarArticlePriceMayorista(){
           success: function(resultList){
                         if(resultList != false){
                           if(resultList.length == 1){
-                              seleccionarArticlePriceMayorista(resultList[0].artId, resultList[0].artDescription, calcularPrecioInternoMayorista(resultList[0]));
+                              seleccionarArticlePriceMayorista(resultList[0].artId, resultList[0].artDescription, calcularPrecioInternoMayorista(resultList[0]), resultList[0].stock);
                           } else {
                             $.each(resultList, function(index, result){
                                 var row____ = '<tr>';
                                 row____ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                                row____ += 'onClick="seleccionarArticlePriceMayorista(' + result.artId + ', \'' + result.artDescription + '\', ' + calcularPrecioInternoMayorista(result) + ')"></i></td>';
+                                row____ += 'onClick="seleccionarArticlePriceMayorista(' + result.artId + ', \'' + result.artDescription + '\', ' + calcularPrecioInternoMayorista(result) + ','+result.stock+')"></i></td>';
                                 row____ += '<td>'+result.artBarcode+'</td>';
                                 row____ += '<td>'+result.artDescription+'</td>';
                                 row____ += '<td style="text-align: right"> $ ' + calcularPrecioInternoMayorista(result).toFixed(2) + '</td>';
@@ -141,7 +142,8 @@ $('#buscadorArticlesPriceMayorista').on('hidden.bs.modal', function() {
         seleccionarArticlePriceMayorista(
                           $('#tableArtPriceDetail tbody tr:nth-child('+row___+') td:nth-child(5)')[0].innerHTML,
                           $('#tableArtPriceDetail tbody tr:nth-child('+row___+') td:nth-child(3)')[0].innerHTML,
-                          ($('#tableArtPriceDetail tbody tr:nth-child('+row___+') td:nth-child(4)')[0].innerHTML).replace('$', '').trim()
+                          ($('#tableArtPriceDetail tbody tr:nth-child('+row___+') td:nth-child(4)')[0].innerHTML).replace('$', '').trim(),
+                          parseFloat(($('#tableArtPriceDetail tbody tr:nth-child('+row___+') td:nth-child(6)')[0].innerHTML).trim())
                         );
       }
 
@@ -168,12 +170,20 @@ $('#buscadorArticlesPriceMayorista').on('hidden.bs.modal', function() {
     }
   });
 
-function seleccionarArticlePriceMayorista(id, desc, price){
+function seleccionarArticlePriceMayorista(id, desc, price, stock){
     id____.val(id);
     detail____.val(desc);
     price____.html('$'+parseFloat(price).toFixed(2));
     $('#buscadorArticlesPriceMayorista').modal('hide');
     $('#lblProducto').prop('disabled', false);
+    if(stock == null || stock <= 0){
+      if(stock == null) stock = 0;
+      $('#stockLbl').css('color', 'red');
+      $('#stockReal').html(parseFloat(stock).toFixed(2));
+    }else{
+      $('#stockLbl').css('color', 'green');
+      $('#stockReal').html(parseFloat(stock).toFixed(2));
+    }
     setTimeout(function () { nextFocus____.focus(); nextFocus____.select()}, 800);
 }
 
