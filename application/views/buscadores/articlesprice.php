@@ -8,7 +8,7 @@
       <div class="modal-body" id="buscadorArticlesPriceBody">
 
         <div class="row">
-          <div class="col-xs-10 col-xs-offset-1"><input type="text" class="form-control" id="txtArtPrice" value=""></div>
+          <div class="col-xs-10 col-xs-offset-1"><input type="text" class="form-control" id="txtArtPrice" value="" autocomplete="off"></div>
           <div class="col-xs-1"><img style="display: none" id="loadingArtPrice" src="<?php  echo base_url();?>assets/images/loading.gif" width="35px"></div>
             <!--
             <input type="text" id="type" />

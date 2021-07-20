@@ -396,21 +396,25 @@ function TipoMedioDePago(code){
     var html = '';
     t.medios.forEach(function (m){
         if(m.medCodigo == code){
-          $('#tmpDescripcion1').val('');
-          if(t.tmpDescripcion1 != null || t.tmpDescripcion1 != ''){
-            $('#tmpDato1').show();
-            $('#tmpDescripcion1').attr('placeholder', t.tmpDescripcion1);
-          } else { $('#tmpDato1').hide(); }
-          $('#tmpDescripcion2').val('');
-          if(t.tmpDescripcion2 != null || t.tmpDescripcion2 != ''){
-            $('#tmpDato2').show();
-            $('#tmpDescripcion2').attr('placeholder', t.tmpDescripcion2);
-          } else { $('#tmpDato2').hide(); }
-          $('#tmpDescripcion3').val('');
-          if(t.tmpDescripcion3 != null || t.tmpDescripcion3 != ''){
-            $('#tmpDato3').show();
-            $('#tmpDescripcion3').attr('placeholder', t.tmpDescripcion3);
-          } else { $('#tmpDato3').hide(); }
+          // $('#tmpDescripcion1').val('');
+          // if(t.tmpDescripcion1 != null || t.tmpDescripcion1 != ''){
+          //   $('#tmpDato1').show();
+          //   $('#tmpDescripcion1').attr('placeholder', t.tmpDescripcion1);
+          // } else { $('#tmpDato1').hide(); }
+          // $('#tmpDescripcion2').val('');
+          // if(t.tmpDescripcion2 != null || t.tmpDescripcion2 != ''){
+          //   $('#tmpDato2').show();
+          //   $('#tmpDescripcion2').attr('placeholder', t.tmpDescripcion2);
+          // } else { $('#tmpDato2').hide(); }
+          // $('#tmpDescripcion3').val('');
+          // if(t.tmpDescripcion3 != null || t.tmpDescripcion3 != ''){
+          //   $('#tmpDato3').show();
+          //   $('#tmpDescripcion3').attr('placeholder', t.tmpDescripcion3);
+          // } else { $('#tmpDato3').hide(); }
+
+          $('#tmpDato1').hide();
+          $('#tmpDato2').hide();
+          $('#tmpDato3').hide();
           return false;
         }
         
@@ -498,7 +502,7 @@ function CalcularPagos(){
 
   debugger;
   importeSaldoAPagar = importeAPagar - (totalPagos + descuento);
-  if(comprobanteTipo != 2){  
+  if(comprobanteTipo != 2 && comprobanteTipo != 5){  
     if(importeSaldoAPagar == 0 && importeAPagar > 0){
       $('#btnSaveCobroModal').removeAttr("disabled");
       $('#btnSaveCobroModal').focus();
@@ -557,8 +561,8 @@ $(document).on('keyup','.descuento',function(event){
 });
 
 $('#btnSaveCobroModal').click(function(){
-  Cobrar_(comprobanteTipo);
   $('#btnSaveCobroModal').attr('disabled', 'disabled');
+  Cobrar_(comprobanteTipo);
 });
 
 // $('#btnServiceEfectivo').click(function(){

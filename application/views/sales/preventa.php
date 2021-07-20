@@ -103,11 +103,11 @@
 				                <div class="col-xs-1" style="margin-top: 7px; text-align: right;">
 				                    <label>Producto</label>
 				                </div>
-				                <div class="col-xs-5">
+				                <div class="col-xs-4">
 				                    <input type="hidden" class="form-control" id="prodId">
 				                    <input type="text" class="form-control" id="lblProducto">
 				                </div>
-				                <div class="col-xs-1">
+				                <div class="col-xs-2">
 				                    <input type="number" class="form-control" placeholder="Cantidad" id="prodCant" value="1">
 				                </div>
                         <div class="col-xs-1 text-center">
