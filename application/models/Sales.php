@@ -46,7 +46,7 @@ class Sales extends CI_Model
 			//-----------------------------------------------
 
 			$this->db->trans_start();
-			if($oId < 0){ // Es una venta o un nuevo presupuesto
+			if($oId <= 0){ // Es una venta o un nuevo presupuesto
 				if($this->db->insert('orden', $venta) == false) {
 					$this->db->trans_complete();
 					return false;
@@ -62,7 +62,7 @@ class Sales extends CI_Model
 			}
 				//Registrar Detalle
 				foreach ($data['det'] as $o) {
-					if($oId < 0){
+					if($oId <= 0){
 						$insert = array(
 								'oId' 					=> $idOrden,
 								'artId' 				=> $o['artId'] == '-' ? null : $o['artId'],
@@ -140,7 +140,7 @@ class Sales extends CI_Model
 		}
 
 		$this->db->trans_complete();
-		return $oId < 0 ? $idOrden : $oId;
+		return $oId <= 0 ? $idOrden : $oId;
 	}
 
 	function setSaleMayorista($data = null){
@@ -745,6 +745,7 @@ class Sales extends CI_Model
 				$pages=1;
 			}
 
+
 			//-------------------------------------------
 			
 			$html = '
@@ -784,68 +785,84 @@ class Sales extends CI_Model
 			</table>';
 			
 				$next_page=0;
-				for( $i=0; $i<ceil($pages);$i++){
+				 for( $i=0; $i<ceil($pages);$i++){
 
-					$rows=count($result['orden_detalle']);
-					$html.='<table style="width:100%;  border-spacing: 5px; border-collapse: separate; color: #3c3c3c; page-break-after: avoid; border:2px solid #3c3c3c !important; margin:0px auto; border-radius: 10px; font-family: Source Sans Pro ,sans-serif;">
-						<tr>
-							<td>
-								<table style="width:100%;  border-collapse: collapse; border: 0px;">
-								<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:15px; background-color: #D1CECD;">
-								<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px ;">CANT.</td>
-								<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">DETALLE</td>
-								<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">P.Unit.</td>
-								<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">TOTAL</td>
-								</tr>';
+				 	$rows=count($result['orden_detalle']);
+				 	$html.='<table style="width:100%;  border-spacing: 5px; border-collapse: separate; color: #3c3c3c; page-break-after: avoid; border:2px solid #3c3c3c !important; margin:0px auto; border-radius: 10px; font-family: Source Sans Pro ,sans-serif;">
+				 		<tr>
+				 			<td>
+				 				<table style="width:100%;  border-collapse: collapse; border: 0px;">
+				 				<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:15px; background-color: #D1CECD;">
+				 				<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px ;">CANT.</td>
+				 				<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">DETALLE</td>
+				 				<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">P.Unit.</td>
+				 				<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">TOTAL</td>
+				 				</tr>';
 
-									$total_art=count($result['orden_detalle']);
+				 	 				$total_art=count($result['orden_detalle']);
 
-									$from=$next_page;
+				 	 				$from=$next_page;
 
-									$to=($i==0)?$next_page+19:$next_page+40;
-									$next_page= $to;
+				 	 				$to=($i==0)?$next_page+19:$next_page+35;
+				 					$next_page= $to + 1;
 
-									$row=0;
+				 	 				$row=0;
 
-									for($j=$from;$j<=$to;$j++){
 
-										if(!isset($result['orden_detalle'][$j])){
-											break;
-										}
-
+				 					for($j=$from;$j<=$to;$j++){
+				 					 	if(!isset($result['orden_detalle'][$j])){
+				 					 		break;
+				 					 	}
 										$item=$result['orden_detalle'][$j];
 
-										//var_dump($result['orden_detalle'][$j]);
-										//continue;
-										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
 										$html.= '<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:17px;">';
 										$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
-										$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.substr($item['artDescripcion'], 0, 45).'</td>';
+										$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.substr($item['artDescripcion'], 0, 37).'</td>';
 										$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
 										$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
 										$html.= '</tr>';
-										$row++;
-										if(!isset($result['orden_detalle'][$row])){
-											break;
-										}
-									}
 
-									for($j=$row+1;  $j<=(($i==0)?19:40);$j++){
-										$html.= '<tr style="border:1px solid #3c3c3c !important;">';
-											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 17px;"> </td>';
-											$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
-											$html.= '</tr>';
-									}
+				// 					// 	if(!isset($result['orden_detalle'][$j])){
+				// 					// 		break;
+				// 					// 	}
+
+				// 					// 	$item=$result['orden_detalle'][$j];
+
+				// 					// 	//var_dump($result['orden_detalle'][$j]);
+				// 					// 	//continue;
+										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
+				// 					// 	$html.= '<tr style="border:1px solid #3c3c3c !important;text-align:center; font-size:17px;">';
+				// 					// 	$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
+				// 					// 	$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; text-align:left;border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.substr($item['artDescripcion'], 0, 40).'</td>';
+				// 					// 	$html.= '<td style="width:10%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
+				// 					// 	$html.= '<td style="width:15%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
+				// 					// 	$html.= '</tr>';
+				 					 	$row++;
+				 					 	if(!isset($result['orden_detalle'][$row])){
+				 					 		break;
+				 					 	}
+				 					}
+
+				 					for($j=$row+1;  $j<=(($i==0)?19:35);$j++){
+				 						 $html.= '<tr style="border:1px solid #3c3c3c !important; font-size:17px;">';
+										  $html.= '<td style="border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important;"></td>';
+										  $html.= '<td style="border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; color: white;"> - </td>';
+										//  $html.= '<td></td>';
+										//  $html.= '<td></td>';
+				 						// 	$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 17px;"> </td>';
+				 						// 	$html.= '<td style="width:65%; border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
+				 						 	$html.= '<td style="border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
+				 						 	$html.= '<td style="border-left: 2px solid #3c3c3c !important; border-bottom: 1px dotted #3c3c3c !important; margin:0px; padding: 0px;"> </td>';
+				 						 	$html.= '</tr>';
+				 					}
 									$descuento = 0;
 									if( $result['orden']['oDescuento'] > 0){
 										$descuento = $result['orden']['oDescuento'];
 									}
-								$html .= '</table>
-							</td>
-						</tr>
-						</table><br>';
+				 				$html .= '</table>
+				 			</td>
+				 		</tr>
+				 		</table><br>';
 				}
 				
 				$html.='<table style="width:100%;  border-spacing: 5px; border-collapse: separate; color: #3c3c3c; page-break-after: avoid; border:2px solid #3c3c3c !important; margin:0px auto; border-radius: 10px; font-family: Source Sans Pro ,sans-serif;">
@@ -862,134 +879,7 @@ class Sales extends CI_Model
 					</td>
 				</tr>
 			</table>';
-			
-			//-------------------------------------------
-			/*
-			$html = '<!DOCTYPE html PUBLIC >
-			<html xmlns="http://www.w3.org/1999/xhtml">
-			<head>
-			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-			<title></title>
-			</head>
-			<body>
-			<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
-				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:center ">
-						<h1 style="font-size:30px !important; text-align:center; width:100%; padding-botton:0px;     margin: 0px auto;">
-							ADOLFO FERNANDEZ
-							<br><span style="width:100%; text-align:right; padding-top:0px; font-size:13px !important;">Soluciones Electronicas</span>
-						</h1>
-						<p style="text-align:center; width:100%;  margin: 0px auto;">Fray Justo Santa Maria de Oro 489</p>
-						<p style="text-align:center; width:100%; margin: 0px auto;">C.P. 5442 Caucete - San Juan - Tel. 496-3903 - Cel. 154514219</p>
-					</td>
-				</tr>
-				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
-						<table style="width:100%;">
-							<tr style="text-align:center; font-size:18px; font-weight:bold; color:#000000;">
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px;">'.$fecha[0].'</td>
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[1].'</td>
-								<td style="width:10% !important; border:2px solid #72324a !important; padding-top:5px; height:10px">'.$fecha[2].'</td>
-								<td style="width:70% !important; border:2px solid #72324a !important; padding-top:5px; height:10px; font-size:16px;">
-									<span style="width:100%; font-size:13px;">NO VALIDO COMO FACTURA</span> <br>
-									PRESUPUESTO VALIDO POR 15 DIAS
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-
-				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;  text-align:left; padding:5px;">
-						<table style="width:100%;">
-							<tr>
-								<td style="width:10%; padding-top:0px;">  Se&ntilde;or/a  :  </td>
-								<td style="width:90% !important; border-bottom: 1px dotted #72324a; padding-top:0px;font-size:14px; font-weight:bold;color:#000000;">'.$result['cliente']['cliNombre']." ".$result['cliente']['cliApellido'].' - Ord.: '.$result['orden']['oId'].'</td>
-							</tr>
-							<tr>
-								<td style="width:10%; padding-top:0px;"> Domicilio:  </td>
-								<td style="width:90%; border-bottom: 1px dotted #72324a; padding-top:0px;">'.$result['cliente']['cliDomicilio'].'</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				</table>';
-
-				$arrFrom = array("ñ","Ñ");
-				$arrTo = array("&#241;","&#209;");
-
-				$next_page=0;
-				for( $i=0; $i<ceil($pages);$i++){					
 					
-					$rows=count($result['orden_detalle']);
-					$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">
-						<tr style="border:2px solid #72324a !important; margin:0px auto;">
-							<td colspan=3 style="border:2px solid #72324a !important; margin:0px auto; border-radius: 10px;">
-								<table style="width:100%;  border-collapse: collapse; border: 0px;">';
-									$total_art=count($result['orden_detalle']);	
-
-									$from=$next_page;
-
-									$to=($i==0)?$next_page+22:$next_page+40;
-									$next_page= $to;
-									
-									$row=0;
-									
-									for($j=$from;$j<$to;$j++){
-										
-										if(!isset($result['orden_detalle'][$j])){
-											break;
-										}
-										
-										$item=$result['orden_detalle'][$j];
-
-										//var_dump($result['orden_detalle'][$j]);
-										//continue;
-										$importe_total+= floatval($item['artVenta'] * $item['artCant']);
-										$html.= '<tr style="border:1px solid #72324a !important;text-align:center; font-size:15px;">';
-										$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 5px ;">'.$item['artCant'].'</td>';
-										$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; text-align:left;border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.str_replace($arrFrom, $arrTo, $item['artDescripcion']).'</td>';
-										$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format($item['artVenta'], 2).'</td>';
-										$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding:  5px;">'.number_format(($item['artVenta'] * $item['artCant']), 2).'</td>';
-										$html.= '</tr>';
-										$row++;
-										if(!isset($result['orden_detalle'][$row])){											
-											break;
-										}
-									}
-								
-									if($i==0){
-										$tope=22;
-									}else{
-										$tope=30;
-									}
-									for($k=$row; $k<$tope;$k++){
-										$html.= '<tr style="border:1px solid #72324a !important;">';
-											$html.= '<td style="width:10%; border-left: 0px !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 15px;"></td>';
-											$html.= '<td style="width:65%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
-											$html.= '<td style="width:10%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
-											$html.= '<td style="width:15%; border-left: 2px solid #72324a !important; border-bottom: 1px dotted #72324a !important; margin:0px; padding: 0px;"></td>';
-											$html.= '</tr>';
-									}
-								$html .= '</table>
-							</td>
-						</tr>
-						</table><br>';
-				}
-				
-				$html.='<table style="width:100%;  border-spacing: 5px;    border-collapse: separate; color: #72324a; page-break-after: avoid;">				
-				<tr style="border:2px solid #72324a !important; margin:0px auto;">
-					<td style="font-size:20px; text-align:left; padding: 0px;">
-						'.($result['orden']['oDescuento'] > 0 ? 'Descuento $ '.$result['orden']['oDescuento'] : '').'
-					</td>
-					<td style="font-size:30px; text-align:right; padding: 0px;"> Total $</td>
-					<td colspan="1" style="border:2px solid #72324a !important; margin:0px auto; padding: 0px;border-radius: 10px; text-align:right; font-size:20px; color:#000000;">
-					 $ '.number_format($importe_total - $result['orden']['oDescuento'] , 2).'
-					</td>
-				</tr>
-			</table></body></html>';*/
-			//-------------------------------------
-			//die($html);			
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF

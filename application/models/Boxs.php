@@ -218,7 +218,7 @@ class Boxs extends CI_Model
 				$this->db->select('sum(ordendetalle.artVenta * ordendetalle.artCant) as suma', false);
 				$this->db->from('ordendetalle');
 				$this->db->join('orden', 'orden.oId = ordendetalle.oId');
-				$this->db->where(array('orden.cajaId'=>$idBox));
+				$this->db->where(array('orden.cajaId'=>$idBox, 'orden.oEsVenta' => 1));
 				$this->db->where_in('orden.oEstado', array('AC','FA'));
 				//$this->db->where(array('orden.cajaId'=>$idBox,'orden.oEstado' => 'FA'));
 				$query = $this->db->get();

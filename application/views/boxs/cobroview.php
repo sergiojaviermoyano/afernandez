@@ -84,9 +84,9 @@
               </div>
             </div>
             <!-- <h4 class="text-yellow" style="margin-top: -5px;"> Descuento $:</h4> -->
-            <div class="box box-danger bg-gray" style="display: none">
+            <div class="box box-danger bg-gray" style="display: block">
               <div class="box-header with-border">
-                <h3 class="box-title text-red">Vuelto $:</h3>
+                <h3 class="box-title text-red">Saldo $:</h3>
               </div>
               <div class="box-body">
                 <h1 class="text-red" id="importeVuelto" style="margin-top: -10px;"></h1>
@@ -141,7 +141,8 @@ CalcularPagos();
 //Abrir el modal para la cobranza.
 function cobrarMedios(ordId, importe, comprobanteTipo_){
     idOrdenSeleccionada = ordId;
-    importeAPagar = importeSaldoAPagar = importe;
+    importeAPagar = importe;
+    importeSaldoAPagar = importe;
     //esUnaReserva = esReserva;
     comprobanteTipo = comprobanteTipo_;
     pagos = [];
@@ -488,6 +489,7 @@ function agregarMedio(){
 }
 
 function CalcularPagos(){
+  debugger;
   var totalPagos = 0;
   if(pagos.length > 0){
     pagos.forEach(function (p){
@@ -500,8 +502,7 @@ function CalcularPagos(){
     descuento = parseFloat($('#medDescuento').val());
   }
 
-  debugger;
-  importeSaldoAPagar = importeAPagar - (totalPagos + descuento);
+  importeSaldoAPagar = importeAPagar - (totalPagos + descuento).toFixed(2);
   if(comprobanteTipo != 2 && comprobanteTipo != 5){  
     if(importeSaldoAPagar == 0 && importeAPagar > 0){
       $('#btnSaveCobroModal').removeAttr("disabled");
@@ -522,8 +523,11 @@ function CalcularPagos(){
 
   $('#importeTotalPagado').html(totalPagos.toFixed(2));
   if(importeSaldoAPagar == (importeAPagar - descuento) || totalPagos < (importeAPagar - descuento)){
-    $('#importeVuelto').html('0.00');
+    $('#importeVuelto').html(Math.abs(importeAPagar - totalPagos  - descuento).toFixed(2));
     //$('#btnSaveCobroModal').removeAttr("disabled");
+    console.log(totalPagos);
+    console.log(importeAPagar);
+    console.log(descuento);
   } else{
     $('#importeVuelto').html(Math.abs(importeSaldoAPagar).toFixed(2));
     //$('#btnSaveCobroModal').attr('disabled', 'disabled');
@@ -571,7 +575,6 @@ $('#btnSaveCobroModal').click(function(){
 // });
 
 function Cobrar_(comprobanteTipo){
-  debugger;
   //Acciones
   //0: Presupuesto            (No tiene reserva, venta mayorista, ni venta minorista)
   //1: Venta Minorista        (No tiene reserva)

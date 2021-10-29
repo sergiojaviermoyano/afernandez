@@ -74,12 +74,12 @@ jQuery(document).ready(function($) {
         success: function(result){
             debugger;
             WaitingClose();
-            $('#hreff').attr("href",'http://indevla.com/afernandez/assets/reports/orders_minorista/'+id_+'.pdf');
+            $('#hreff').attr("href",'../assets/reports/orders_minorista/'+id_+'.pdf');
             $( "#hreff" ).trigger( "click" );
         },
         error: function(result){
             WaitingClose();
-            $('#hreff').attr("href",'http://indevla.com/afernandez/assets/reports/orders_minorista/'+id_+'.pdf');
+            $('#hreff').attr("href",'../assets/reports/orders_minorista/'+id_+'.pdf');
             $( "#hreff" ).trigger( "click" );
             ProcesarError(result.responseText, 'modalRubro');
         },
