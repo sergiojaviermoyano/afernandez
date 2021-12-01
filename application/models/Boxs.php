@@ -250,7 +250,7 @@ class Boxs extends CI_Model
 				//Calcular Ventas
 				$this->db->select('count(*) as suma', false);
 				$this->db->from('orden');
-				$this->db->where(array('cajaId'=>$idBox, 'cliId != '=> null));
+				$this->db->where(array('cajaId'=>$idBox, 'cliId != '=> null, 'oEsVenta' => 1));
 				$query = $this->db->get();
 				$data['box']['ventas'] = $query->row()->suma == null ? '0' : $query->row()->suma;
 
@@ -619,7 +619,37 @@ class Boxs extends CI_Model
 								</table>
 							</td>
 					  	</tr>';
-			$html .= '</table>';
+			$html .= '<tr><td><b>Informe Detallado de ventas</b></td></tr>';
+			//buscar el detalle de las ventas 
+			$this->db->select('orden.oId, orden.oFecha, ordendetalle.artDescripcion, ordendetalle.artCant,ordendetalle.artId');
+			$this->db->from('orden');
+			$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
+			$this->db->where(array('orden.cajaId'=>$result['box']['cajaId'], 'orden.oEsVenta'=>1));
+			$query= $this->db->get();
+			$html .= '<tr>
+						<td>
+							<table width="100%">
+								<tr>
+								<td>Orden</td>
+								<td>Fecha</td>
+								<td>Artículo</td>
+								<td>Cantidad</td>
+								<td>Stock</td>
+								</tr>';
+			foreach ($query->result_array() as $item){
+				$html .= '<tr>
+							<td>'.$item['oId'].'</td>
+							<td>'.$item['oFecha'].'</td>
+							<td>'.substr($item['artDescripcion'], 0, 25).'</td>
+							<td>'.$item['artCant'].'</td>
+							<td>'.$this->calcularStock($item['artId'], $item['oFecha']).'</td>
+						  </tr>';				
+			}
+			$html .= '		</table>
+						</td>
+					</tr>';
+		    $html .= '</table>';
+			
 			//die($html);
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
@@ -653,6 +683,17 @@ class Boxs extends CI_Model
 			//----------------------------------------
 			return $data['id'].'.pdf';
 		}
+	}
+
+	function calcularStock($id, $fecha){
+
+		$this->db->select_sum('stkCant');
+		$this->db->from('stock');
+		$this->db->where(array('artId'=>$id, 'stkFecha <= '=>$fecha));
+		$query = $this->db->get();
+		$s = $query->result_array();
+		$s = $s[0]['stkCant'];
+		return $s;
 	}
 
 
