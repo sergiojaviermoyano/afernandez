@@ -164,7 +164,6 @@ function cobrarMedios(ordId, importe, comprobanteTipo_){
                     },
           url: 'index.php/box/getMedios',
           success: function(result){
-                        //debugger;
                         if(result != false){
                           medios = result;
                           var html = '';
@@ -452,7 +451,7 @@ $(document).on('keyup','.importe',function(event){
 
 });
 
-$('#btnAddPago').click(function(){  
+$('#btnAddPago').click(function(){ 
   if(parseFloat($('#medImporte').val()) > 0){
     if(idMedioSeleccionado == 'EFE'){
       agregarMedio();
@@ -489,7 +488,6 @@ function agregarMedio(){
 }
 
 function CalcularPagos(){
-  debugger;
   var totalPagos = 0;
   if(pagos.length > 0){
     pagos.forEach(function (p){
@@ -502,7 +500,7 @@ function CalcularPagos(){
     descuento = parseFloat($('#medDescuento').val());
   }
 
-  importeSaldoAPagar = importeAPagar - (totalPagos + descuento).toFixed(2);
+  importeSaldoAPagar = (importeAPagar - (totalPagos + descuento)).toFixed(2);
   if(comprobanteTipo != 2 && comprobanteTipo != 5){  
     if(importeSaldoAPagar == 0 && importeAPagar > 0){
       $('#btnSaveCobroModal').removeAttr("disabled");
@@ -641,7 +639,6 @@ function Cobrar_(comprobanteTipo){
   }
   //Medios de Pago-----------------------------------------
   var medios = [];
-  debugger;
   if(comprobanteTipo != 0 && comprobanteTipo != 4){
     medios = pagos;
     //Descuento--------------------------------------------
@@ -656,7 +653,6 @@ function Cobrar_(comprobanteTipo){
      comprobanteTipo == 4){
       WaitingOpen('Guardando venta'); 
       var url_; 
-      debugger;
       if(comprobanteTipo == 2){
         url_ = 'index.php/sale/setSalePreventa';
       }
@@ -795,7 +791,6 @@ function CobrarEfectivo(){
       WaitingOpen('Guardando venta'); 
       var url_; 
       url_ = 'index.php/sale/setSaleMinorista';
-      debugger;
       $.ajax({
             type: 'POST',
             data: {

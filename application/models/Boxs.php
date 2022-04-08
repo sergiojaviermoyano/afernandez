@@ -619,36 +619,45 @@ class Boxs extends CI_Model
 								</table>
 							</td>
 					  	</tr>';
-			$html .= '<tr><td><b>Informe Detallado de ventas</b></td></tr>';
+			$html .= '</table>';
+			$html .= '<div style="page-break-before: always;"></div>';
 			//buscar el detalle de las ventas 
 			$this->db->select('orden.oId, orden.oFecha, ordendetalle.artDescripcion, ordendetalle.artCant,ordendetalle.artId');
 			$this->db->from('orden');
 			$this->db->join('ordendetalle', 'ordendetalle.oId = orden.oId');
 			$this->db->where(array('orden.cajaId'=>$result['box']['cajaId'], 'orden.oEsVenta'=>1));
 			$query= $this->db->get();
-			$html .= '<tr>
-						<td>
-							<table width="100%">
-								<tr>
+			$html .= '<table width="100%">
+							<tr>
+								<td colspan="5"><center><b>Informe Detallado de ventas</b></center></td>
+							</tr>
+							<tr>
 								<td>Orden</td>
 								<td>Fecha</td>
 								<td>Artículo</td>
 								<td>Cantidad</td>
 								<td>Stock</td>
-								</tr>';
+							</tr>';
+			$indice = 0;
 			foreach ($query->result_array() as $item){
-				$html .= '<tr>
-							<td>'.$item['oId'].'</td>
-							<td>'.$item['oFecha'].'</td>
-							<td>'.substr($item['artDescripcion'], 0, 25).'</td>
-							<td>'.$item['artCant'].'</td>
-							<td>'.$this->calcularStock($item['artId'], $item['oFecha']).'</td>
-						  </tr>';				
+				if($indice != 40 && $indice != 80 && $indice != 120 && $indice != 160 && $indice != 200){
+					$date = explode(' ', $item['oFecha']);
+					$dia = explode('-', $date[0]);
+					$html .= '<tr>
+								<td>'.$item['oId'].'</td>
+								<td>'.$dia[2].'-'.$dia[1].'-'.$dia[0].' '.$date[1].'</td>
+								<td>'.substr($item['artDescripcion'], 0, 25).'</td>
+								<td style="text-align: right">'.$item['artCant'].'</td>
+								<td style="text-align: right">'.$this->calcularStock($item['artId'], $item['oFecha']).'</td>
+							</tr>';				
+				} else {
+					$html .= '</table>';
+					$html .= '<div style="page-break-before: always;"></div>';
+					$html .= '<table width="100%">';
+				}
+				$indice++;
 			}
-			$html .= '		</table>
-						</td>
-					</tr>';
-		    $html .= '</table>';
+			$html .= '</table>';
 			
 			//die($html);
 			//se incluye la libreria de dompdf
