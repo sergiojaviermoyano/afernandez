@@ -40,5 +40,23 @@ class reception extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
+
+	public function reporte($permission)
+	{
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('receptions/reporte', $data, true));
+	}
+
+	public function getComprobantes(){
+		$data = $this->Receptions->getComprobantes($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
 	
 }

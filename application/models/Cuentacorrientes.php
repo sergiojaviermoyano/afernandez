@@ -109,6 +109,7 @@ class Cuentacorrientes extends CI_Model
 			$cliId 	= $data['cliId'];
             $cpto 	= $data['cpto'];
 			$impte 	= $data['impte'];
+			$tipo   = $data['tipo'];
 
 			$userdata = $this->session->userdata('user_data');
 
@@ -132,7 +133,8 @@ class Cuentacorrientes extends CI_Model
 					'cctepHaber'		=>	$impte > 0 ? $impte : 0,
 					'cliId'				=> 	$cliId,
 					'usrId'				=>	$userdata[0]['usrId'],
-					'cajaId'			=> 	$impte > 0 ? $cajaId : null
+					'cajaId'			=> 	$impte > 0 ? $cajaId : null,
+					'medio'				=>  $tipo
 				);
 
 			if($this->db->insert('cuentacorrientecliente', $ctacte) == false) {

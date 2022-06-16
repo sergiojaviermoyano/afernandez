@@ -229,5 +229,33 @@ class Receptions extends CI_Model
 
 		}
 	}
+
+	function getComprobantes($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$desde	= $data['from'];
+			$hasta	= $data['to'];
+
+			$desde = explode('-',$desde);
+			$desde = $desde[2].'-'.$desde[1].'-'.$desde[0].' 00:00:00'; 
+
+			$hasta = explode('-',$hasta);
+			$hasta = $hasta[2].'-'.$hasta[1].'-'.$hasta[0].' 23:59:59'; 
+
+			$query = '
+				Select 
+					*
+				From receptions 
+				Where tcId = 1 and recFecha between \''.$desde.'\' and \''.$hasta.'\' ';
+	
+			$query = $this->db->query($query);
+			return $query->result_array();
+			//---------------------------------------------------------------------------------------
+		}
+	}
 }
 ?>

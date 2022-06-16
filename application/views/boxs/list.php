@@ -8,10 +8,10 @@
           <?php
           if (strpos($permission,'Add') !== false) {
             if($list['openBox'] == 0) {?>
-              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-id="0" data-action="Add" id="btnAdd" title="Nueva">Abrir</button>
-              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Retiro" disabled="disabled">Retiro</button>
+              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-id="0" data-action="Add" id="btnAddXX" title="Nueva">Abrir</button>
+              <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAddXX" title="Retiro" disabled="disabled">Retiro</button>
             <?php } else { ?>
-              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAdd" title="Nueva" disabled="disabled">Abrir</button>
+              <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAddXX" title="Nueva" disabled="disabled">Abrir</button>
               <button class="btn btn-block btn-danger" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnRet" title="Retiro" >Retiro</button>
             <?php }
           }
@@ -200,7 +200,7 @@
           });
     });
 
-    $(document).on('click','#btnAdd',function(){
+    $(document).on('click','#btnAddXX',function(){
       var data = $(this).data();
       console.debug(data['id']);
       console.debug(data['action']);

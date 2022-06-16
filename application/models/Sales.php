@@ -1267,6 +1267,36 @@ class Sales extends CI_Model
 			return $file_name;
 		}
 	}
+
+	function getComprobantes($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$desde	= $data['from'];
+			$hasta	= $data['to'];
+
+			$desde = explode('-',$desde);
+			$desde = $desde[2].'-'.$desde[1].'-'.$desde[0].' 00:00:00'; 
+
+			$hasta = explode('-',$hasta);
+			$hasta = $hasta[2].'-'.$hasta[1].'-'.$hasta[0].' 23:59:59'; 
+
+			$query = '
+						SELECT r . * , mp.medDescripcion, tp.tmpDescripción
+						FROM `recibos` AS r
+						JOIN mediosdepago AS mp ON mp.medId = r.medId
+						JOIN tipomediopago AS tp ON tp.tmpId = mp.tmpId
+						WHERE tp.tmpCodigo = \'TM2\' and rcbFecha between \''.$desde.'\' and \''.$hasta.'\' ';
+	
+			$query = $this->db->query($query);
+			return $query->result_array();
+			//---------------------------------------------------------------------------------------
+		}
+	}
+	
 }
 
 ?>

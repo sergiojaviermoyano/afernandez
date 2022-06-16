@@ -50,7 +50,7 @@
       <label style="margin-top: 7px;">Número : </label>
     </div>
   <div class="col-xs-3">
-      <input type="text" class="form-control" placeholder="0000-00000000" id="tcNumero" value="<?php echo $data['reception']['tcNumero'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+      <input type="text" class="form-control" placeholder="0000-00000000" maxlength="20" id="tcNumero" value="<?php echo $data['reception']['tcNumero'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
     </div>
 </div><br>
 

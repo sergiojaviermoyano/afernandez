@@ -150,4 +150,24 @@ class sale extends CI_Controller {
 		$order_detail_output=$this->Sales->getReservaDetailHTML($_REQUEST);
 		echo json_encode(array('html'=>$order_detail_output));
 	}
+
+	public function reporte($permission)
+	{
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('sales/reporte', $data, true));
+	}
+
+	public function getComprobantes(){
+		$data = $this->Sales->getComprobantes($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);	
+		}
+	}
+
+	
 }

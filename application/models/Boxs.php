@@ -233,12 +233,18 @@ class Boxs extends CI_Model
 
 				$data['box']['medios'] = $query->result_array();
 
-				//Cobros de clientes
+				//Cobros de clientes Efectivo
 				$this->db->select('sum(cuentacorrientecliente.cctepHaber) as suma', false);
 				$this->db->from('cuentacorrientecliente');
-				$this->db->where(array('cuentacorrientecliente.cajaId'=>$idBox));
+				$this->db->where(array('cuentacorrientecliente.cajaId'=>$idBox, 'cuentacorrientecliente.medio'=>'EFE'));
 				$query = $this->db->get();
 				$data['box']['cliente'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
+				//Cobre de clientes MEP
+				$this->db->select('sum(cuentacorrientecliente.cctepHaber) as suma', false);
+				$this->db->from('cuentacorrientecliente');
+				$this->db->where(array('cuentacorrientecliente.cajaId'=>$idBox, 'cuentacorrientecliente.medio'=>'MEP'));
+				$query = $this->db->get();
+				$data['box']['clienteMEP'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
 
 				//Pagos a proveedores
 				$this->db->select('sum(cuentacorrienteproveedor.cctepHaber) as suma', false);
@@ -493,12 +499,10 @@ class Boxs extends CI_Model
 										<td width="23%">
 											Cta Cte Clientes (+):
 										</td>
-										<td width="27%">
-											<strong>$ '.$result['box']['cliente'].'</strong>
+										<td colspan="2">
+											<strong>$ '.$result['box']['cliente'].'</strong> // Pagos MP ($ '.$result['box']['clienteMEP'].')
 										</td>
-										<td width="15%" style="text-align: right:">
-											<!--Servicios:-->
-										</td>
+										
 										<td width="35%">
 											<!--'.$result['box']['servicios'].'-->
 										</td>

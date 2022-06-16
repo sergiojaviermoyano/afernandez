@@ -38,7 +38,6 @@
 <script type="text/javascript">
 var areYouReallySure = false;
 function areYouSure() {
-  debugger;
     if(allowPrompt){
         //if (!areYouReallySure && true) {
             areYouReallySure = true;

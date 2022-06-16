@@ -7,7 +7,7 @@
           <h3 class="box-title">Recepciones</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadRec(0,\'Add\')" id="btnAdd" title="Nueva">Agregar</button>';
+            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadRec(0,\'Add\')" id="btnAdd__" title="Nueva">Agregar</button>';
           }
           ?>
         </div><!-- /.box-header -->

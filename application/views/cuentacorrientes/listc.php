@@ -158,7 +158,8 @@ $('#btnSave22').click(function(){
             data: { 
                     cliId:  $("#cliId").val(),
                     cpto:   $('#cctepConcepto').val(),
-                    impte:  $('#cctepImporte').val()
+                    impte:  $('#cctepImporte').val(),
+                    tipo:   $('input[name=tipo]:checked').val()
                   },
         url: 'index.php/cuentacorriente/setCtaCteC', 
         success: function(result){
@@ -258,7 +259,18 @@ function PrintRecibo(id__){
               <input type="text" class="form-control" id="cctepImporte">
             </div>
             <div class="col-xs-2" style="margin-top: 7px;"><label>(*)</label></div>
-          </div><br><br>
+          </div><br>
+          <div class="row">
+            <div class="col-xs-4">
+               
+            </div>
+            <div class="col-xs-4">
+              Efectivo <input type="radio" name="tipo" value="EFE" checked="checked">
+            </div>
+            <div class="col-xs-4" >
+              Mercado Pago<input type="radio" name="tipo" value="MEP">
+            </div>
+          </div><br>
           <div class="row">
             <div class="col-xs-12"><i>* Los valores ingresados en negativo(-) se imputan en la columna del <strong>Debe</strong>, y los valores en positivo(+) se imputan en la columna del <strong>Haber</strong>.</i></div>
           </div>
