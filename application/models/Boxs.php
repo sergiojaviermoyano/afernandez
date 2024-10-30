@@ -215,15 +215,26 @@ class Boxs extends CI_Model
 				$data['box']['cajaRetiros'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
 
 				//calcular ventas
+				/*
 				$this->db->select('sum(ordendetalle.artVenta * ordendetalle.artCant) as suma', false);
 				$this->db->from('ordendetalle');
 				$this->db->join('orden', 'orden.oId = ordendetalle.oId');
 				$this->db->where(array('orden.cajaId'=>$idBox, 'orden.oEsVenta' => 1));
+				$this->db->or_where(array('orden.cajaId'=>$idBox, 'orden.oEsVenta' => 0, 'orden.oEsPresupuesto' => 1, 'orden.oEstado' => 'FA'));
 				$this->db->where_in('orden.oEstado', array('AC','FA'));
 				//$this->db->where(array('orden.cajaId'=>$idBox,'orden.oEstado' => 'FA'));
 				$query = $this->db->get();
 				//echo $this->db->last_query();
-				$data['box']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
+				*/
+				$query = $this->db->query("select sum( ordendetalle.artVenta * ordendetalle.artCant ) as suma
+								  FROM ordendetalle
+								  JOIN orden ON orden.oId = ordendetalle.oId
+								  WHERE (orden.cajaId ='$idBox' and orden.oEsVenta = 1 AND orden.oEstado IN ( 'AC', 'FA') )  OR 
+								  (orden.cajaId ='$idBox' and orden.oEsVenta = 0 AND orden.oEsPresupuesto = 1 AND orden.oEstado IN ('FA'))");
+
+								  //echo $this->db->last_query();
+				$query = $query->result_array();
+				$data['box']['cajaImpVentas'] = $query[0]['suma'];
 
 				$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r
 										  join mediosdepago as m on m.medId = r.medId
